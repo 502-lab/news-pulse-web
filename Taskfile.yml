@@ -10,56 +10,77 @@ tasks:
 
   spec:update:
     desc: "spec 서브모듈 최신화"
-    cmd: git submodule update --remote specs
+    cmds:
+      - git submodule update --remote specs
 
   spec:validate:
     desc: "openapi.yaml 유효성 검사"
-    cmd: npx @stoplight/spectral-cli lint specs/api-contract/openapi.yaml
+    cmds:
+      - pnpm exec spectral lint specs/api-contract/openapi.yaml
 
   claude:check:
     desc: "CLAUDE.md 존재 여부 확인"
-    cmd: find . -name "CLAUDE.md" | sort
+    cmds:
+      - find . -name "CLAUDE.md" | sort
 
   # ───── Frontend 전용 ─────
 
   api:gen:
     desc: "openapi → TypeScript 타입 자동생성"
     deps: [spec:update]
-    cmd: npx openapi-typescript specs/api-contract/openapi.yaml -o generated/api-types.ts
+    cmds:
+      - pnpm exec openapi-typescript specs/api-contract/openapi.yaml -o generated/api-types.ts
 
   dev:
     desc: "개발 서버 시작 (로컬)"
-    cmd: next dev
+    cmds:
+      - pnpm exec vite
 
   build:
     desc: "프로덕션 빌드"
-    cmd: next build
+    cmds:
+      - pnpm exec vite build
 
   lint:
     desc: "ESLint 검사"
-    cmd: npx eslint src/
+    cmds:
+      - pnpm exec eslint src/
 
   lint:fix:
     desc: "ESLint 자동 수정"
-    cmd: npx eslint src/ --fix
+    cmds:
+      - pnpm exec eslint src/ --fix
 
   type:check:
     desc: "TypeScript 타입 검사"
-    cmd: npx tsc --noEmit
+    cmds:
+      - pnpm exec tsc --noEmit
+
+  format:
+    desc: "Prettier 포맷 적용"
+    cmds:
+      - pnpm exec prettier --write src/
+
+  format:check:
+    desc: "Prettier 포맷 검사만 (수정 안 함)"
+    cmds:
+      - pnpm exec prettier --check src/
 
   test:
     desc: "테스트 실행"
-    cmd: npx jest
+    cmds:
+      - pnpm exec jest
 
   test:watch:
     desc: "테스트 watch 모드"
-    cmd: npx jest --watch
+    cmds:
+      - pnpm exec jest --watch
 
   # ───── 자주 쓰는 조합 ─────
 
   check:
-    desc: "타입 + 린트 전체 검사 (커밋 전 권장)"
-    deps: [type:check, lint]
+    desc: "타입 + 린트 + 포맷 전체 검사 (커밋 전 권장)"
+    deps: [type:check, lint, format:check]
 
   ready:
     desc: "spec 최신화 + 타입 생성 + 전체 검사 (개발 시작 전 권장)"

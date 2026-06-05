@@ -31,27 +31,39 @@ if git diff --cached --name-only | grep "^generated/" ; then
   exit 1
 fi
 
+# 5. merge conflict 마커 방지
+if git diff --cached | grep -E "^(\+){1}(<<<<<<|>>>>>>|======)" ; then
+  echo "❌ merge conflict 마커가 남아있습니다."
+  exit 1
+fi
+
 # ───── Frontend 전용 검사 ─────
 
-# 5. TypeScript 타입 검사
+# 6. TypeScript 타입 검사
 echo "🔎 TypeScript 타입 검사 중..."
-npx tsc --noEmit
+pnpm exec tsc --noEmit
 if [ $? -ne 0 ]; then
   echo "❌ TypeScript 타입 오류가 있습니다."
   exit 1
 fi
 
-# 6. ESLint 검사
+# 7. ESLint 검사
 echo "🔎 ESLint 검사 중..."
-npx eslint src/
+pnpm exec eslint src/
 if [ $? -ne 0 ]; then
   echo "❌ ESLint 오류가 있습니다. task lint:fix 로 자동 수정하거나 직접 수정해주세요."
   exit 1
 fi
 
-# 7. console.log 커밋 방지 (src/ 파일만 검사)
-if git diff --cached -- 'src/**/*.ts' 'src/**/*.tsx' 'src/**/*.js' 'src/**/*.jsx' | grep -E "^\+.*console\.log" ; then
+# 8. console.log 커밋 방지
+if git diff --cached -- '*.ts' '*.tsx' '*.js' '*.jsx' | grep -E "^\+.*console\.log" ; then
   echo "❌ console.log가 포함되어 있습니다. 제거 후 커밋해주세요."
+  exit 1
+fi
+
+# 9. TODO/FIXME 커밋 방지 (src/ 파일만 검사)
+if git diff --cached -- '*.ts' '*.tsx' '*.js' '*.jsx' | grep -E "^\+.*(TODO|FIXME)" ; then
+  echo "⚠️ TODO/FIXME 주석이 포함되어 있습니다. 의도한 것인지 확인해주세요."
   exit 1
 fi
 
