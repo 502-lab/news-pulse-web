@@ -1,0 +1,43 @@
+name: Frontend CI
+
+on:
+  pull_request:
+    branches: [dev, prd]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: TypeScript 타입 검사
+        run: pnpm exec tsc --noEmit
+
+      - name: ESLint 검사
+        run: pnpm exec eslint src/
+
+      - name: Prettier 포맷 검사
+        run: pnpm exec prettier --check src/
+
+      - name: 빌드 검사
+        run: pnpm build
+
+      - name: 테스트
+        run: pnpm exec jest --ci

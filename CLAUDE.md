@@ -104,6 +104,7 @@ VITE_FIREBASE_APP_ID=
 
 ## AI 지침
 
+- git commit 전 반드시 사용자에게 커밋 여부를 확인할 것 (명시적으로 요청한 경우 제외)
 - 구현 전 /specs/features/ 해당 스펙 파일 먼저 확인할 것
 - API 호출 코드 작성 전 openapi.yaml 확인할 것
 - /generated/api-types.ts와 실제 API 응답이 다를 경우
