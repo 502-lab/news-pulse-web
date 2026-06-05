@@ -1,0 +1,58 @@
+#!/bin/sh
+# ─────────────────────────────────────────
+# News Curator AI — Frontend pre-commit hook
+# ─────────────────────────────────────────
+
+echo "🔍 pre-commit 검사 시작..."
+
+# ───── 공통 검사 ─────
+
+# 1. CLAUDE.md 존재 여부 확인
+if [ ! -f "CLAUDE.md" ]; then
+  echo "❌ CLAUDE.md 파일이 없습니다."
+  exit 1
+fi
+
+# 2. 민감정보 노출 검사
+if git diff --cached | grep -E "(api_key|secret_key|password|private_key)\s*=\s*['\"][^'\"]+['\"]" ; then
+  echo "❌ 민감정보가 포함된 것 같습니다. 확인해주세요."
+  exit 1
+fi
+
+# 3. .env 파일 커밋 방지
+if git diff --cached --name-only | grep -E "^\.env(\..+)?$" | grep -v "\.example$" ; then
+  echo "❌ .env 파일은 커밋할 수 없습니다. .env.example만 허용됩니다."
+  exit 1
+fi
+
+# 4. generated/ 디렉토리 직접 수정 방지
+if git diff --cached --name-only | grep "^generated/" ; then
+  echo "❌ generated/ 파일은 직접 수정할 수 없습니다. task api:gen 을 사용하세요."
+  exit 1
+fi
+
+# ───── Frontend 전용 검사 ─────
+
+# 5. TypeScript 타입 검사
+echo "🔎 TypeScript 타입 검사 중..."
+npx tsc --noEmit
+if [ $? -ne 0 ]; then
+  echo "❌ TypeScript 타입 오류가 있습니다."
+  exit 1
+fi
+
+# 6. ESLint 검사
+echo "🔎 ESLint 검사 중..."
+npx eslint src/
+if [ $? -ne 0 ]; then
+  echo "❌ ESLint 오류가 있습니다. task lint:fix 로 자동 수정하거나 직접 수정해주세요."
+  exit 1
+fi
+
+# 7. console.log 커밋 방지 (src/ 파일만 검사)
+if git diff --cached -- 'src/**/*.ts' 'src/**/*.tsx' 'src/**/*.js' 'src/**/*.jsx' | grep -E "^\+.*console\.log" ; then
+  echo "❌ console.log가 포함되어 있습니다. 제거 후 커밋해주세요."
+  exit 1
+fi
+
+echo "✅ 모든 검사 통과! 커밋을 진행합니다."
