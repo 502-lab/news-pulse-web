@@ -1,0 +1,46 @@
+#!/bin/sh
+# ──────────────────────────────────────────────
+# News Curator AI — Backend commit-msg hook
+# Conventional Commits 형식 검사
+# ──────────────────────────────────────────────
+
+COMMIT_MSG_FILE="$1"
+COMMIT_MSG=$(cat "$COMMIT_MSG_FILE")
+
+# Merge/revert/fixup 커밋은 검사 생략
+case "$COMMIT_MSG" in
+  Merge\ *|Revert\ *|fixup\!*|squash\!*)
+    exit 0
+    ;;
+esac
+
+# Co-authored-by 등 트레일러 제거 후 첫 줄만 검사
+FIRST_LINE=$(echo "$COMMIT_MSG" | grep -v "^#" | head -1)
+
+ALLOWED_TYPES="feat|fix|docs|style|refactor|test|chore|perf|ci|build"
+PATTERN="^($ALLOWED_TYPES)(\([a-zA-Z0-9가-힣_/-]+\))?: .+"
+
+if ! echo "$FIRST_LINE" | grep -qE "$PATTERN"; then
+  echo ""
+  echo "❌ 커밋 메시지가 Conventional Commits 형식에 맞지 않습니다."
+  echo ""
+  echo "   형식: <type>(<scope>): <subject>"
+  echo "   타입: feat | fix | docs | style | refactor | test | chore | perf | ci | build"
+  echo ""
+  echo "   예시:"
+  echo "     feat(article): 카테고리 피드 조회 API 추가"
+  echo "     fix(scheduler): 중복 수집 방지 로직 수정"
+  echo "     chore: Gradle 의존성 업데이트"
+  echo ""
+  echo "   입력한 메시지: $FIRST_LINE"
+  echo ""
+  exit 1
+fi
+
+# 제목 길이 검사 (72자 이하 권장)
+SUBJECT_LEN=$(echo "$FIRST_LINE" | wc -m | tr -d ' ')
+if [ "$SUBJECT_LEN" -gt 72 ]; then
+  echo "⚠️   커밋 메시지 첫 줄이 72자를 초과합니다 (${SUBJECT_LEN}자). 간결하게 작성해주세요."
+fi
+
+exit 0
