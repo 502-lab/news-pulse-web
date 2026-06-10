@@ -545,6 +545,26 @@
 <script>
 const COMMITS = [
   {
+    hash: "6748bc4dac0a0f3442684a816cf32fec883d3d43",
+    short: "6748bc4",
+    author: "이재인",
+    date: "2026-06-11 00:55",
+    subject: "chore: changelog 자동화 스크립트 Python으로 재작성 및 c8b2ffd 이력 반영",
+    body: "heredoc 파싱 오류로 인해 update-changelog.sh의 임베디드 Python을 별도 .husky/scripts/update-changelog.py로 분리. 중복 방지(hash 체크), 무한루프 방지('chore: update changelog' 스킵) 포함.  Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>",
+    stats: "3 files changed, 101 insertions(+), 87 deletions(-)",
+    reasoning: [
+      {
+        title: "변경 요약",
+        text: "chore: changelog 자동화 스크립트 Python으로 재작성 및 c8b2ffd 이력 반영 — 상세 reasoning은 추후 추가 예정."
+      }
+    ],
+    files: [
+      { s: "A", p: ".husky/scripts/update-changelog.py" },
+      { s: "M", p: ".husky/scripts/update-changelog.sh" },
+      { s: "M", p: "changelog.html" }
+    ]
+  },
+  {
     hash: "c8b2ffd45390319e89a31a9f40f06e0f36daee52",
     short: "c8b2ffd",
     author: "이재인",
