@@ -545,6 +545,26 @@
 <script>
 const COMMITS = [
   {
+    hash: "c8b2ffd45390319e89a31a9f40f06e0f36daee52",
+    short: "c8b2ffd",
+    author: "이재인",
+    date: "2026-06-11 00:11",
+    subject: "chore: changelog 자동 업데이트 훅 추가 및 3df922b 커밋 이력 반영",
+    body: "- .husky/post-commit: 커밋 후 changelog.html 자동 갱신 + chore 커밋 생성 - .husky/scripts/update-changelog.sh: 커밋 메타데이터 파싱 → COMMITS 배열 선두 삽입   - 중복 방지(hash 존재 여부 확인), 무한루프 방지('chore: update changelog' 스킵) - changelog.html: feat 3df922b(001 디자인 토큰 & 컴포넌트) 이력 및 reasoning 추가  Co-Authored-By: Claude Sonnet 4.6 <n",
+    stats: "3 files changed, 165 insertions(+)",
+    reasoning: [
+      {
+        title: "변경 요약",
+        text: "chore: changelog 자동 업데이트 훅 추가 및 3df922b 커밋 이력 반영 — 상세 reasoning은 추후 추가 예정."
+      }
+    ],
+    files: [
+      { s: "A", p: ".husky/post-commit" },
+      { s: "A", p: ".husky/scripts/update-changelog.sh" },
+      { s: "M", p: "changelog.html" }
+    ]
+  },
+  {
     hash: "3df922b0a162df1a1851c60bbcaea2046988add5",
     short: "3df922b",
     author: "이재인",
