@@ -1,0 +1,16 @@
+#!/bin/sh
+# ─────────────────────────────────────────
+# News Curator AI — Frontend post-commit hook
+# changelog.html 자동 업데이트
+# ─────────────────────────────────────────
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+
+# changelog.html에 최신 커밋 entry 삽입
+sh "$REPO_ROOT/.husky/scripts/update-changelog.sh"
+
+# 변경된 changelog.html 스테이징 + 자동 커밋
+if git diff --name-only | grep -q "changelog.html"; then
+  git add "$REPO_ROOT/changelog.html"
+  git commit --no-verify -m "chore: update changelog"
+fi
