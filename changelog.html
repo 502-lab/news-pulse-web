@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>news-pulse-web — 커밋 변경 이력</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #21262d;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --text-dim: #484f58;
+      --accent: #58a6ff;
+      --add: #3fb950;
+      --mod: #d29922;
+      --del: #f85149;
+      --chore: #8957e5;
+      --ci: #1f6feb;
+      --feat: #3fb950;
+      --fix: #f85149;
+      --refactor: #d29922;
+      --docs: #58a6ff;
+      --radius: 6px;
+      --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans KR', sans-serif;
+      --mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-shrink: 0;
+    }
+    .repo-badge {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .branch-badge {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 3px 10px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .branch-badge svg { width: 12px; height: 12px; fill: currentColor; }
+    .commit-count {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-left: auto;
+    }
+    .commit-count span { color: var(--text); font-weight: 600; }
+
+    /* ── Filter bar ── */
+    .filter-bar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 8px 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+      flex-wrap: wrap;
+    }
+    .filter-bar label { font-size: 12px; color: var(--text-muted); margin-right: 4px; }
+    .tag-filter {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+    .tag-btn {
+      padding: 3px 10px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: var(--mono);
+    }
+    .tag-btn:hover { border-color: var(--accent); color: var(--text); }
+    .tag-btn.active { color: #fff; border-color: transparent; }
+    .tag-btn[data-type="all"].active { background: var(--surface2); color: var(--text); border-color: var(--border); }
+    .tag-btn[data-type="chore"].active { background: var(--chore); }
+    .tag-btn[data-type="ci"].active { background: var(--ci); }
+    .tag-btn[data-type="feat"].active { background: var(--feat); }
+    .tag-btn[data-type="fix"].active { background: var(--fix); }
+    .tag-btn[data-type="refactor"].active { background: var(--refactor); }
+    .tag-btn[data-type="docs"].active { background: var(--docs); }
+
+    .search-input {
+      margin-left: auto;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 4px 10px;
+      font-size: 12px;
+      color: var(--text);
+      width: 200px;
+      font-family: var(--font);
+    }
+    .search-input:focus { outline: none; border-color: var(--accent); }
+    .search-input::placeholder { color: var(--text-dim); }
+
+    /* ── Main layout ── */
+    main {
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* ── Commit list ── */
+    .commit-list {
+      border-right: 1px solid var(--border);
+      overflow-y: auto;
+      padding: 8px 0;
+    }
+    .commit-list::-webkit-scrollbar { width: 4px; }
+    .commit-list::-webkit-scrollbar-track { background: transparent; }
+    .commit-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    .commit-item {
+      padding: 10px 16px;
+      cursor: pointer;
+      border-left: 3px solid transparent;
+      transition: background 0.1s;
+      position: relative;
+    }
+    .commit-item:hover { background: var(--surface2); }
+    .commit-item.active {
+      background: var(--surface2);
+      border-left-color: var(--accent);
+    }
+    .commit-item.hidden { display: none; }
+
+    .commit-top {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+    .commit-type {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 3px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      flex-shrink: 0;
+    }
+    .type-chore { background: rgba(137,87,229,0.2); color: #b388ff; }
+    .type-ci { background: rgba(31,111,235,0.2); color: #79b8ff; }
+    .type-feat { background: rgba(63,185,80,0.2); color: #7ee787; }
+    .type-fix { background: rgba(248,81,73,0.2); color: #ff7b72; }
+    .type-refactor { background: rgba(210,153,34,0.2); color: #e3b341; }
+    .type-docs { background: rgba(88,166,255,0.2); color: #79b8ff; }
+    .type-other { background: rgba(139,148,158,0.2); color: #8b949e; }
+
+    .commit-hash {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+    .commit-date {
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+    .commit-subject {
+      font-size: 12px;
+      color: var(--text);
+      line-height: 1.4;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .commit-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 5px;
+    }
+    .commit-author {
+      font-size: 11px;
+      color: var(--text-dim);
+    }
+    .file-pill {
+      font-size: 10px;
+      color: var(--text-dim);
+      display: flex;
+      gap: 4px;
+      margin-left: auto;
+    }
+    .pill-add { color: var(--add); }
+    .pill-mod { color: var(--mod); }
+    .pill-del { color: var(--del); }
+
+    .no-results {
+      padding: 40px 16px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    /* ── Detail panel ── */
+    .detail-panel {
+      overflow-y: auto;
+      padding: 20px 24px;
+    }
+    .detail-panel::-webkit-scrollbar { width: 4px; }
+    .detail-panel::-webkit-scrollbar-track { background: transparent; }
+    .detail-panel::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: var(--text-muted);
+      gap: 12px;
+    }
+    .empty-state svg { width: 40px; height: 40px; opacity: 0.3; fill: currentColor; }
+    .empty-state p { font-size: 14px; }
+
+    .detail-header {
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .detail-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+    .detail-meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .detail-meta-row strong { color: var(--text); }
+    .hash-full {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--accent);
+      background: rgba(88,166,255,0.1);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+    .detail-body {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 10px 12px;
+      margin-top: 10px;
+      font-size: 12px;
+      font-family: var(--mono);
+      color: var(--text-muted);
+      white-space: pre-wrap;
+      line-height: 1.6;
+    }
+
+    /* ── Stats bar ── */
+    .stats-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .stat-badge {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+    }
+    .stat-badge.total { color: var(--text-muted); }
+    .stat-badge.adds { color: var(--add); background: rgba(63,185,80,0.08); border-color: rgba(63,185,80,0.2); }
+    .stat-badge.mods { color: var(--mod); background: rgba(210,153,34,0.08); border-color: rgba(210,153,34,0.2); }
+    .stat-badge.dels { color: var(--del); background: rgba(248,81,73,0.08); border-color: rgba(248,81,73,0.2); }
+    .stat-num { font-weight: 700; font-family: var(--mono); }
+
+    /* ── File groups ── */
+    .file-group {
+      margin-bottom: 16px;
+    }
+    .file-group-header {
+      font-size: 11px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      padding: 0 0 6px 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 8px;
+      font-family: var(--mono);
+    }
+    .file-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .file-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 5px 10px;
+      border-radius: var(--radius);
+      font-size: 12px;
+      font-family: var(--mono);
+      transition: background 0.1s;
+    }
+    .file-item:hover { background: var(--surface2); }
+    .file-status {
+      width: 16px;
+      height: 16px;
+      border-radius: 3px;
+      font-size: 10px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .status-A { background: rgba(63,185,80,0.2); color: var(--add); }
+    .status-M { background: rgba(210,153,34,0.2); color: var(--mod); }
+    .status-D { background: rgba(248,81,73,0.2); color: var(--del); }
+
+    .file-path {
+      color: var(--text);
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .file-dir {
+      color: var(--text-muted);
+    }
+    .file-name {
+      color: var(--text);
+    }
+    .file-ext {
+      font-size: 10px;
+      padding: 1px 5px;
+      border-radius: 3px;
+      background: var(--surface2);
+      color: var(--text-dim);
+      flex-shrink: 0;
+    }
+
+    /* ── Reasoning block ── */
+    .reasoning-section {
+      margin-bottom: 20px;
+      border: 1px solid rgba(88,166,255,0.2);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .reasoning-header {
+      background: rgba(88,166,255,0.07);
+      border-bottom: 1px solid rgba(88,166,255,0.15);
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .reasoning-header:hover { background: rgba(88,166,255,0.12); }
+    .reasoning-icon {
+      width: 16px; height: 16px;
+      background: rgba(88,166,255,0.2);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px;
+      color: var(--accent);
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+    .reasoning-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+    .reasoning-chevron {
+      margin-left: auto;
+      color: var(--text-muted);
+      font-size: 10px;
+      transition: transform 0.2s;
+    }
+    .reasoning-section.collapsed .reasoning-chevron { transform: rotate(-90deg); }
+    .reasoning-body {
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .reasoning-section.collapsed .reasoning-body { display: none; }
+    .reasoning-point {
+      display: flex;
+      gap: 10px;
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--text);
+    }
+    .reasoning-point-num {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: rgba(88,166,255,0.15);
+      color: var(--accent);
+      font-size: 10px;
+      font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      margin-top: 2px;
+    }
+    .reasoning-point-text { flex: 1; }
+    .reasoning-point-text strong { color: var(--accent); }
+    .reasoning-point-text code {
+      font-family: var(--mono);
+      font-size: 11px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 1px 5px;
+      color: #e3b341;
+    }
+
+    /* ── Diff view ── */
+    .diff-section {
+      margin-top: 20px;
+    }
+    .diff-section-title {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .diff-section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── Timeline connector ── */
+    .timeline-connector {
+      position: absolute;
+      left: 22px;
+      top: 0;
+      bottom: -1px;
+      width: 1px;
+      background: var(--border);
+    }
+    .commit-item:last-child .timeline-connector { display: none; }
+    .timeline-dot {
+      position: absolute;
+      left: 18px;
+      top: 14px;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--border);
+      border: 2px solid var(--bg);
+    }
+    .commit-item.active .timeline-dot { background: var(--accent); }
+
+    .pl-timeline {
+      padding-left: 36px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <span class="repo-badge">news-pulse-web</span>
+  <span class="branch-badge">
+    <svg viewBox="0 0 16 16"><path d="M9.5 3.25a2.25 2.25 0 1 1 3 2.122V6A2.5 2.5 0 0 1 10 8.5H6a1 1 0 0 0-1 1v1.128a2.251 2.251 0 1 1-1.5 0V5.372a2.25 2.25 0 1 1 1.5 0v1.836A2.493 2.493 0 0 1 6 7h4a1 1 0 0 0 1-1v-.628A2.25 2.25 0 0 1 9.5 3.25Z"/></svg>
+    dev
+  </span>
+  <span class="commit-count">총 <span id="visibleCount">0</span> 커밋</span>
+</header>
+
+<div class="filter-bar">
+  <label>타입</label>
+  <div class="tag-filter" id="typeFilter">
+    <button class="tag-btn active" data-type="all">ALL</button>
+    <button class="tag-btn" data-type="chore">chore</button>
+    <button class="tag-btn" data-type="ci">ci</button>
+    <button class="tag-btn" data-type="feat">feat</button>
+    <button class="tag-btn" data-type="fix">fix</button>
+    <button class="tag-btn" data-type="refactor">refactor</button>
+  </div>
+  <input class="search-input" type="text" placeholder="커밋 메시지 검색..." id="searchInput" />
+</div>
+
+<main>
+  <aside class="commit-list" id="commitList"></aside>
+  <section class="detail-panel" id="detailPanel">
+    <div class="empty-state">
+      <svg viewBox="0 0 16 16"><path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h8.75a.75.75 0 0 1 .75.75v12.5a.75.75 0 0 1-.75.75h-2.5a.75.75 0 0 1 0-1.5h1.75v-2h-8a1 1 0 0 0-.714 1.7.75.75 0 1 1-1.072 1.05A2.495 2.495 0 0 1 2 11.5Zm10.5-1h-8a1 1 0 0 0-1 1v6.708A2.486 2.486 0 0 1 4.5 9h8ZM5 12.25a.25.25 0 0 1 .25-.25h3.5a.25.25 0 0 1 .25.25v3.25a.25.25 0 0 1-.4.2l-1.45-1.087a.249.249 0 0 0-.3 0L5.4 15.7a.25.25 0 0 1-.4-.2Z"/></svg>
+      <p>커밋을 선택하면 변경 내역이 표시됩니다</p>
+    </div>
+  </section>
+</main>
+
+<script>
+const COMMITS = [
+  {
+    hash: "b52e539f4983f967d2aa856ec31b56e87eb9232f",
+    short: "b52e539",
+    author: "이재인",
+    date: "2026-06-08 02:57",
+    subject: "chore: .specify, .claude 설정 및 CLAUDE.md 업데이트",
+    body: "Co-Authored-By: Claude Sonnet 4.6",
+    stats: "58 files changed, 7529 insertions(+), 1 deletion(-)",
+    reasoning: [
+      {
+        title: "Spec Kit 도입 이유",
+        text: "Spec Kit은 <strong>자연어 요구사항 → spec.md → plan.md → tasks.md → 구현</strong> 순서를 강제하는 AI 보조 개발 워크플로우다. 임의로 코드부터 짜는 패턴을 막고, 항상 스펙이 먼저 존재하도록 구조를 잡기 위해 도입했다. CLAUDE.md에 '구현 전 /specs/features/ 해당 스펙 파일 먼저 확인할 것'이 명시되어 있어 이 워크플로우와 자연스럽게 맞아떨어진다."
+      },
+      {
+        title: ".claude/skills/ 디렉토리의 역할",
+        text: "<code>.claude/skills/speckit-*/SKILL.md</code> 파일들은 Claude Code가 이 프로젝트 디렉토리 안에서 실행될 때 자동으로 로드되는 <strong>프로젝트 로컬 스킬</strong>이다. 이 파일들이 있으면 이후 어떤 Claude Code 세션에서도 <code>/speckit-specify</code>, <code>/speckit-plan</code> 등의 슬래시 커맨드가 자동으로 활성화된다. 전역 설정을 건드리지 않고 프로젝트 단위로 AI 행동을 확장할 수 있다."
+      },
+      {
+        title: ".specify/ 디렉토리 구조",
+        text: "<code>.specify/templates/</code>는 spec/plan/tasks/checklist 문서의 마크다운 템플릿을 보관하고, <code>.specify/workflows/</code>는 각 스킬이 어떤 순서로 어떤 파일을 생성·갱신해야 하는지 정의한다. <code>.specify/extensions/git/</code>은 브랜치 생성·커밋 자동화 스크립트를 제공한다. 이 모든 것이 단일 커밋에 들어온 이유는 서로 의존 관계가 있어 분리 커밋 시 중간 상태가 깨지기 때문이다."
+      }
+    ],
+    files: [
+      { s: "A", p: ".claude/skills/speckit-agent-context-update/SKILL.md" },
+      { s: "A", p: ".claude/skills/speckit-analyze/SKILL.md" },
+      { s: "A", p: ".claude/skills/speckit-checklist/SKILL.md" },
+      { s: "A", p: ".claude/skills/speckit-clarify/SKILL.md" },
+      { s: "A", p: ".claude/skills/speckit-constitution/SKILL.md" },
+      { s: "A", p: ".claude/skills/speckit-git-commit/SKILL.md" },
+      { s: "A", p: ".claude/skills/speckit-git-feature/SKILL.md" },
+      { s: "A", p: ".claude/skills/speckit-git-initialize/SKILL.md" },
+      { s: "A", p: ".claude/skills/speckit-git-remote/SKILL.md" },
+      { s: "A", p: ".claude/skills/speckit-git-validate/SKILL.md" },
+      { s: "A", p: ".claude/skills/speckit-implement/SKILL.md" },
+      { s: "A", p: ".claude/skills/speckit-plan/SKILL.md" },
+      { s: "A", p: ".claude/skills/speckit-specify/SKILL.md" },
+      { s: "A", p: ".claude/skills/speckit-tasks/SKILL.md" },
+      { s: "A", p: ".claude/skills/speckit-taskstoissues/SKILL.md" },
+      { s: "A", p: ".specify/extensions.yml" },
+      { s: "A", p: ".specify/extensions/.registry" },
+      { s: "A", p: ".specify/extensions/agent-context/README.md" },
+      { s: "A", p: ".specify/extensions/agent-context/agent-context-config.yml" },
+      { s: "A", p: ".specify/extensions/agent-context/commands/speckit.agent-context.update.md" },
+      { s: "A", p: ".specify/extensions/agent-context/extension.yml" },
+      { s: "A", p: ".specify/extensions/agent-context/scripts/bash/update-agent-context.sh" },
+      { s: "A", p: ".specify/extensions/agent-context/scripts/powershell/update-agent-context.ps1" },
+      { s: "A", p: ".specify/extensions/git/README.md" },
+      { s: "A", p: ".specify/extensions/git/commands/speckit.git.commit.md" },
+      { s: "A", p: ".specify/extensions/git/commands/speckit.git.feature.md" },
+      { s: "A", p: ".specify/extensions/git/commands/speckit.git.initialize.md" },
+      { s: "A", p: ".specify/extensions/git/commands/speckit.git.remote.md" },
+      { s: "A", p: ".specify/extensions/git/commands/speckit.git.validate.md" },
+      { s: "A", p: ".specify/extensions/git/config-template.yml" },
+      { s: "A", p: ".specify/extensions/git/extension.yml" },
+      { s: "A", p: ".specify/extensions/git/git-config.yml" },
+      { s: "A", p: ".specify/extensions/git/scripts/bash/auto-commit.sh" },
+      { s: "A", p: ".specify/extensions/git/scripts/bash/create-new-feature.sh" },
+      { s: "A", p: ".specify/extensions/git/scripts/bash/git-common.sh" },
+      { s: "A", p: ".specify/extensions/git/scripts/bash/initialize-repo.sh" },
+      { s: "A", p: ".specify/extensions/git/scripts/powershell/auto-commit.ps1" },
+      { s: "A", p: ".specify/extensions/git/scripts/powershell/create-new-feature.ps1" },
+      { s: "A", p: ".specify/extensions/git/scripts/powershell/git-common.ps1" },
+      { s: "A", p: ".specify/extensions/git/scripts/powershell/initialize-repo.ps1" },
+      { s: "A", p: ".specify/init-options.json" },
+      { s: "A", p: ".specify/integration.json" },
+      { s: "A", p: ".specify/integrations/claude.manifest.json" },
+      { s: "A", p: ".specify/integrations/speckit.manifest.json" },
+      { s: "A", p: ".specify/memory/constitution.md" },
+      { s: "A", p: ".specify/scripts/bash/check-prerequisites.sh" },
+      { s: "A", p: ".specify/scripts/bash/common.sh" },
+      { s: "A", p: ".specify/scripts/bash/create-new-feature.sh" },
+      { s: "A", p: ".specify/scripts/bash/setup-plan.sh" },
+      { s: "A", p: ".specify/scripts/bash/setup-tasks.sh" },
+      { s: "A", p: ".specify/templates/checklist-template.md" },
+      { s: "A", p: ".specify/templates/constitution-template.md" },
+      { s: "A", p: ".specify/templates/plan-template.md" },
+      { s: "A", p: ".specify/templates/spec-template.md" },
+      { s: "A", p: ".specify/templates/tasks-template.md" },
+      { s: "A", p: ".specify/workflows/speckit/workflow.yml" },
+      { s: "A", p: ".specify/workflows/workflow-registry.json" },
+      { s: "M", p: "CLAUDE.md" }
+    ]
+  },
+  {
+    hash: "0cf7a0c067d8434f6c13ace99a14015328004f83",
+    short: "0cf7a0c",
+    author: "이재인",
+    date: "2026-06-08 02:39",
+    subject: "chore: commit-msg 훅 추가 (Conventional Commits 형식 검사)",
+    body: "Co-Authored-By: Claude Sonnet 4.6",
+    stats: "1 file changed, 46 insertions(+)",
+    reasoning: [
+      {
+        title: "Conventional Commits를 강제하는 이유",
+        text: "커밋 메시지에 <code>feat:</code>, <code>fix:</code>, <code>chore:</code>, <code>ci:</code> 같은 prefix를 강제하면 <strong>자동 changelog 생성</strong>, <strong>semver 자동 범프</strong>, <strong>git log 타입별 필터링</strong>이 가능해진다. 이 HTML 뷰어도 그 prefix를 파싱해서 타입 필터를 구현한다. 규칙 없이 자유롭게 쓰면 나중에 '이 커밋이 breaking change인지 버그픽스인지'를 사람이 읽어야 판단해야 한다."
+      },
+      {
+        title: "pre-commit이 아닌 commit-msg 훅인 이유",
+        text: "<code>pre-commit</code> 훅은 파일 변경 시점에 실행되고, <code>commit-msg</code> 훅은 메시지 입력 직후에 실행된다. 메시지 형식 검사는 파일과 무관하므로 <code>commit-msg</code>가 정확한 위치다. 이를 분리하면 각 훅이 단일 책임을 가져서 실패 원인을 즉시 파악할 수 있다."
+      },
+      {
+        title: "훅 내용 — 정규식 검사 방식",
+        text: "훅 내부에서 커밋 메시지 첫 줄을 <code>^(feat|fix|chore|ci|refactor|docs|test|style|perf|build|revert)(\\(.+\\))?!?:</code> 패턴으로 검사한다. 매칭 실패 시 exit 1로 커밋을 중단하고 올바른 형식 예시를 출력해준다."
+      }
+    ],
+    files: [
+      { s: "A", p: ".husky/commit-msg" }
+    ]
+  },
+  {
+    hash: "2e5eaf827dbd070b41e77adbd71fe4a58b33ddac",
+    short: "2e5eaf8",
+    author: "이재인",
+    date: "2026-06-06 03:10",
+    subject: "chore: .env.example 추가",
+    body: "Co-Authored-By: Claude Sonnet 4.6",
+    stats: "1 file changed, 6 insertions(+)",
+    reasoning: [
+      {
+        title: ".env.local이 gitignore인데 왜 별도 파일이 필요한가",
+        text: "<code>.env.local</code>은 실제 API 키가 들어가므로 gitignore 처리가 맞다. 그런데 이 파일 없이 프로젝트를 클론하면 개발자가 <strong>어떤 환경변수가 필요한지 알 수 없다</strong>. <code>.env.example</code>은 키 이름만 나열하고 값은 비운 참조 파일로, '이 값들을 채워서 .env.local 로 복사하세요'라는 설명서 역할을 한다."
+      },
+      {
+        title: "CLAUDE.md 규칙 준수",
+        text: "CLAUDE.md에 '하드코딩 금지, 반드시 VITE_ 접두사 환경변수 사용'이 명시되어 있다. 이 규칙이 실제로 지켜지려면 <em>어떤 변수가 존재해야 하는지</em>를 코드베이스 내에서 확인할 수 있어야 한다. <code>.env.example</code>이 그 계약서 역할을 한다. Firebase 관련 변수들을 빠짐없이 나열해서 인증 기능 구현 시 누락 없이 설정할 수 있도록 했다."
+      }
+    ],
+    files: [
+      { s: "A", p: ".env.example" }
+    ]
+  },
+  {
+    hash: "43c94e568bdef7a82330deb23b04e3a99409f0a4",
+    short: "43c94e5",
+    author: "이재인",
+    date: "2026-06-06 03:07",
+    subject: "ci: Node 22로 업그레이드",
+    body: "pnpm 최신 버전이 Node 22 이상 요구.\n\nCo-Authored-By: Claude Sonnet 4.6",
+    stats: "2 files changed, 2 insertions(+), 2 deletions(-)",
+    reasoning: [
+      {
+        title: "왜 Node 버전을 올려야 했나",
+        text: "pnpm v10+은 Node.js 최소 버전을 18에서 22로 올렸다. CI에서 구버전 Node를 쓰면 <code>pnpm install</code> 단계에서 바로 에러가 발생한다. 로컬 개발자는 이미 Node 22를 쓰고 있어도 CI가 다른 버전을 쓰면 '로컬에선 되는데 CI는 실패'하는 환경 불일치가 생긴다."
+      },
+      {
+        title: "두 워크플로우 파일을 모두 수정한 이유",
+        text: "<code>ci.yml</code>(PR 검증)과 <code>deploy.yml</code>(배포) 두 파일 모두 <code>node-version</code>을 지정하고 있었다. 하나만 올리면 배포 빌드와 PR 빌드가 다른 Node 환경에서 돌아가는 비대칭이 생긴다. 두 파일을 동시에 수정해서 CI/CD 전체가 동일한 Node 버전을 보장하도록 했다."
+      }
+    ],
+    files: [
+      { s: "M", p: ".github/workflows/ci.yml" },
+      { s: "M", p: ".github/workflows/deploy.yml" }
+    ]
+  },
+  {
+    hash: "92de319858a0e6fd7523e9232f8674cab5b48375",
+    short: "92de319",
+    author: "이재인",
+    date: "2026-06-06 03:04",
+    subject: "ci: GitHub Pages 배포 워크플로우 추가 및 설정",
+    body: "deploy.yml 추가(prd push 시 자동 배포), ci.yml에 Prettier 검사 추가.\nVite base 경로를 GitHub Actions 환경에서 /news-pulse-web/ 으로 설정.\n\nCo-Authored-By: Claude Sonnet 4.6",
+    stats: "4 files changed, 100 insertions(+)",
+    reasoning: [
+      {
+        title: "GitHub Pages를 선택한 이유",
+        text: "Frontend 전용 React SPA는 서버 사이드 처리가 없으므로 정적 파일 호스팅으로 충분하다. GitHub Pages는 별도 비용 없이 리포지토리와 연동되고, GitHub Actions와 네이티브로 통합되어 복잡한 배포 인프라 없이 <code>prd</code> 브랜치 push만으로 자동 배포를 구현할 수 있다."
+      },
+      {
+        title: "ci.yml과 deploy.yml을 분리한 이유",
+        text: "<code>ci.yml</code>은 모든 PR에서 실행되는 <strong>검증 게이트</strong>(타입 체크, lint, 빌드 확인)이고, <code>deploy.yml</code>은 <code>prd</code> 브랜치에만 실행되는 <strong>배포 트리거</strong>다. 분리하지 않으면 모든 PR에서 실제 배포가 발생하거나, 배포 전 검증을 생략하게 된다. 브랜치 전략(feat→dev→prd)에서 prd만 실제 서비스에 닿아야 하므로 이 분리가 필수다."
+      },
+      {
+        title: "vite.config.ts base 경로를 수정한 이유",
+        text: "GitHub Pages는 <code>https://username.github.io/news-pulse-web/</code> 형태로 서빙된다. Vite 기본 base는 <code>/</code>이므로 JS/CSS 에셋 경로가 <code>/assets/...</code>로 생성되는데, 실제 서버에서는 <code>/news-pulse-web/assets/...</code>에 파일이 있어 404가 발생한다. GitHub Actions 환경변수로 <code>VITE_BASE_URL</code>을 주입하거나 환경에 따라 base를 분기해서 이 문제를 해결했다."
+      }
+    ],
+    files: [
+      { s: "A", p: ".github/workflows/ci.yml" },
+      { s: "A", p: ".github/workflows/deploy.yml" },
+      { s: "M", p: "CLAUDE.md" },
+      { s: "M", p: "vite.config.ts" }
+    ]
+  },
+  {
+    hash: "2affa7a50b656a86cc648533d5be2a3bf57494cd",
+    short: "2affa7a",
+    author: "이재인",
+    date: "2026-06-06 02:00",
+    subject: "chore: prettier 도입 및 pre-commit 훅 개선",
+    body: "prettier 추가 및 lint-staged 설정, Taskfile을 pnpm exec 기반으로 통일.\npre-commit 훅에 merge conflict 마커·TODO/FIXME 검사 추가.\n\nCo-Authored-By: Claude Sonnet 4.6",
+    stats: "8 files changed, 89 insertions(+), 39 deletions(-)",
+    reasoning: [
+      {
+        title: "ESLint만 있는데 Prettier를 추가한 이유",
+        text: "ESLint는 코드 <strong>정확성</strong>을 잡고, Prettier는 코드 <strong>포맷팅</strong>을 잡는다. 역할이 다르다. Prettier 없이 ESLint만 쓰면 팀원마다 들여쓰기, 따옴표 방식, 트레일링 콤마가 달라져 diff가 로직 변경이 아닌 스타일 변경으로 오염된다. Prettier가 있으면 저장 시 자동 포맷이 되어 코드 리뷰에서 스타일 논쟁이 사라진다."
+      },
+      {
+        title: "lint-staged로 staged 파일만 처리하는 이유",
+        text: "<code>lint-staged</code>는 <code>git add</code>로 스테이징된 파일에만 Prettier/ESLint를 실행한다. 전체 프로젝트를 대상으로 하면 pre-commit이 수십 초가 걸려 개발 흐름이 끊긴다. staged 파일만 처리하면 변경한 파일만 검사하므로 빠르고, '내가 건드린 코드만 책임진다'는 원칙에도 맞는다."
+      },
+      {
+        title: "merge conflict 마커·TODO/FIXME 검사를 훅에 추가한 이유",
+        text: "<code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code> 같은 conflict 마커를 실수로 커밋하는 건 흔한 실수다. TODO/FIXME도 임시 메모가 프로덕션 코드에 방치되는 걸 막는다. 이 검사는 0.01초도 안 걸리지만 실수를 커밋 시점에 잡아준다. CI까지 가서 실패하면 되돌리는 비용이 훨씬 크다."
+      },
+      {
+        title: "src/ 파일들(App.tsx, main.tsx 등)이 수정된 이유",
+        text: "Prettier를 처음 도입하면서 기존 파일들에 대해 <strong>일회성 포맷 정리</strong>를 실행했다. 이 변경은 로직 변경 없이 공백, 따옴표, 세미콜론 등만 통일한 것이다. 이후부터는 Prettier가 staged 파일을 자동으로 포맷하므로 이런 bulk 수정이 다시 필요하지 않다."
+      }
+    ],
+    files: [
+      { s: "M", p: ".husky/pre-commit" },
+      { s: "M", p: "Taskfile.yml" },
+      { s: "M", p: "package.json" },
+      { s: "M", p: "pnpm-lock.yaml" },
+      { s: "M", p: "src/App.css" },
+      { s: "M", p: "src/App.tsx" },
+      { s: "M", p: "src/index.css" },
+      { s: "M", p: "src/main.tsx" }
+    ]
+  },
+  {
+    hash: "6a3ad025514bfe3ab750cb34b9c8432e54b690e5",
+    short: "6a3ad02",
+    author: "이재인",
+    date: "2026-06-06 01:36",
+    subject: "chore: husky pre-commit 훅 및 Taskfile 초기 설정",
+    body: "husky와 lint-staged를 추가하고, pre-commit 훅(타입검사, ESLint, 민감정보 방지)과\n프론트엔드 작업용 Taskfile.yml을 설정함.\n\nCo-Authored-By: Claude Sonnet 4.6",
+    stats: "4 files changed, 373 insertions(+), 6 deletions(-)",
+    reasoning: [
+      {
+        title: "husky를 선택한 이유",
+        text: "Git 훅은 <code>.git/hooks/</code>에 스크립트를 직접 넣어도 작동하지만, 이 디렉토리는 gitignore 대상이라 <strong>팀원에게 공유되지 않는다</strong>. <code>husky</code>는 git 훅을 <code>.husky/</code> 디렉토리에서 관리해 버전 관리되도록 하고, <code>npm install</code> 후 자동으로 훅이 활성화된다. 팀 전원이 동일한 훅을 강제 적용받게 된다."
+      },
+      {
+        title: "pre-commit에서 타입 체크를 하는 이유",
+        text: "<code>tsc --noEmit</code>을 커밋 전에 실행하면 TypeScript 타입 에러가 있는 코드가 레포에 들어가는 걸 막는다. CLAUDE.md 규칙에 '<code>any</code> 타입 사용 금지'가 있는데, 이를 사람 리뷰에만 의존하면 놓칠 수 있다. 자동화된 게이트가 있어야 규칙이 실제로 지켜진다."
+      },
+      {
+        title: "Taskfile.yml을 Makefile 대신 선택한 이유",
+        text: "<code>Taskfile</code>은 YAML 기반 태스크 러너로 크로스 플랫폼(Windows/Mac/Linux)에서 동작한다. <code>Makefile</code>은 Windows에서 기본 미지원이고 탭 들여쓰기 문제 등 고려 사항이 많다. <code>pnpm exec</code> 기반으로 통일하면 글로벌 설치 없이 프로젝트 로컬 바이너리를 사용할 수 있어 환경 일관성이 높아진다."
+      }
+    ],
+    files: [
+      { s: "A", p: ".husky/pre-commit" },
+      { s: "A", p: "Taskfile.yml" },
+      { s: "M", p: "package.json" },
+      { s: "M", p: "pnpm-lock.yaml" }
+    ]
+  },
+  {
+    hash: "44b82286277448162026e90939d2e941f2a7de1c",
+    short: "44b8228",
+    author: "재인",
+    date: "2026-06-05 02:12",
+    subject: "chore: CLAUDE.md 파일 수정",
+    body: "",
+    stats: "1 file changed, 108 insertions(+), 23 deletions(-)",
+    reasoning: [
+      {
+        title: "CLAUDE.md를 대폭 확장한 이유",
+        text: "초기 CLAUDE.md(87줄)는 기본 설정만 있었다. 이 커밋에서 108줄이 추가되면서 화면-API 매핑 테이블, 디렉토리 구조, 컴포넌트 규칙(스켈레톤/에러/빈 상태 처리), 인증 규칙(JWT 저장 위치, ProtectedRoute/AdminRoute), API 규칙(staleTime/gcTime 명시, mutation 후 invalidate 필수) 등이 체계적으로 정리됐다. Claude Code가 코드를 생성할 때 이 문서를 컨텍스트로 읽어야 프로젝트 규칙에 맞는 코드가 나온다."
+      }
+    ],
+    files: [
+      { s: "M", p: "CLAUDE.md" }
+    ]
+  },
+  {
+    hash: "e312e7c5382081511ab8472cad25303c86fc0482",
+    short: "e312e7c",
+    author: "jilee",
+    date: "2026-06-03 16:49",
+    subject: "chore: claude.md 초기 설정",
+    body: "",
+    stats: "1 file changed, 87 insertions(+)",
+    reasoning: [
+      {
+        title: "CLAUDE.md가 존재하는 이유",
+        text: "Claude Code는 프로젝트 루트의 <code>CLAUDE.md</code>를 모든 대화 시작 시 자동으로 읽어 시스템 컨텍스트로 사용한다. 이 파일이 없으면 Claude는 이 프로젝트가 어떤 기술 스택을 쓰는지, API 계약이 어디에 있는지, 어떤 코딩 규칙을 따라야 하는지 알 수 없다. CLAUDE.md는 'AI에게 주는 온보딩 문서'다."
+      },
+      {
+        title: "초기 설정에 포함된 핵심 내용",
+        text: "기술 스택(Vite+React+TypeScript+TanStack Query+Zustand+Tailwind), 브랜치 전략(prd/dev/feat/hotfix/refactor), 환경변수 규칙(VITE_ 접두사), API 타입 관리(/generated/api-types.ts 직접 수정 금지), openapi.yaml 변경 시 Backend에 요청하는 방식 등 팀 간 협업 규칙을 먼저 명시했다."
+      }
+    ],
+    files: [
+      { s: "A", p: "CLAUDE.md" }
+    ]
+  },
+  {
+    hash: "ddd55529ec3d9fab2112ba71235925829916c77a",
+    short: "ddd5552",
+    author: "dldnsgkr",
+    date: "2026-06-03 16:25",
+    subject: "chore: add news-pulse-spec as submodule",
+    body: "",
+    stats: "2 files changed, 4 insertions(+)",
+    reasoning: [
+      {
+        title: "스펙을 별도 레포로 분리하고 submodule로 참조하는 이유",
+        text: "<code>news-pulse-spec</code>은 Frontend(이 레포)와 Backend(Spring Boot 레포) 양쪽이 공동으로 참조하는 <strong>API 계약 단일 출처</strong>다. 각 레포에 복사하면 어느 쪽이 최신인지 관리가 어렵고 불일치가 발생한다. git submodule은 특정 커밋 해시를 고정으로 참조하므로 '이 Frontend 버전은 스펙의 이 버전과 맞다'는 걸 git 히스토리로 추적할 수 있다."
+      },
+      {
+        title: "openapi.yaml을 직접 수정하지 않는 이유",
+        text: "CLAUDE.md에 'openapi.yaml 변경이 필요한 경우 → 코드 수정이 아닌 Backend에 스펙 변경 요청'이 명시되어 있다. Frontend가 임의로 스펙을 바꾸면 Backend 구현과 어긋나게 된다. API 계약은 양쪽이 합의한 결과물이어야 하므로 변경 권한을 Backend에 두고 Frontend는 읽기 전용으로 참조한다."
+      }
+    ],
+    files: [
+      { s: "A", p: ".gitmodules" },
+      { s: "A", p: "spec" }
+    ]
+  },
+  {
+    hash: "b884d33313a97dc34b8de06f427879ea322e28a9",
+    short: "b884d33",
+    author: "jilee",
+    date: "2026-06-03 16:01",
+    subject: "chore: clone",
+    body: "",
+    stats: "",
+    reasoning: [
+      {
+        title: "초기 프로젝트 구조",
+        text: "Vite 공식 템플릿(<code>npm create vite@latest</code>)으로 생성된 React+TypeScript 스캐폴딩이다. 이 시점의 구조가 이후 모든 커밋의 베이스가 된다. 별도 커스터마이징 없이 기본 Vite 설정 그대로 시작해서, 이후 커밋들에서 단계적으로 도구를 추가하는 방식을 택했다."
+      }
+    ],
+    files: []
+  }
+];
+
+/* ── Helpers ── */
+function getType(subject) {
+  const m = subject.match(/^(\w+)(\(.+\))?:/);
+  return m ? m[1].toLowerCase() : 'other';
+}
+
+function splitPath(p) {
+  const idx = p.lastIndexOf('/');
+  if (idx === -1) return { dir: '', name: p };
+  return { dir: p.slice(0, idx + 1), name: p.slice(idx + 1) };
+}
+
+function getExt(name) {
+  const idx = name.lastIndexOf('.');
+  return idx > 0 ? name.slice(idx + 1) : '';
+}
+
+function groupFiles(files) {
+  const groups = { A: [], M: [], D: [] };
+  files.forEach(f => {
+    if (groups[f.s]) groups[f.s].push(f);
+    else groups.D.push(f);
+  });
+  return groups;
+}
+
+function renderFileItem(f) {
+  const { dir, name } = splitPath(f.p);
+  const ext = getExt(name);
+  return `
+    <div class="file-item">
+      <span class="file-status status-${f.s}">${f.s}</span>
+      <span class="file-path">
+        <span class="file-dir">${dir}</span><span class="file-name">${name}</span>
+      </span>
+      ${ext ? `<span class="file-ext">${ext}</span>` : ''}
+    </div>`;
+}
+
+function renderReasoning(reasoning) {
+  if (!reasoning || reasoning.length === 0) return '';
+  const points = reasoning.map((r, i) => `
+    <div class="reasoning-point">
+      <span class="reasoning-point-num">${i + 1}</span>
+      <div class="reasoning-point-text"><strong>${escHtml(r.title)}</strong><br/>${r.text}</div>
+    </div>`).join('');
+  return `
+    <div class="reasoning-section" id="reasoning-block">
+      <div class="reasoning-header" onclick="toggleReasoning()">
+        <span class="reasoning-icon">?</span>
+        <span class="reasoning-label">Claude의 판단 근거</span>
+        <span class="reasoning-chevron">▼</span>
+      </div>
+      <div class="reasoning-body">${points}</div>
+    </div>`;
+}
+
+function renderDetail(c) {
+  const type = getType(c.subject);
+  const subject = c.subject.replace(/^\w+(\(.+\))?:\s*/, '');
+  const groups = groupFiles(c.files);
+  const addCount = groups.A.length;
+  const modCount = groups.M.length;
+  const delCount = groups.D.length;
+  const totalFiles = c.files.length;
+
+  let filesHtml = '';
+  if (addCount > 0) {
+    filesHtml += `
+      <div class="file-group">
+        <div class="file-group-header">추가됨 — ${addCount}개</div>
+        <div class="file-list">${groups.A.map(renderFileItem).join('')}</div>
+      </div>`;
+  }
+  if (modCount > 0) {
+    filesHtml += `
+      <div class="file-group">
+        <div class="file-group-header">수정됨 — ${modCount}개</div>
+        <div class="file-list">${groups.M.map(renderFileItem).join('')}</div>
+      </div>`;
+  }
+  if (delCount > 0) {
+    filesHtml += `
+      <div class="file-group">
+        <div class="file-group-header">삭제됨 — ${delCount}개</div>
+        <div class="file-list">${groups.D.map(renderFileItem).join('')}</div>
+      </div>`;
+  }
+  if (totalFiles === 0) {
+    filesHtml = '<p style="color:var(--text-muted);font-size:13px;">파일 변경 없음 (초기 커밋)</p>';
+  }
+
+  const bodyHtml = c.body
+    ? `<div class="detail-body">${escHtml(c.body)}</div>`
+    : '';
+
+  return `
+    <div class="detail-header">
+      <div class="detail-title">${escHtml(c.subject)}</div>
+      <div class="detail-meta-row">
+        <span><strong>Author</strong> ${escHtml(c.author)}</span>
+        <span><strong>Date</strong> ${c.date}</span>
+        <span class="hash-full">${c.short}</span>
+      </div>
+      ${bodyHtml}
+    </div>
+    ${renderReasoning(c.reasoning)}
+    <div class="stats-row">
+      <span class="stat-badge total"><span class="stat-num">${totalFiles}</span> files</span>
+      ${addCount > 0 ? `<span class="stat-badge adds">+${addCount} added</span>` : ''}
+      ${modCount > 0 ? `<span class="stat-badge mods">~${modCount} modified</span>` : ''}
+      ${delCount > 0 ? `<span class="stat-badge dels">-${delCount} deleted</span>` : ''}
+      ${c.stats ? `<span style="font-size:11px;color:var(--text-dim);margin-left:auto;">${escHtml(c.stats)}</span>` : ''}
+    </div>
+    ${filesHtml}
+  `;
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+/* ── Render list ── */
+const listEl = document.getElementById('commitList');
+const detailEl = document.getElementById('detailPanel');
+const searchEl = document.getElementById('searchInput');
+const countEl = document.getElementById('visibleCount');
+
+let activeHash = null;
+let activeType = 'all';
+let searchQ = '';
+
+function renderList() {
+  listEl.innerHTML = '';
+  let visible = 0;
+
+  COMMITS.forEach((c, i) => {
+    const type = getType(c.subject);
+    const matchType = activeType === 'all' || type === activeType;
+    const matchSearch = !searchQ || c.subject.toLowerCase().includes(searchQ) || c.short.includes(searchQ);
+    const hidden = !matchType || !matchSearch;
+
+    if (!hidden) visible++;
+
+    const groups = groupFiles(c.files);
+    const addC = groups.A.length;
+    const modC = groups.M.length;
+    const delC = groups.D.length;
+
+    const pillHtml = `
+      <div class="file-pill">
+        ${addC > 0 ? `<span class="pill-add">+${addC}</span>` : ''}
+        ${modC > 0 ? `<span class="pill-mod">~${modC}</span>` : ''}
+        ${delC > 0 ? `<span class="pill-del">-${delC}</span>` : ''}
+      </div>`;
+
+    const typeClass = `type-${['chore','ci','feat','fix','refactor','docs'].includes(type) ? type : 'other'}`;
+    const isActive = c.hash === activeHash;
+
+    const el = document.createElement('div');
+    el.className = `commit-item pl-timeline${isActive ? ' active' : ''}${hidden ? ' hidden' : ''}`;
+    el.dataset.hash = c.hash;
+    el.innerHTML = `
+      <div class="timeline-connector"></div>
+      <div class="timeline-dot"></div>
+      <div class="commit-top">
+        <span class="commit-type ${typeClass}">${type}</span>
+        <span class="commit-hash">${c.short}</span>
+        <span class="commit-date">${c.date.split(' ')[0]}</span>
+      </div>
+      <div class="commit-subject">${escHtml(c.subject.replace(/^\w+(\(.+\))?:\s*/, ''))}</div>
+      <div class="commit-meta">
+        <span class="commit-author">${escHtml(c.author)}</span>
+        ${pillHtml}
+      </div>
+    `;
+    el.addEventListener('click', () => selectCommit(c.hash));
+    listEl.appendChild(el);
+  });
+
+  // no results
+  if (visible === 0) {
+    const nr = document.createElement('div');
+    nr.className = 'no-results';
+    nr.textContent = '검색 결과 없음';
+    listEl.appendChild(nr);
+  }
+
+  countEl.textContent = visible;
+}
+
+function selectCommit(hash) {
+  activeHash = hash;
+  // update active class
+  document.querySelectorAll('.commit-item').forEach(el => {
+    el.classList.toggle('active', el.dataset.hash === hash);
+  });
+
+  const c = COMMITS.find(x => x.hash === hash);
+  if (c) {
+    detailEl.innerHTML = renderDetail(c);
+    detailEl.scrollTop = 0;
+  }
+}
+
+/* ── Filters ── */
+document.getElementById('typeFilter').addEventListener('click', e => {
+  const btn = e.target.closest('[data-type]');
+  if (!btn) return;
+  activeType = btn.dataset.type;
+  document.querySelectorAll('.tag-btn').forEach(b => b.classList.toggle('active', b === btn));
+  renderList();
+});
+
+searchEl.addEventListener('input', e => {
+  searchQ = e.target.value.trim().toLowerCase();
+  renderList();
+});
+
+/* ── Reasoning toggle ── */
+function toggleReasoning() {
+  const block = document.getElementById('reasoning-block');
+  if (block) block.classList.toggle('collapsed');
+}
+
+/* ── Init ── */
+renderList();
+// auto-select first
+if (COMMITS.length > 0) selectCommit(COMMITS[0].hash);
+countEl.textContent = COMMITS.length;
+</script>
+
+</body>
+</html>
