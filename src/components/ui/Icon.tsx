@@ -23,7 +23,9 @@ import {
   Home,
   Inbox,
   Landmark,
+  LayoutDashboard,
   LayoutGrid,
+  Loader2,
   Lock,
   LogOut,
   Mail,
@@ -89,6 +91,13 @@ const LUCIDE_MAP: Record<string, LucideComponent> = {
   plus: Plus,
   mic: Mic,
   article: FileText,
+  // Nav icon aliases (lucide official names)
+  LayoutDashboard,
+  Loader2,
+  TrendingUp,
+  Scale,
+  Activity,
+  Users,
 };
 
 const CUSTOM_ICONS: Record<string, string> = {
