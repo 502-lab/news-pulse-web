@@ -15,7 +15,7 @@
       --text: #e6edf3;
       --text-muted: #8b949e;
       --text-dim: #484f58;
-      --accent: #58a6ff;
+      --accent: #58a6ff; 
       --add: #3fb950;
       --mod: #d29922;
       --del: #f85149;
@@ -544,6 +544,62 @@
 
 <script>
 const COMMITS = [
+  {
+    hash: "ab7134813f6b882b29d8ef2d8dc3353622c049d5",
+    short: "ab71348",
+    author: "이재인",
+    date: "2026-06-12 01:33",
+    subject: "feat: 002 레이아웃 & 네비게이션 셸 구현",
+    body: "- AppShell, Sidebar, NavItem, ProtectedRoute, AdminRoute 컴포넌트 구현 - createBrowserRouter 기반 전체 라우트 트리 구성 - role(USER/ADMIN) 기반 네비게이션 및 라우팅 분기 - auth.mock.ts + auth.ts re-export 구조 (007에서 실제 구현으로 교체 예정) - 페이지 플레이스홀더 12종 생성 - S-01~S-08 자동 검증 스크립트 추가 (scripts/verify-002.mjs)  Co-Authored-By: Claude Sonne",
+    stats: "39 files changed, 2121 insertions(+), 10 deletions(-)",
+    reasoning: [
+      {
+        title: "변경 요약",
+        text: "feat: 002 레이아웃 & 네비게이션 셸 구현 — 상세 reasoning은 추후 추가 예정."
+      }
+    ],
+    files: [
+      { s: "M", p: ".specify/feature.json" },
+      { s: "M", p: "CLAUDE.md" },
+      { s: "M", p: "changelog.html" },
+      { s: "M", p: "package.json" },
+      { s: "M", p: "pnpm-lock.yaml" },
+      { s: "A", p: "scripts/verify-002.mjs" },
+      { s: "A", p: "specs/002-layout-nav-shell/checklists/requirements.md" },
+      { s: "A", p: "specs/002-layout-nav-shell/data-model.md" },
+      { s: "A", p: "specs/002-layout-nav-shell/plan.md" },
+      { s: "A", p: "specs/002-layout-nav-shell/quickstart.md" },
+      { s: "A", p: "specs/002-layout-nav-shell/research.md" },
+      { s: "A", p: "specs/002-layout-nav-shell/spec.md" },
+      { s: "A", p: "specs/002-layout-nav-shell/tasks.md" },
+      { s: "A", p: "src/components/common/FullPageSpinner.tsx" },
+      { s: "A", p: "src/components/nav/AdminRoute.tsx" },
+      { s: "A", p: "src/components/nav/NavItem.tsx" },
+      { s: "A", p: "src/components/nav/ProtectedRoute.tsx" },
+      { s: "A", p: "src/components/nav/Sidebar.tsx" },
+      { s: "A", p: "src/components/nav/index.ts" },
+      { s: "M", p: "src/components/ui/Icon.tsx" },
+      { s: "A", p: "src/constants/nav.ts" },
+      { s: "A", p: "src/layouts/AppShell.tsx" },
+      { s: "M", p: "src/main.tsx" },
+      { s: "A", p: "src/pages/ArticleDetailPage.tsx" },
+      { s: "A", p: "src/pages/BiasPage.tsx" },
+      { s: "A", p: "src/pages/DashboardPage.tsx" },
+      { s: "A", p: "src/pages/NotFoundPage.tsx" },
+      { s: "A", p: "src/pages/TrendsPage.tsx" },
+      { s: "A", p: "src/pages/admin/MonitorPage.tsx" },
+      { s: "A", p: "src/pages/admin/UsersPage.tsx" },
+      { s: "A", p: "src/pages/auth/ForgotPage.tsx" },
+      { s: "A", p: "src/pages/auth/LoginPage.tsx" },
+      { s: "A", p: "src/pages/auth/RegisterPage.tsx" },
+      { s: "A", p: "src/pages/legal/PrivacyPage.tsx" },
+      { s: "A", p: "src/pages/legal/TermsPage.tsx" },
+      { s: "A", p: "src/router.tsx" },
+      { s: "A", p: "src/store/auth.mock.ts" },
+      { s: "A", p: "src/store/auth.ts" },
+      { s: "M", p: "vite.config.ts" }
+    ]
+  },
   {
     hash: "6748bc4dac0a0f3442684a816cf32fec883d3d43",
     short: "6748bc4",
