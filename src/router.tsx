@@ -1,7 +1,9 @@
+/* eslint-disable react-refresh/only-export-components */
 import { createBrowserRouter } from 'react-router-dom';
+import { lazy } from 'react';
 import { ProtectedRoute, AdminRoute } from '@/components/nav';
 import AppShell from '@/layouts/AppShell';
-import DashboardPage from '@/pages/DashboardPage';
+const DashboardPage = lazy(() => import('@/pages/DashboardPage'));
 import TrendsPage from '@/pages/TrendsPage';
 import BiasPage from '@/pages/BiasPage';
 import ArticleDetailPage from '@/pages/ArticleDetailPage';

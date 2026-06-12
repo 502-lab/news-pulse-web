@@ -38,6 +38,9 @@
   /* Fonts */
   --font-sans: "Pretendard Variable", Inter, system-ui, sans-serif;
   --font-display: "Pretendard Variable", Inter, sans-serif;
+
+  /* Animations */
+  --animate-shimmer: shimmer 1.4s infinite;
 }
 
 /* ── Utility classes ── */
