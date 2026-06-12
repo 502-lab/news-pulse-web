@@ -545,6 +545,55 @@
 <script>
 const COMMITS = [
   {
+    hash: "b8949fd10e270364619e996561177ffac0e761d3",
+    short: "b8949fd",
+    author: "이재인",
+    date: "2026-06-12 15:39",
+    subject: "feat: 003 메인 대시보드 구현 (W-01)",
+    body: "StatCard 4종 + 카테고리 바차트 + 뉴스 피드 구현. verify-003.mjs S-01~S-07 전체 PASS.  Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>",
+    stats: "32 files changed, 2583 insertions(+), 7 deletions(-)",
+    reasoning: [
+      {
+        title: "변경 요약",
+        text: "feat: 003 메인 대시보드 구현 (W-01) — 상세 reasoning은 추후 추가 예정."
+      }
+    ],
+    files: [
+      { s: "M", p: ".specify/feature.json" },
+      { s: "M", p: "CLAUDE.md" },
+      { s: "M", p: "package.json" },
+      { s: "M", p: "pnpm-lock.yaml" },
+      { s: "A", p: "scripts/verify-003.mjs" },
+      { s: "A", p: "specs/003-main-dashboard/checklists/requirements.md" },
+      { s: "A", p: "specs/003-main-dashboard/data-model.md" },
+      { s: "A", p: "specs/003-main-dashboard/plan.md" },
+      { s: "A", p: "specs/003-main-dashboard/quickstart.md" },
+      { s: "A", p: "specs/003-main-dashboard/research.md" },
+      { s: "A", p: "specs/003-main-dashboard/spec.md" },
+      { s: "A", p: "specs/003-main-dashboard/tasks.md" },
+      { s: "A", p: "src/components/common/ErrorBoundary.tsx" },
+      { s: "A", p: "src/components/features/dashboard/CategoryChart.tsx" },
+      { s: "A", p: "src/components/features/dashboard/CategoryChartSkeleton.tsx" },
+      { s: "A", p: "src/components/features/dashboard/NewsCard.tsx" },
+      { s: "A", p: "src/components/features/dashboard/NewsFeed.tsx" },
+      { s: "A", p: "src/components/features/dashboard/NewsFeedSkeleton.tsx" },
+      { s: "A", p: "src/components/features/dashboard/StatCard.tsx" },
+      { s: "A", p: "src/components/features/dashboard/StatCardSkeleton.tsx" },
+      { s: "A", p: "src/components/features/dashboard/index.ts" },
+      { s: "M", p: "src/components/ui/Icon.tsx" },
+      { s: "A", p: "src/constants/category.ts" },
+      { s: "A", p: "src/hooks/useCategoryChart.ts" },
+      { s: "A", p: "src/hooks/useDashboardStats.ts" },
+      { s: "A", p: "src/hooks/useNewsFeed.ts" },
+      { s: "M", p: "src/index.css" },
+      { s: "M", p: "src/layouts/AppShell.tsx" },
+      { s: "A", p: "src/mocks/dashboard.mock.ts" },
+      { s: "M", p: "src/pages/DashboardPage.tsx" },
+      { s: "M", p: "src/router.tsx" },
+      { s: "A", p: "src/types/dashboard.ts" }
+    ]
+  },
+  {
     hash: "ab7134813f6b882b29d8ef2d8dc3353622c049d5",
     short: "ab71348",
     author: "이재인",
