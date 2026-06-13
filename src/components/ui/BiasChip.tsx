@@ -2,30 +2,19 @@ interface BiasChipProps {
   score: number;
 }
 
-const BIAS_CONFIG = {
-  liberal: { label: '진보', fg: '#2563EB', bg: '#EFF6FF' },
-  neutral: { label: '중립', fg: '#64748B', bg: '#F1F5F9' },
-  conservative: { label: '보수', fg: '#DC2626', bg: '#FEF2F2' },
-} as const;
-
 export default function BiasChip({ score }: BiasChipProps) {
-  let key: keyof typeof BIAS_CONFIG;
-  if (score <= -10) key = 'liberal';
-  else if (score >= 10) key = 'conservative';
-  else key = 'neutral';
-
-  const { label, fg, bg } = BIAS_CONFIG[key];
-  const showScore = key !== 'neutral' && score !== 0;
-  const display = showScore
-    ? `${label} ${score > 0 ? '+' : ''}${score}`
-    : label;
+  const left = score < -10;
+  const right = score > 10;
+  const col = left ? '#2563EB' : right ? '#DC2626' : '#64748B';
+  const bg = left ? '#EFF6FF' : right ? '#FEF2F2' : '#F1F5F9';
+  const label = Math.abs(score) <= 10 ? '중립' : left ? '진보' : '보수';
 
   return (
     <span
-      className="inline-flex items-center text-[11px] font-medium px-1.5 py-0.5 rounded-btn leading-none"
-      style={{ color: fg, background: bg }}
+      className="inline-flex items-center gap-1 rounded-btn px-2 py-0.5 text-[11.5px] font-semibold tnum"
+      style={{ color: col, background: bg }}
     >
-      {display}
+      {label} {score > 0 ? '+' : ''}{score}
     </span>
   );
 }

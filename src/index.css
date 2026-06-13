@@ -3,21 +3,33 @@
 @theme {
   /* Brand */
   --color-brand: #6366f1;
-  --color-brand-soft: #eef0ff;
-  --color-brand-deep: #4548c9;
+  --color-brand-50: #eef0ff;
+  --color-brand-100: #e0e2ff;
+  --color-brand-600: #5457e5;
+  --color-brand-700: #4548c9;
 
   /* Neutrals */
-  --color-navy: #0f172a;
-  --color-canvas: #faf9f5;
+  --color-canvas: #f8fafc;
 
   /* Ink scale */
   --color-ink: #0f172a;
+  --color-ink-700: #334155;
   --color-ink-600: #475569;
   --color-ink-500: #64748b;
   --color-ink-400: #94a3b8;
+  --color-ink-300: #cbd5e1;
   --color-ink-200: #e2e8f0;
   --color-ink-100: #f1f5f9;
   --color-ink-50: #f8fafc;
+
+  /* Navy (dark surface) */
+  --color-navy: #0f172a;
+  --color-navy-800: #1e293b;
+  --color-navy-700: #334155;
+  --color-navy-600: #475569;
+
+  /* Accent */
+  --color-cyan: #06b6d4;
 
   /* Semantic */
   --color-ok: #10b981;
@@ -27,26 +39,66 @@
   --color-danger: #ef4444;
 
   /* Border radius */
-  --radius-card: 12px;
-  --radius-btn: 8px;
+  --radius-input: 4px;
+  --radius-btn: 6px;
+  --radius-card: 8px;
 
   /* Shadows */
-  --shadow-card: 0 1px 4px rgba(0, 0, 0, 0.08);
-  --shadow-cardhover: 0 4px 16px rgba(99, 102, 241, 0.12);
-  --shadow-pop: 0 8px 32px rgba(0, 0, 0, 0.16);
+  --shadow-card: 0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.06);
+  --shadow-cardhover: 0 2px 4px rgba(15, 23, 42, 0.06), 0 4px 12px rgba(15, 23, 42, 0.08);
+  --shadow-pop: 0 8px 28px rgba(15, 23, 42, 0.16);
 
   /* Fonts */
-  --font-sans: "Pretendard Variable", Inter, system-ui, sans-serif;
-  --font-display: "Pretendard Variable", Inter, sans-serif;
+  --font-sans: "Pretendard Variable", Pretendard, Inter, system-ui, sans-serif;
+  --font-display: "Pretendard Variable", Pretendard, sans-serif;
 
-  /* Animations */
-  --animate-shimmer: shimmer 1.4s infinite;
+  /* Typography scale */
+  --text-display-lg: 34px;
+  --text-display: 27px;
+  --text-heading: 19px;
+  --text-title: 16px;
+  --text-subtitle: 15px;
+  --text-body-lg: 15px;
+  --text-body: 14px;
+  --text-body-sm: 13px;
+  --text-caption: 12px;
+  --text-micro: 11px;
+  --text-numeric: 14px;
+}
+
+/* ── CSS vars (runtime, not Tailwind tokens) ── */
+:root {
+  --font-ui: 'Pretendard Variable', Pretendard;
+}
+
+/* ── Base ── */
+html,
+body {
+  margin: 0;
+  height: 100%;
+  background: #fff;
+}
+body {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 /* ── Utility classes ── */
 
+.display {
+  font-family: var(--font-display), var(--font-ui), system-ui, sans-serif;
+}
+
 .tnum {
   font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+.clamp1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .clamp2 {
@@ -64,41 +116,41 @@
 }
 
 .fadeup {
-  animation: fadeup 0.18s ease both;
+  animation: fadeup 0.34s cubic-bezier(0.2, 0.7, 0.3, 1) both;
 }
 
 .skel {
-  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.4s infinite;
+  background: linear-gradient(90deg, #eef1f6 25%, #e2e8f0 37%, #eef1f6 63%);
+  background-size: 960px 100%;
+  animation: shimmer 1.4s infinite linear;
 }
 
 .stripes {
-  background: repeating-linear-gradient(
-    -45deg,
-    #f1f5f9 0px,
-    #f1f5f9 4px,
-    #e9edf2 4px,
-    #e9edf2 8px
+  background-image: repeating-linear-gradient(
+    135deg,
+    #e2e8f0 0 10px,
+    #eef1f6 10px 20px
   );
+}
+
+[hidden] {
+  display: none !important;
 }
 
 @keyframes fadeup {
   from {
-    opacity: 0;
-    transform: translateY(6px);
+    transform: translateY(8px);
   }
   to {
-    opacity: 1;
-    transform: translateY(0);
+    transform: none;
   }
 }
 
 @keyframes shimmer {
   0% {
-    background-position: 200% 0;
+    background-position: -480px 0;
   }
   100% {
-    background-position: -200% 0;
+    background-position: 480px 0;
   }
 }

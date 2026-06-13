@@ -15,9 +15,11 @@ import ForgotPage from '@/pages/auth/ForgotPage';
 import TermsPage from '@/pages/legal/TermsPage';
 import PrivacyPage from '@/pages/legal/PrivacyPage';
 import NotFoundPage from '@/pages/NotFoundPage';
+import CommonComponentsPage from '@/pages/CommonComponentsPage';
 
 export const router = createBrowserRouter([
   // 공개 라우트 (Sidebar 없음)
+  { path: '/components', element: <CommonComponentsPage /> },
   { path: '/login',    element: <LoginPage /> },
   { path: '/register', element: <RegisterPage /> },
   { path: '/forgot',   element: <ForgotPage /> },
