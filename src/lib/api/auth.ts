@@ -3,8 +3,10 @@ import type { components } from '../../../generated/api-types';
 
 type AccountSummary = components['schemas']['AccountSummary'];
 type TokenPair = components['schemas']['TokenPair'];
+type SignupRequest = components['schemas']['SignupRequest'];
+type EmailVerificationVerifyRequest = components['schemas']['EmailVerificationVerifyRequest'];
 
-interface LoginResponse {
+interface AuthResponse {
   account: AccountSummary;
   tokens: TokenPair;
 }
@@ -13,8 +15,17 @@ interface RefreshResponse {
   tokens: TokenPair;
 }
 
-export async function login(email: string, password: string): Promise<LoginResponse> {
-  const res = await apiClient.post<LoginResponse>('/api/v1/auth/login', { email, password });
+interface EmailVerifyResponse {
+  emailVerified?: boolean;
+}
+
+export async function login(email: string, password: string): Promise<AuthResponse> {
+  const res = await apiClient.post<AuthResponse>('/api/v1/auth/login', { email, password });
+  return res.data;
+}
+
+export async function signup(body: SignupRequest): Promise<AuthResponse> {
+  const res = await apiClient.post<AuthResponse>('/api/v1/auth/signup', body);
   return res.data;
 }
 
@@ -29,5 +40,19 @@ export async function refreshTokenApi(refreshToken: string): Promise<RefreshResp
 
 export async function getMe(): Promise<AccountSummary> {
   const res = await apiClient.get<AccountSummary>('/api/v1/me');
+  return res.data;
+}
+
+export async function requestEmailVerification(email: string): Promise<void> {
+  await apiClient.post('/api/v1/auth/email-verification/request', { email });
+}
+
+export async function verifyEmail(
+  body: EmailVerificationVerifyRequest,
+): Promise<EmailVerifyResponse> {
+  const res = await apiClient.post<EmailVerifyResponse>(
+    '/api/v1/auth/email-verification/verify',
+    body,
+  );
   return res.data;
 }
