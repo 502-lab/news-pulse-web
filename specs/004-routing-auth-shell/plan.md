@@ -136,5 +136,5 @@ vitest.config.ts                    ← 신규 (jsdom, setupFiles)
 
 | 항목 | 상태 | 근거 |
 |---|---|---|
-| refreshToken → localStorage | ✅ **원칙 개정으로 해소** | constitution 1.1.0이 절대 금지형을 우선순위형으로 교체. accessToken=메모리 / refreshToken=localStorage + rotation은 현 백엔드 계약 하의 승인된 방식 |
+| refreshToken → localStorage | ✅ **원칙 개정으로 해소** | constitution 2.0.0이 절대 금지형을 우선순위형으로 교체. accessToken=메모리 / refreshToken=localStorage + rotation은 현 백엔드 계약 하의 승인된 방식 |
 | localStorage 사용 (동일 원인) | ✅ **원칙 개정으로 해소** | 위 동일. 두 항목 모두 하나의 원칙에서 기인했으며 함께 해소됨 |

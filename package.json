@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "prepare": "husky"
+    "prepare": "husky",
+    "generate:types": "openapi-typescript spec/api-contract/openapi.yaml -o generated/api-types.ts"
   },
   "dependencies": {
     "clsx": "^2.1.1",
@@ -33,6 +34,7 @@
     "globals": "^17.6.0",
     "husky": "^9.1.7",
     "lint-staged": "^17.0.7",
+    "openapi-typescript": "^7.13.0",
     "postcss": "^8.5.15",
     "prettier": "^3.8.3",
     "puppeteer-core": "^25.1.0",

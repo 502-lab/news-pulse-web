@@ -117,7 +117,7 @@ USER와 ADMIN은 완전히 다른 레이아웃과 화면 구조에서 서비스�
 
 - 세션 복원 중 네트워크 오류 발생 시: 게스트 상태로 폴백하고 로그인 화면으로 이동.
 - `returnTo`에 ADMIN 전용 경로가 담겨있는 USER가 로그인 후: returnTo 대신 역할별 홈으로 이동.
-- 동일 갱신 토큰으로 복수의 탭이 동시에 갱신 시도 시: 첫 번째 갱신만 성공하고 나머지는 새 갱신 토큰으로 재시도하거나 실패 처리.
+- **[Out of Scope] 복수 탭 동시 refreshToken 갱신**: 각 탭은 독립 JS 컨텍스트를 가지므로 모듈 스코프 `isRefreshing` 변수가 탭 간 공유되지 않는다. Rotation으로 무효화된 refreshToken을 보유한 탭이 갱신을 시도하면 갱신 실패 → 해당 탭 강제 로그아웃 처리한다. 탭 간 토큰 동기화(BroadcastChannel 등)는 후속 과제. T022는 단일 탭 내 동시 401 처리만 보장한다.
 - 접근 게이트 도중(예: 온보딩 중) 브라우저 뒤로 가기로 게이트 이전 경로 진입 시: 게이트가 다시 작동해 해당 단계로 재이동.
 - 존재하지 않는 경로 접근 시: 셸 없는 404 화면 표시.
 
@@ -157,7 +157,7 @@ USER와 ADMIN은 완전히 다른 레이아웃과 화면 구조에서 서비스�
 
 ### Key Entities
 
-- **AuthUser**: 인증된 사용자 — id, nickname, email, role(`USER`|`ADMIN`), emailVerified, onboardingCompleted, requiresReConsent
+- **AuthUser**: 인증된 사용자 — id, email, role(`USER`|`ADMIN`), emailVerified, onboardingCompleted, requiresReConsent, signupType, createdAt (`AccountSummary`와 동일, `nickname` 없음)
 - **AuthState**: 인증 스토어 상태 — user(`AuthUser`|null), isLoading(세션 복원 중 여부), 로그인/로그아웃/갱신 액션
 - **RouteGuard**: 접근 게이트 — 인증 여부·역할·계정 상태를 순서대로 검사해 통과 또는 리다이렉트를 결정하는 논리 단위
 - **LayoutShell**: 레이아웃 컨테이너 — 역할과 화면 유형에 따라 적용되는 세 가지 셸(AuthShell / UserGnbLayout / AdminSidebarLayout)
