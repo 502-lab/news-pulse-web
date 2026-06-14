@@ -1,19 +1,21 @@
 <!--
 SYNC IMPACT REPORT
 ------------------
-Version change: [TEMPLATE] → 1.0.0
-Modified principles: N/A (initial population from template)
-Added sections:
-  - Core Principles (5 principles)
-  - Quality & Standards
-  - Development Workflow
-  - Governance
+Version change: 1.0.0 → 2.0.0
+Modified principles:
+  - Quality & Standards > Authentication & Authorization:
+    "JWT tokens MUST be stored in httpOnly cookies. localStorage storage is prohibited."
+    → 우선순위형으로 재정의(MAJOR). 근거: 백엔드가 response body로 토큰을 반환하는 계약 구조상
+      httpOnly 쿠키는 구조적으로 불가능하며, 이 원칙은 모든 스프린트에서 토대부터 깨지는
+      mis-statement였음. "금지(incompatible)" → "허용(차선책)"으로 재정의하므로 MAJOR bump.
+Added sections: N/A
 Removed sections: N/A
 Templates requiring updates:
   - .specify/templates/plan-template.md ✅ Constitution Check section is dynamic — no static changes needed
   - .specify/templates/spec-template.md ✅ No constitution-specific placeholders
   - .specify/templates/tasks-template.md ✅ No constitution-specific placeholders
-Follow-up TODOs: None — all placeholders resolved
+Follow-up TODOs:
+  - 백엔드가 httpOnly 쿠키/BFF를 지원하게 되면 토큰 저장 방식을 1순위로 전환하고 이 원칙을 재검토.
 -->
 
 # news-pulse-web Constitution
@@ -85,7 +87,10 @@ Accessibility is a baseline requirement, not an enhancement. It MUST be addresse
 
 ### Authentication & Authorization
 
-- JWT tokens MUST be stored in `httpOnly` cookies. `localStorage` storage is prohibited.
+- **토큰 보관 우선순위**:
+  1. httpOnly Secure 쿠키 (백엔드 지원 시 1순위)
+  2. (현 백엔드 계약 차선) accessToken=메모리 / refreshToken=`localStorage` + 토큰 rotation + CSP·입력 새니타이즈
+  백엔드가 쿠키/BFF를 지원하면 1순위로 전환한다. 위 차선책은 현 계약(토큰을 응답 body로 전달, httpOnly 불가) 하의 승인된 방식이며 위반이 아니다.
 - Expired access tokens MUST trigger an automatic refresh attempt. On refresh failure, redirect to login.
 - Routes requiring authentication MUST be wrapped in `ProtectedRoute`.
 - Routes requiring `ADMIN` role MUST be wrapped in `AdminRoute`.
@@ -152,4 +157,4 @@ This constitution supersedes all other documented practices for this repository.
 
 **Compliance**: All PRs MUST be reviewed against the principles defined here. Non-compliance MUST be resolved before merge. Complexity that violates a principle MUST be explicitly justified in the PR and tracked in the plan's Complexity Tracking table.
 
-**Version**: 1.0.0 | **Ratified**: 2026-06-08 | **Last Amended**: 2026-06-08
+**Version**: 2.0.0 | **Ratified**: 2026-06-08 | **Last Amended**: 2026-06-14

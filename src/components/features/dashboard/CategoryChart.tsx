@@ -58,7 +58,7 @@ export default function CategoryChart({ data, isError, refetch }: CategoryChartP
           tickLine={false}
         />
         <Tooltip
-          formatter={(value: number, name: string) => [value, getCategoryMeta(name).label]}
+          formatter={(value, name) => [value, getCategoryMeta(String(name)).label]}
           contentStyle={{ background: '#1e293b', border: 'none', borderRadius: 8, color: '#f8fafc' }}
         />
         <Bar dataKey="count" radius={[4, 4, 0, 0]}>

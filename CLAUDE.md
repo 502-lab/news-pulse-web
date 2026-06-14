@@ -15,13 +15,13 @@ openapi.yaml 변경 시 반드시 news-pulse-spec 레포에 반영.
 
 ## 기술 스택
 
-- Framework: Vite + React 18
+- Framework: Vite + React 19
 - Language: TypeScript
 - 상태관리: TanStack Query v5 (서버 상태) + Zustand (클라이언트 상태)
 - 스타일: Tailwind CSS
 - 차트: Recharts
 - HTTP 클라이언트: Axios
-- 라우터: React Router v6
+- 라우터: React Router v7
 - API 타입: /generated/api-types.ts (openapi 자동생성, 직접 수정 금지)
 - 패키지 매니저: pnpm
 
@@ -123,7 +123,7 @@ VITE_FIREBASE_APP_ID=
 
 ```
 src/
-├── app/                      ← 라우터 설정 (React Router v6)
+├── app/                      ← 라우터 설정 (React Router v7)
 ├── pages/                    ← 페이지 컴포넌트 (화면 ID별)
 │   ├── auth/                 ← W08~W10 로그인·회원가입·비밀번호 찾기
 │   ├── onboarding/           ← W12 온보딩
@@ -306,7 +306,6 @@ EOF
 
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
-shell commands, and other important information, read the current active
-plan under `specs/<active-feature>/plan.md`.
-(이 블록은 `/plan` 실행 시 현재 피처 경로로 자동 갱신됨 — 폐기된 003은 더 이상 참조하지 않음)
+shell commands, and other important information, read the current plan
+at `specs/004-routing-auth-shell/plan.md`.
 <!-- SPECKIT END -->
