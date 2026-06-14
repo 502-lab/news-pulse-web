@@ -84,11 +84,11 @@ SocialCallbackPage는 카카오·Google(GET 쿼리 파라미터 콜백)과 Apple
 
 ---
 
-### User Story 4 — 이메일 인증 (Priority: P2)
+### User Story 4 — 이메일 인증 (Priority: P1)
 
 가입 직후 또는 004의 이메일 미인증 게이트에 의해 인증 화면에 도달한다. 발송된 코드나 링크로 인증을 완료하면 이메일 인증 상태가 갱신되고 다음 단계(온보딩 또는 앱)로 이동한다.
 
-**Why this priority**: 가입→인증→온보딩 흐름의 중간 연결고리. 인증 없이는 앱 진입 불가이므로 가입과 함께 제공해야 한다.
+**Why this priority**: 가입→인증→온보딩 흐름의 중간 연결고리. US2(이메일 가입) 성공 후 `emailVerified=false` 상태가 되면 004 게이트가 즉시 `/verify-email`로 보내는데, US4가 미구현이면 dead-end가 발생한다. 로그인·가입·이메일 인증이 하나의 end-to-end 슬라이스로 동작해야 한다.
 
 **Independent Test**: MSW로 인증 성공·실패·만료 응답을 모킹해 상태 전이를 검증할 수 있다.
 
