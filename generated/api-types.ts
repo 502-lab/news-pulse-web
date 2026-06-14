@@ -122,11 +122,34 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * 소셜 로그인 콜백 처리 (가입 또는 로그인)
-         * @description provider로부터 받은 code와 state를 검증 후 가입 또는 로그인을 처리한다.
-         *     state 검증 실패 시 400. 신규 가입 시 consents·ageConfirmed 필수.
+         * 소셜 로그인 콜백 처리 (기존 로그인 or 신규 pending)
+         * @description provider로부터 받은 code와 state를 검증 후 기존/신규 분기.
+         *     기존 유저: 200 isNew=false + account/tokens.
+         *     신규 유저: 202 isNew=true + pendingToken(10분) + 전체 활성 약관 목록.
+         *     code는 이 요청에서 소진됨. 신규 유저는 POST /complete로 가입 완료 필요.
          */
         post: operations["socialCallback"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/social/complete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * 소셜 신규 가입 완료 (약관 동의 + 계정 생성)
+         * @description pendingToken과 약관 동의를 검증 후 계정 생성 + JWT 발급.
+         *     pendingToken TTL 10분. 필수 약관(SERVICE·PRIVACY) 미동의 또는 ageConfirmed=false 시 422.
+         */
+        post: operations["socialComplete"];
         delete?: never;
         options?: never;
         head?: never;
@@ -628,22 +651,36 @@ export interface components {
             refreshToken: string;
         };
         SocialAuthorizeResponse: {
-            /** @description provider 인증 페이지 URL (state 포함). 프론트엔드가 이 URL로 리다이렉트. */
-            authorizationUrl: string;
-            /** @description CSRF 검증용 state. 콜백 시 그대로 반환 필요. */
-            state: string;
+            /** @description provider 인증 페이지 URL (state JWT 포함). 프론트엔드가 이 URL로 리다이렉트. state는 URL 쿼리에 포함되어 있어 별도 반환하지 않음. */
+            authorizeUrl: string;
         };
         SocialCallbackRequest: {
             /** @description provider로부터 받은 authorization code */
             code: string;
             /** @description CSRF 방지용 state (백엔드 발급값) */
             state: string;
-            /** @description 인증 요청 시 사용한 redirect URI */
+            /** @description 인증 요청 시 사용한 redirect URI (서버 화이트리스트에 등록된 값) */
             redirectUri: string;
-            /** @description 신규 가입 시 약관 동의 목록. 기존 계정 로그인 시 무시. */
-            consents?: components["schemas"]["ConsentInput"][] | null;
-            /** @description 신규 가입 시 연령 동의. 기존 계정 로그인 시 무시. */
-            ageConfirmed?: boolean | null;
+            /** @description Apple 최초 로그인 시 provider가 form_post로 전달하는 userInfo JSON. 이후 로그인에서는 생략. */
+            userJson?: string | null;
+        };
+        /** @description 신규 소셜 유저 — 약관 동의 전 pending 상태. POST /auth/social/complete로 가입 완료 필요. */
+        SocialPendingSignupResponse: {
+            /** @example true */
+            isNew: boolean;
+            /** @description 소셜 신원(provider·식별자·이메일)을 담은 단기 JWT (TTL 10분). 서명 검증 후 /complete에서 소비. */
+            pendingToken: string;
+            /** @description 유저에게 동의받아야 할 활성 약관 목록 (required·optional 모두 포함) */
+            requiredTerms: components["schemas"]["TermsVersion"][];
+        };
+        /** @description 소셜 신규 가입 완료 요청 */
+        SocialCompleteRequest: {
+            /** @description 콜백 202 응답에서 받은 pending-signup 토큰 (TTL 10분) */
+            pendingToken: string;
+            /** @description 약관 동의 목록 (필수 약관 SERVICE·PRIVACY agreed=true 포함 필수) */
+            consents: components["schemas"]["ConsentInput"][];
+            /** @description 만 14세 이상 동의 여부 (true 필수) */
+            ageConfirmed: boolean;
         };
         PasswordResetRequestBody: {
             /** Format: email */
@@ -1163,31 +1200,30 @@ export interface operations {
             };
         };
         responses: {
-            /** @description 로그인 성공 (기존 계정) */
+            /** @description 기존 소셜 계정 로그인 성공 */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        /** @example false */
+                        isNew: boolean;
                         account: components["schemas"]["AccountSummary"];
                         tokens: components["schemas"]["TokenPair"];
                     };
                 };
             };
-            /** @description 가입 및 로그인 성공 (신규 계정) */
-            201: {
+            /** @description 신규 유저 — pending-signup 토큰 발급. POST /complete로 가입 완료 필요. */
+            202: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        account: components["schemas"]["AccountSummary"];
-                        tokens: components["schemas"]["TokenPair"];
-                    };
+                    "application/json": components["schemas"]["SocialPendingSignupResponse"];
                 };
             };
-            /** @description state 검증 실패 (CSRF 의심) */
+            /** @description state 검증 실패 (CSRF 의심) 또는 허용되지 않은 redirectUri */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -1205,7 +1241,52 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description 신규 가입 시 약관 미동의 또는 연령 미달 */
+        };
+    };
+    socialComplete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SocialCompleteRequest"];
+            };
+        };
+        responses: {
+            /** @description 계정 생성 + 로그인 성공 */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        account: components["schemas"]["AccountSummary"];
+                        tokens: components["schemas"]["TokenPair"];
+                    };
+                };
+            };
+            /** @description pendingToken 만료 또는 서명 오류 */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description 이메일 충돌 (동시 가입 경합) */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description 필수 약관 미동의 또는 연령 미확인 */
             422: {
                 headers: {
                     [name: string]: unknown;
@@ -1352,7 +1433,7 @@ export interface operations {
         };
         responses: {
             /** @description 코드 발송 처리 완료 */
-            202: {
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };
