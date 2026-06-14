@@ -94,7 +94,7 @@ src/__tests__/
 ├── authStore.test.ts         ← AuthStore 상태 전이 검증
 ├── authInterceptor.test.ts   ← 갱신 큐 패턴, 동시 401 처리
 ├── RouteGuards.test.tsx      ← ProtectedRoute, AdminRoute, GuestOnlyRoute
-└── gateRedirect.test.ts      ← 접근 게이트 우선순위 검증
+└── gateRedirect.test.tsx     ← 접근 게이트 우선순위 검증
 ```
 
 ---
