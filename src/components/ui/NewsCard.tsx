@@ -26,9 +26,9 @@ export default function NewsCard({ a, onOpen, dense = false }: NewsCardProps) {
           <CatBadge cat={a.cat} />
           <BiasChip score={a.bias} />
         </div>
-        <p className="text-[14.5px] font-bold text-ink clamp2 group-hover:text-brand transition-colors">
+        <h4 className="display text-[14.5px] font-bold text-ink leading-snug clamp2 group-hover:text-brand transition-colors">
           {a.title}
-        </p>
+        </h4>
         <div className="flex items-center gap-1.5 text-[12px] mt-auto">
           <span className="font-medium text-ink-500">{a.source}</span>
           <span className="text-ink-200">·</span>

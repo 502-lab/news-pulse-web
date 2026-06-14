@@ -32,7 +32,7 @@ export default function Segmented({ options, value, onChange, size = 'md' }: Seg
             onClick={() => onChange(v)}
             className={[
               sizeClass,
-              'font-medium transition-all rounded-[5px]',
+              'font-semibold transition-all rounded-[5px]',
               active
                 ? 'bg-white text-ink shadow-sm'
                 : 'text-ink-500 hover:text-ink-700',

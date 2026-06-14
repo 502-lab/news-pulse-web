@@ -1,17 +1,20 @@
 import {
   Activity,
   AlertTriangle,
-  ArrowDownRight,
   ArrowRight,
+  ArrowDownRight,
   ArrowUpRight,
+  BarChart3,
   Bell,
   Bookmark,
+  Calendar,
   Car,
   Check,
   ChevronDown,
   Clock,
   Compass,
   Cpu,
+  Download,
   ExternalLink,
   Eye,
   EyeOff,
@@ -22,6 +25,7 @@ import {
   Globe,
   Headphones,
   Heart,
+  HelpCircle,
   Home,
   Inbox,
   Landmark,
@@ -43,6 +47,7 @@ import {
   SlidersHorizontal,
   Sparkles,
   Tag,
+  Trash2,
   TrendingUp,
   Trophy,
   Users,
@@ -59,6 +64,7 @@ const LUCIDE_MAP: Record<string, LucideComponent> = {
   scale: Scale,
   file: FileText,
   activity: Activity,
+  pulse: Activity,
   users: Users,
   lock: Lock,
   search: Search,
@@ -76,6 +82,7 @@ const LUCIDE_MAP: Record<string, LucideComponent> = {
   filter: Filter,
   bookmark: Bookmark,
   more: MoreHorizontal,
+  trash: Trash2,
   arrowright: ArrowRight,
   mail: Mail,
   eye: Eye,
@@ -92,17 +99,20 @@ const LUCIDE_MAP: Record<string, LucideComponent> = {
   bank: Landmark,
   trophy: Trophy,
   headphones: Headphones,
+  help: HelpCircle,
   play: Play,
   plus: Plus,
   mic: Mic,
   article: FileText,
-  // Dashboard icons
+  calendar: Calendar,
+  download: Download,
+  barchart: BarChart3,
+  // aliases
   Newspaper,
   Tag,
   ArrowUpRight,
   ArrowDownRight,
   Minus,
-  // Nav icon aliases (lucide official names)
   LayoutDashboard,
   Loader2,
   TrendingUp,
@@ -151,5 +161,5 @@ export default function Icon({ name, size = 18, className, stroke = 2 }: IconPro
     );
   }
 
-  return <span />;
+  return <span className={className} />;
 }
