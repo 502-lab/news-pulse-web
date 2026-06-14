@@ -106,13 +106,13 @@ authStore의 `user` 필드. `/api/v1/me` 및 로그인·가입 응답에서 수�
 ```
 [LoginPage] 소셜 버튼 클릭
     → sessionStorage.set('oauth_provider', provider)
-    → GET /api/v1/auth/{provider}/authorize?redirectUri=/oauth/callback
+    → GET /api/v1/auth/social/{provider}/authorize?redirectUri=/oauth/callback
         ↓ 200 { authorizeUrl }
     → window.location.href = authorizeUrl
     → [제공자 인증 페이지]
     → 제공자가 /oauth/callback?code=...&state=... 로 리다이렉트
     → [SocialCallbackPage] sessionStorage에서 provider 읽기
-        → POST /api/v1/auth/{provider}/callback
+        → POST /api/v1/auth/social/{provider}/callback
             ↓ 200 { isNew: false, account, tokens }
             → setAuth() → GateRoute 진입
             ↓ 202 { isNew: true, pendingToken, requiredTerms }

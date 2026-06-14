@@ -64,7 +64,7 @@ Used by:  ForgotPasswordPage (Step 3)
 
 ### `getSocialAuthorizeUrl()`
 ```
-GET /api/v1/auth/{provider}/authorize?redirectUri=/oauth/callback
+GET /api/v1/auth/social/{provider}/authorize?redirectUri=/oauth/callback
 Path:     provider: "kakao" | "google" | "apple"
 Response: 200 { authorizeUrl: string }
 Errors:   400 지원하지 않는 provider
@@ -74,7 +74,7 @@ Note:     성공 즉시 window.location.href = authorizeUrl
 
 ### `handleSocialCallback()`
 ```
-POST /api/v1/auth/{provider}/callback
+POST /api/v1/auth/social/{provider}/callback
 Path:     provider: "kakao" | "google" | "apple"
 Request:  SocialCallbackRequest { code, state, redirectUri, userJson? }
 Response:

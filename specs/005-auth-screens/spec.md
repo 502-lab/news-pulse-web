@@ -72,9 +72,9 @@ SocialCallbackPage는 카카오·Google(GET 쿼리 파라미터 콜백)과 Apple
 
 **Acceptance Scenarios**:
 
-1. **Given** 사용자가 소셜 로그인 버튼을 클릭하면, **When** `GET /api/v1/auth/{provider}/authorize`(요청에 `redirectUri`=/oauth/callback 포함)가 반환한 `authorizeUrl`로 이동해 제공자 인증을 완료하면, **Then** 제공자가 `redirectUri`(/oauth/callback)로 리다이렉트해 SocialCallbackPage에 `code`와 `state`가 전달된다.
-2. **Given** SocialCallbackPage에서 `POST /api/v1/auth/{provider}/callback`을 호출했을 때, **When** 기존 회원임을 응답받으면 (`isNew=false`), **Then** 토큰이 발급되고 004 게이트에 따라 역할별 홈으로 이동한다.
-3. **Given** SocialCallbackPage에서 `POST /api/v1/auth/{provider}/callback`을 호출했을 때, **When** 신규 회원임을 응답받으면 (`isNew=true, pendingToken`), **Then** 소셜 가입 약관 동의 화면으로 이동하고 `pendingToken`이 전달된다.
+1. **Given** 사용자가 소셜 로그인 버튼을 클릭하면, **When** `GET /api/v1/auth/social/{provider}/authorize`(요청에 `redirectUri`=/oauth/callback 포함)가 반환한 `authorizeUrl`로 이동해 제공자 인증을 완료하면, **Then** 제공자가 `redirectUri`(/oauth/callback)로 리다이렉트해 SocialCallbackPage에 `code`와 `state`가 전달된다.
+2. **Given** SocialCallbackPage에서 `POST /api/v1/auth/social/{provider}/callback`을 호출했을 때, **When** 기존 회원임을 응답받으면 (`isNew=false`), **Then** 토큰이 발급되고 004 게이트에 따라 역할별 홈으로 이동한다.
+3. **Given** SocialCallbackPage에서 `POST /api/v1/auth/social/{provider}/callback`을 호출했을 때, **When** 신규 회원임을 응답받으면 (`isNew=true, pendingToken`), **Then** 소셜 가입 약관 동의 화면으로 이동하고 `pendingToken`이 전달된다.
 4. **Given** 소셜 가입 약관 동의 화면에서 필수 약관(서비스 이용약관·개인정보처리방침·만 14세 이상)에 모두 동의하면, **When** "가입 완료" 버튼을 클릭하면, **Then** `POST /api/v1/auth/social/complete(pendingToken, consents, ageConfirmed)`가 호출되고 가입과 로그인이 완료되어 004 게이트로 진입한다.
 5. **Given** 소셜 가입 약관 동의 화면에서 필수 약관에 하나라도 동의하지 않으면, **When** "가입 완료" 시도, **Then** 가입 완료 버튼이 비활성화 상태이거나 미동의 항목이 강조되어 제출이 차단된다.
 6. **Given** 소셜 가입 약관 동의 화면 상단에, **Then** "[제공자 이름]로 가입을 완료하려면 약관에 동의해주세요" 안내 문구가 표시된다.
@@ -173,7 +173,7 @@ SocialCallbackPage는 카카오·Google(GET 쿼리 파라미터 콜백)과 Apple
 - **FR-001**: 사용자는 이메일과 비밀번호로 로그인할 수 있어야 한다.
 - **FR-002**: 로그인 성공 시 `returnTo` 경로(있는 경우)로 복귀하고, 없으면 역할별 기본 홈으로 이동해야 한다.
 - **FR-003**: 로그인 화면에 카카오·Google·Apple 소셜 로그인 진입점이 표시되어야 한다.
-- **FR-004**: 소셜 버튼 클릭 시 `GET /api/v1/auth/{provider}/authorize`를 통해 제공자 인증 페이지로 이동하고, 콜백(`/oauth/callback`)에서 `POST /api/v1/auth/{provider}/callback`을 호출해 결과를 처리해야 한다.
+- **FR-004**: 소셜 버튼 클릭 시 `GET /api/v1/auth/social/{provider}/authorize`를 통해 제공자 인증 페이지로 이동하고, 콜백(`/oauth/callback`)에서 `POST /api/v1/auth/social/{provider}/callback`을 호출해 결과를 처리해야 한다.
 - **FR-005**: 로그인 폼은 빈 입력·이메일 형식 오류를 즉시 검증해 필드별 메시지를 표시해야 한다.
 - **FR-006**: 잘못된 자격증명(401)과 네트워크 오류(5xx/네트워크 단절)는 구분된 사용자 친화적 메시지로 표시되어야 한다.
 - **FR-007**: 로그인 화면에 "로그인하면 서비스 이용약관 및 개인정보처리방침에 동의하게 됩니다" 안내 문구가 정보용으로 표시되어야 하며, 별도 동의 액션은 요구하지 않는다.
@@ -226,7 +226,7 @@ SocialCallbackPage는 카카오·Google(GET 쿼리 파라미터 콜백)과 Apple
 
 - 004 라우팅·인증 골격(AuthShell, ProtectedRoute, GateRoute, GuestOnlyRoute, authStore, returnTo 메커니즘)이 완료된 상태를 전제한다.
 - `emailVerified` 상태 갱신은 인증 확인 API 응답 또는 `/me` 재조회로 수행한다.
-- 소셜 로그인은 리다이렉트 방식이다. 프론트엔드가 `GET /api/v1/auth/{provider}/authorize`를 `redirectUri`(=/oauth/callback)와 함께 요청하면 백엔드가 `authorizeUrl`(제공자 인증 페이지 URL, `state` JWT 포함)을 반환한다. 프론트엔드는 `authorizeUrl`로 이동하고, 인증 후 제공자가 `redirectUri`로 리다이렉트하면 SPA의 `/oauth/callback`에서 `code`와 `state`를 수신해 `POST /api/v1/auth/{provider}/callback`으로 전달한다.
+- 소셜 로그인은 리다이렉트 방식이다. 프론트엔드가 `GET /api/v1/auth/social/{provider}/authorize`를 `redirectUri`(=/oauth/callback)와 함께 요청하면 백엔드가 `authorizeUrl`(제공자 인증 페이지 URL, `state` JWT 포함)을 반환한다. 프론트엔드는 `authorizeUrl`로 이동하고, 인증 후 제공자가 `redirectUri`로 리다이렉트하면 SPA의 `/oauth/callback`에서 `code`와 `state`를 수신해 `POST /api/v1/auth/social/{provider}/callback`으로 전달한다.
 - `/callback` 응답에 `isNew` 필드가 포함되어 기존/신규 회원을 구분한다. 신규이면 `pendingToken`이 함께 반환된다.
 - `pendingToken`은 메모리(예: 라우터 state 또는 단기 Zustand 슬라이스)에만 보관한다. localStorage/sessionStorage에 저장하지 않는다.
 - 소셜 가입 약관 동의 화면의 약관 항목: 서비스 이용약관(필수), 개인정보처리방침(필수), 만 14세 이상(필수), 마케팅 수신(선택). 이는 이메일 가입 화면과 동일한 TermRow 컴포넌트를 재사용한다.

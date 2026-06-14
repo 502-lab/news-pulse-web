@@ -83,8 +83,8 @@ pnpm test --reporter=verbose src/__tests__/auth
 > ⚠️ 실 provider 키 미설정. MSW로만 검증.
 
 **MSW 핸들러**: 
-- `GET /api/v1/auth/kakao/authorize` → 200 `{ authorizeUrl: 'https://mock-kakao.com/...' }`
-- `POST /api/v1/auth/kakao/callback` → 200 (기존) 또는 202 (신규)
+- `GET /api/v1/auth/social/kakao/authorize` → 200 `{ authorizeUrl: 'https://mock-kakao.com/...' }`
+- `POST /api/v1/auth/social/kakao/callback` → 200 (기존) 또는 202 (신규)
 - `POST /api/v1/auth/social/complete` → 201
 
 **시나리오 A — 기존 회원**
