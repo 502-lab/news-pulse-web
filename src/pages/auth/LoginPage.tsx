@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import LoginForm from '@/components/features/auth/LoginForm';
 import SocialButtons from '@/components/features/auth/SocialButtons';
@@ -12,6 +13,15 @@ export default function LoginPage() {
   const state = location.state as LocationState | null;
   const returnTo = state?.returnTo;
   const message = state?.message;
+
+  useEffect(() => {
+    // redirect로 들어온 경우에만 배너를 한 번 보여주고, history state를 지워
+    // 새로고침 시 배너가 재표시되지 않도록 한다
+    if (returnTo || message) {
+      window.history.replaceState(null, '');
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div>
