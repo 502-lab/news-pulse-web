@@ -25,8 +25,8 @@ const mockUser = {
 const mockTokens = { accessToken: 'acc', refreshToken: 'ref', expiresIn: 3600 };
 
 const mockTerms = [
-  { id: 't1', type: 'SERVICE', version: '1.0', isRequired: true, publishedAt: '2026-01-01T00:00:00Z' },
-  { id: 't2', type: 'PRIVACY', version: '1.0', isRequired: true, publishedAt: '2026-01-01T00:00:00Z' },
+  { id: 't1', type: 'SERVICE', version: '1.0', isRequired: true, effectiveDate: '2026-01-01' },
+  { id: 't2', type: 'PRIVACY', version: '1.0', isRequired: true, effectiveDate: '2026-01-01' },
 ];
 
 const resetStore = () =>

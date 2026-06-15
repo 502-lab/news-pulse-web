@@ -1,16 +1,21 @@
 import { apiClient } from './client';
 import type { components } from '../../../generated/api-types';
+import type { TermsVersion } from './terms';
 
-type AccountSummary = components['schemas']['AccountSummary'];
-type TokenPair = components['schemas']['TokenPair'];
+export type AccountSummary = components['schemas']['AccountSummaryResponse'];
+type TokenPair = components['schemas']['TokenPairResponse'];
 type SignupRequest = components['schemas']['SignupRequest'];
 type EmailVerificationVerifyRequest = components['schemas']['EmailVerificationVerifyRequest'];
 type SocialAuthorizeResponse = components['schemas']['SocialAuthorizeResponse'];
 type SocialCallbackRequest = components['schemas']['SocialCallbackRequest'];
-type SocialPendingSignupResponse = components['schemas']['SocialPendingSignupResponse'];
 type SocialCompleteRequest = components['schemas']['SocialCompleteRequest'];
 
-export type { SocialPendingSignupResponse, SocialCompleteRequest };
+export interface SocialPendingSignupResponse {
+  pendingToken: string;
+  requiredTerms: TermsVersion[];
+}
+
+export type { SocialCompleteRequest };
 
 type SocialProvider = 'kakao' | 'google' | 'apple';
 
@@ -30,11 +35,19 @@ interface AuthResponse {
 }
 
 interface RefreshResponse {
-  tokens: TokenPair;
+  accessToken: string;
+  refreshToken: string;
+  expiresIn?: number;
+}
+
+interface SignupResponse {
+  pendingToken: string;
+  verificationEmailSent: boolean;
 }
 
 interface EmailVerifyResponse {
-  emailVerified?: boolean;
+  tokens: TokenPair;
+  account: AccountSummary;
 }
 
 export async function login(email: string, password: string): Promise<AuthResponse> {
@@ -42,8 +55,8 @@ export async function login(email: string, password: string): Promise<AuthRespon
   return res.data;
 }
 
-export async function signup(body: SignupRequest): Promise<AuthResponse> {
-  const res = await apiClient.post<AuthResponse>('/api/v1/auth/signup', body);
+export async function signup(body: SignupRequest): Promise<SignupResponse> {
+  const res = await apiClient.post<SignupResponse>('/api/v1/auth/signup', body);
   return res.data;
 }
 
@@ -74,6 +87,8 @@ export async function verifyEmail(
   );
   return res.data;
 }
+
+export type { EmailVerifyResponse };
 
 // T013: 비밀번호 재설정 API (경로·타입 모두 generated/api-types.ts 기준)
 
@@ -131,5 +146,13 @@ export async function completeSocialSignup(
     '/api/v1/auth/social/complete',
     body,
   );
+  return res.data;
+}
+
+type OnboardingRequest = components['schemas']['OnboardingRequest'];
+type OnboardingStatusResponse = components['schemas']['OnboardingStatusResponse'];
+
+export async function submitOnboarding(body: OnboardingRequest): Promise<OnboardingStatusResponse> {
+  const res = await apiClient.post<OnboardingStatusResponse>('/api/v1/me/onboarding', body);
   return res.data;
 }

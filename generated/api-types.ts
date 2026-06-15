@@ -4,280 +4,17 @@
  */
 
 export interface paths {
-    "/api/v1/auth/signup": {
+    "/api/v1/me/reading-preference": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get?: never;
-        put?: never;
-        /**
-         * 이메일 회원가입
-         * @description 이메일+비밀번호로 계정을 생성한다. 필수 약관 동의 및 연령 동의 필수.
-         *     성공 시 액세스·리프레시 토큰을 반환한다 (이메일 미인증 상태로 발급).
-         *     계정 생성 후 인증 코드 발송 시도 — 발송 실패 시 계정은 유지되고 verificationEmailSent=false 반환 (항상 201).
-         */
-        post: operations["signup"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/auth/login": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * 이메일 로그인
-         * @description 이메일+비밀번호로 인증 후 토큰 쌍을 반환한다.
-         *     연속 5회 실패 시 계정 잠금 (30분 자동 해제).
-         *     잘못된 자격증명·계정 미존재·계정 잠금은 동일 401 반환 (계정 열거 방지).
-         *     소셜 전용 계정에는 422(code=SOCIAL_ONLY_ACCOUNT) 반환.
-         */
-        post: operations["login"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/auth/refresh": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * 액세스 토큰 갱신 (Refresh Token Rotation)
-         * @description 유효한 리프레시 토큰으로 새 토큰 쌍을 발급한다.
-         *     기존 리프레시 토큰은 즉시 무효화된다 (Rotation).
-         *     이미 무효화된 토큰 재사용 감지 시 해당 family의 모든 세션 무효화.
-         */
-        post: operations["refreshToken"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/auth/logout": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * 로그아웃 (현재 세션 무효화)
-         * @description 전달한 리프레시 토큰에 해당하는 세션만 무효화한다. 다른 기기 세션은 유지.
-         */
-        post: operations["logout"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/auth/social/{provider}/authorize": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * 소셜 로그인 인증 URL 발급
-         * @description provider의 OAuth 인증 페이지 URL과 CSRF 방지용 state를 반환한다.
-         *     프론트엔드는 이 URL로 사용자를 리다이렉트하고, state를 저장해 콜백 시 함께 전달한다.
-         */
-        get: operations["socialAuthorize"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/auth/social/{provider}/callback": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * 소셜 로그인 콜백 처리 (기존 로그인 or 신규 pending)
-         * @description provider로부터 받은 code와 state를 검증 후 기존/신규 분기.
-         *     기존 유저: 200 isNew=false + account/tokens.
-         *     신규 유저: 202 isNew=true + pendingToken(10분) + 전체 활성 약관 목록.
-         *     code는 이 요청에서 소진됨. 신규 유저는 POST /complete로 가입 완료 필요.
-         */
-        post: operations["socialCallback"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/auth/social/complete": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * 소셜 신규 가입 완료 (약관 동의 + 계정 생성)
-         * @description pendingToken과 약관 동의를 검증 후 계정 생성 + JWT 발급.
-         *     pendingToken TTL 10분. 필수 약관(SERVICE·PRIVACY) 미동의 또는 ageConfirmed=false 시 422.
-         */
-        post: operations["socialComplete"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/auth/password-reset/request": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * 비밀번호 재설정 코드 발급 (1단계)
-         * @description 등록·미등록·소셜 전용 계정 이메일 모두 동일하게 202 반환 (계정 열거 방지).
-         *     시간당 5회 초과 시 429. 이메일 서비스 장애 시 503 (한도 미차감).
-         */
-        post: operations["passwordResetRequest"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/auth/password-reset/verify": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * 비밀번호 재설정 코드 검증 (2단계)
-         * @description 이메일로 받은 6자리 코드를 검증한다.
-         *     성공 시 단일 사용 변경 허가 토큰 (TTL 10분) 반환.
-         *     코드 만료 시 410, 오입력 401, 5회 초과 시 코드 무효화.
-         */
-        post: operations["passwordResetVerify"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/auth/password-reset/confirm": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * 새 비밀번호 설정 (3단계)
-         * @description 변경 허가 토큰과 새 비밀번호로 비밀번호를 재설정한다.
-         *     성공 시 해당 계정의 모든 리프레시 토큰 즉시 무효화.
-         *     변경 허가 토큰은 단일 사용 — 재사용 시 401.
-         */
-        post: operations["passwordResetConfirm"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/auth/email-verification/request": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * 이메일 인증 코드 재발송
-         * @description 가입 이메일로 인증 코드를 재발송한다. 기존 미사용 코드는 즉시 무효화.
-         *     시간당 5회 초과 시 429. 이미 인증된 계정 호출 시 422.
-         *     이메일 서비스 장애 시 503 (한도 미차감).
-         */
-        post: operations["emailVerificationRequest"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/auth/email-verification/verify": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * 이메일 인증 코드 검증
-         * @description 이메일로 받은 6자리 코드를 검증하고 계정을 '인증' 상태로 전환한다.
-         *     코드 만료 시 410, 오입력 5회 초과 시 코드 무효화.
-         */
-        post: operations["emailVerificationVerify"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/me": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * 내 계정 요약 조회
-         * @description 현재 인증된 계정의 기본 정보를 반환한다.
-         *     emailVerified=true 필수. 미인증 계정은 403 (code=EMAIL_NOT_VERIFIED).
-         */
-        get: operations["getMe"];
-        put?: never;
+        /** 읽기 방식 조회 */
+        get: operations["getReadingPreference"];
+        /** 읽기 방식 수정 */
+        put: operations["updateReadingPreference"];
         post?: never;
         delete?: never;
         options?: never;
@@ -303,24 +40,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/me/interests": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** 관심 카테고리 조회 */
-        get: operations["getInterests"];
-        /** 관심 카테고리 수정 (최소 3개 유지) */
-        put: operations["updateInterests"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/v1/me/keywords": {
         parameters: {
             query?: never;
@@ -330,7 +49,7 @@ export interface paths {
         };
         /** 팔로우 키워드 조회 */
         get: operations["getKeywords"];
-        /** 팔로우 키워드 교체 (기존 목록 전체 교체) */
+        /** 팔로우 키워드 수정 (전체 교체) */
         put: operations["updateKeywords"];
         post?: never;
         delete?: never;
@@ -339,17 +58,20 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/me/reading-preference": {
+    "/api/v1/me/interests": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** 읽는 방식 설정 조회 */
-        get: operations["getReadingPreference"];
-        /** 읽는 방식 설정 수정 */
-        put: operations["updateReadingPreference"];
+        /** 관심사 조회 */
+        get: operations["getInterests"];
+        /**
+         * 관심사 수정 (최소 3개)
+         * @description 3개 미만 제출 시 422를 반환합니다.
+         */
+        put: operations["updateInterests"];
         post?: never;
         delete?: never;
         options?: never;
@@ -385,9 +107,8 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * 온보딩 데이터 일괄 저장
-         * @description 프로필·관심사·키워드·읽는방식·브리핑설정을 한 번에 저장한다.
-         *     interests.categories 최소 3개 필수. 조건 충족 시 personalizationActive=true.
+         * 온보딩 제출
+         * @description 프로필·관심사(최소 3개)·키워드·읽기방식·브리핑 설정을 일괄 저장합니다. 관심 카테고리 3개 이상이면 personalizationActive=true로 전환됩니다.
          */
         post: operations["submitOnboarding"];
         delete?: never;
@@ -396,15 +117,306 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/me/onboarding/status": {
+    "/api/v1/me/consents": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** 온보딩 완료 상태 조회 */
-        get: operations["getOnboardingStatus"];
+        /**
+         * 내 동의 이력 조회
+         * @description 인증된 사용자의 모든 약관 동의 기록을 반환합니다.
+         */
+        get: operations["getConsentHistory"];
+        put?: never;
+        /**
+         * 약관 재동의 제출 (멱등)
+         * @description 이미 동의한 버전은 무시합니다(멱등). 새로운 버전에 대한 동의만 저장됩니다.
+         */
+        post: operations["submitConsents"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/social/{provider}/callback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * OAuth 콜백 처리
+         * @description provider에서 받은 code와 state를 검증 후 기존/신규 분기. 기존 유저: 200 + account/tokens. 신규 유저: 202 + pendingToken(10분) + 전체 활성 약관 목록(requiredTerms). code는 여기서 소진됨. 가입 완료는 POST /complete 호출 필요.
+         */
+        post: operations["callback"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/social/complete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * 소셜 신규 가입 완료
+         * @description pendingToken과 약관 동의를 검증 후 계정 생성 + JWT 발급. pendingToken TTL 10분. 필수 약관(SERVICE·PRIVACY) 미동의 또는 ageConfirmed=false 시 422.
+         */
+        post: operations["complete"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/signup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["signup"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/refresh": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["refresh"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/password-reset/verify": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * 재설정 코드 검증
+         * @description 6자리 코드 검증 후 단일 사용 resetToken 발급. 10분 TTL, 1회만 사용 가능. 5회 오입력 시 코드 무효화.
+         */
+        post: operations["verifyCode"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/password-reset/request": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * 재설정 코드 요청
+         * @description 이메일로 6자리 재설정 코드 발송. 미등록/소셜 전용 계정도 동일한 202 반환 (열거 방지). 소셜 전용 계정은 소셜 로그인 이용 안내 이메일 발송.
+         */
+        post: operations["requestCode"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/password-reset/confirm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * 비밀번호 재설정 확인
+         * @description resetToken과 새 비밀번호로 비밀번호 변경. 성공 시 해당 계정의 모든 리프레시 토큰 무효화 (FR-025). resetToken 재사용 시 401.
+         */
+        post: operations["confirmReset"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/logout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["logout"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["login"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/email-verification/verify": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["verify"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/email-verification/request": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["requestVerification"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/articles/{articleId}/tts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * 기사 TTS 상태 조회
+         * @description 지정 기사와 음성의 TTS 처리 상태를 조회한다. READY이면 audioUrl 포함.
+         */
+        get: operations["getTtsStatus"];
+        put?: never;
+        /**
+         * 기사 TTS 요청
+         * @description 기사 요약을 지정 음성으로 TTS 변환 요청. 이미 READY이면 200, 처리 중이거나 새 요청이면 202. FAILED 상태는 자동으로 PENDING으로 리셋 후 재처리. 멱등 — 중복 요청 안전.
+         */
+        post: operations["requestTts"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/articles/{articleId}/save": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * 기사 저장
+         * @description 기사를 저장 목록에 추가한다. 이미 저장된 기사 재저장 시 멱등 200 반환. 저장 상한(1,000건) 초과 시 409 반환. 존재하지 않는 기사 ID는 404 반환.
+         */
+        post: operations["save"];
+        /**
+         * 기사 저장 해제
+         * @description 저장 목록에서 기사를 제거한다. 저장하지 않은 기사 해제 시 멱등 204 반환.
+         */
+        delete: operations["unsave"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/terms": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * 새 약관 버전 등록 (ADMIN 전용)
+         * @description 동일 type+version 조합은 409를 반환합니다. 같은 타입의 기존 활성 버전은 비활성 처리됩니다.
+         */
+        post: operations["createTermsVersion"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/voices": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * 음성 목록 조회
+         * @description Naver Clova Voice로 제공 가능한 음성 캐릭터 목록을 반환합니다. previewUrl이 null인 경우 미리듣기 샘플 미제공.
+         */
+        get: operations["getVoices"];
         put?: never;
         post?: never;
         delete?: never;
@@ -421,8 +433,8 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * 현재 활성 약관 버전 목록 조회 (공개)
-         * @description 가입 화면에서 동의할 약관 목록. 인증 불필요.
+         * 활성 약관 목록 조회 (public)
+         * @description 인증 없이 조회 가능한 활성 약관 버전 목록입니다.
          */
         get: operations["getActiveTerms"];
         put?: never;
@@ -433,21 +445,140 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/me/consents": {
+    "/api/v1/terms/{type}/content": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** 내 약관 동의 이력 조회 */
-        get: operations["getConsents"];
-        put?: never;
         /**
-         * 약관 동의 제출 (재동의 포함)
-         * @description 새 약관 버전에 동의. 이미 동의된 버전은 무시 (멱등).
+         * 약관 본문 조회 (public)
+         * @description 인증 없이 조회 가능합니다. type은 SERVICE 또는 PRIVACY. 해당 타입의 활성 약관이 없으면 404를 반환합니다.
          */
-        post: operations["submitConsents"];
+        get: operations["getTermsContent"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * 내 계정 정보 조회
+         * @description 인증 토큰 기준 계정 요약 정보를 반환합니다. requiresReConsent 포함.
+         */
+        get: operations["getMe"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/saved-articles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * 저장 기사 목록 조회
+         * @description 현재 사용자의 저장 기사 목록을 savedAt 역순으로 반환한다. cursor 기반 페이지네이션 지원. listenable=true이면 READY TTS가 존재하는 기사만 반환(들을 수 있음 필터). voiceId 지정 시 해당 음성의 READY TTS가 있는 기사만 포함.
+         */
+        get: operations["list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/me/onboarding/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * 온보딩 상태 조회
+         * @description 온보딩 완료 여부와 개인화 활성화 상태를 반환합니다.
+         */
+        get: operations["getOnboardingStatus"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/feed": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * 개인화 피드 조회
+         * @description 사용자의 관심 카테고리·팔로우 키워드·최신성 기반 규칙 가중치로 랭킹된 기사 목록 반환. 관심사 미설정 시 최신순 fallback (personalized=false).
+         */
+        get: operations["getFeed"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/briefing/today": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * 오늘의 브리핑 조회
+         * @description 당일 브리핑 TTS 큐를 반환합니다. 캐시 히트이면 저장된 기사 목록으로 현재 TTS 상태를 재조회합니다(stale 없음). 캐시 미스이면 개인화 피드 상위 N건(summaryStatus=COMPLETED)으로 신규 생성합니다. 모든 항목이 READY이면 200, 처리 중 항목이 있으면 202를 반환합니다. COMPLETED 기사가 없으면 404를 반환합니다.
+         */
+        get: operations["getTodayBrief"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/social/{provider}/authorize": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * OAuth 인가 URL 조회
+         * @description provider별 인가 URL 반환. HMAC 서명 state JWT 포함 (CSRF 방지, FR-027). redirectUri는 서버 화이트리스트 검증 후 인가 URL에 포함됨.
+         */
+        get: operations["authorize"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -463,11 +594,9 @@ export interface paths {
         };
         /**
          * 뉴스 피드 목록 조회
-         * @description 인증된 사용자가 최신순 뉴스 목록을 커서 기반으로 조회한다.
-         *     노출 조건: `category_status ∈ {COMPLETED, FAILED}` AND `feed_visible=true`. PENDING 제외.
-         *     정렬: `published_at DESC, id DESC`. 페이지 크기 기본 20, 최대 100.
+         * @description 커서 기반 페이지네이션으로 뉴스 목록을 반환합니다. category_status가 COMPLETED 또는 FAILED인 기사만 포함되며, PENDING 기사는 노출되지 않습니다. 분류 실패(FAILED)된 기사는 category가 OTHER로 표시됩니다.
          */
-        get: operations["getFeed"];
+        get: operations["getFeed_1"];
         put?: never;
         post?: never;
         delete?: never;
@@ -485,11 +614,29 @@ export interface paths {
         };
         /**
          * 기사 상세 조회
-         * @description 기사 ID로 상세 정보와 세 가지 깊이의 요약 슬롯을 반환한다.
-         *     DEEP 슬롯은 최초 상세 조회 시 lazy 생성 — 첫 요청에서 status=PENDING일 수 있음.
-         *     기사가 존재하면 AI 오류와 무관하게 항상 200 반환.
+         * @description 기사 ID로 상세 정보와 요약 슬롯(brief / balanced / deep)을 반환합니다. deep 요약은 최초 상세 조회 시 lazy 생성되므로 첫 요청에서는 status가 PENDING일 수 있습니다.
          */
-        get: operations["getArticle"];
+        get: operations["getDetail"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/articles/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * 기사 검색
+         * @description pg_bigm GIN 인덱스 기반 한국어 전문 검색. 제목·요약 내용을 대상으로 bigram 유사도 relevance 순 정렬. 관심사·팔로우 키워드 미반영(FR-013). 검색 범위는 최근 90일 기사로 제한.
+         */
+        get: operations["search"];
         put?: never;
         post?: never;
         delete?: never;
@@ -507,33 +654,11 @@ export interface paths {
         };
         /**
          * 파이프라인 통계 조회
-         * @description 오늘의 수집·처리 현황을 단일 호출로 확인한다. ADMIN 역할 전용.
-         *     통계는 실시간 DB 집계 쿼리 (캐시 없음).
+         * @description 오늘 날짜 기준 수집 건수, 요약 완료율, 중복 병합 건수, 카테고리별 분포, 파이프라인 처리 대기/실패 현황을 반환합니다.
          */
-        get: operations["getPipelineStats"];
+        get: operations["getStats"];
         put?: never;
         post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/admin/terms": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * 새 약관 버전 등록
-         * @description 새 버전의 약관을 등록한다. 동일 type의 기존 is_active를 false로 전환.
-         *     ADMIN 역할 전용. 미인증 401, USER 403.
-         */
-        post: operations["createTermsVersion"];
         delete?: never;
         options?: never;
         head?: never;
@@ -544,448 +669,1317 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
-        /** @description 공통 에러 응답 */
-        ErrorResponse: {
+        /** @description 읽기 방식 수정 요청 */
+        ReadingPreferenceRequest: {
             /**
-             * @description 애플리케이션 에러 코드. 주요 코드:
-             *     - UNAUTHORIZED: 인증 토큰 없음·만료 (401)
-             *     - FORBIDDEN: 권한 없음 (403)
-             *     - EMAIL_NOT_VERIFIED: 이메일 미인증 (403)
-             *     - EMAIL_ALREADY_EXISTS: 이메일 중복 (409)
-             *     - SOCIAL_ONLY_ACCOUNT: 소셜 전용 계정 비밀번호 로그인 시도 (422)
-             *     - ARTICLE_NOT_FOUND: 기사 ID 없음 (404)
-             *     - VALIDATION_ERROR: 파라미터 형식·범위 오류 (400)
-             *     - TOKEN_REUSED: 리프레시 토큰 재사용 감지 (401)
-             * @example UNAUTHORIZED
+             * @description 요약 깊이
+             * @example BALANCED
+             * @enum {string}
              */
-            code: string;
+            summaryDepth: "BRIEF" | "BALANCED" | "DEEP";
             /**
-             * @description 사람이 읽을 수 있는 에러 설명
-             * @example Authentication required
+             * @description 소비 방식
+             * @example READ
+             * @enum {string}
              */
-            message: string;
+            consumeMode: "READ" | "LISTEN" | "BOTH";
+            /**
+             * @description 선호 음성 ID. null = app.tts.default-voice-id 설정값 사용
+             * @example Seoyeon
+             */
+            voiceId?: string;
+        };
+        /** @description 공통 API 응답 래퍼 */
+        ApiResponseReadingPreferenceResponse: {
+            /**
+             * Format: int32
+             * @description HTTP 상태 코드
+             * @example 200
+             */
+            code?: number;
+            /**
+             * @description 응답 상태
+             * @example success
+             */
+            status?: string;
+            /**
+             * @description 응답 메시지
+             * @example OK
+             */
+            message?: string;
+            /** @description 응답 데이터 */
+            data?: components["schemas"]["ReadingPreferenceResponse"];
+        };
+        /** @description 읽기 방식 응답 */
+        ReadingPreferenceResponse: {
+            /**
+             * @description 요약 깊이
+             * @enum {string}
+             */
+            summaryDepth?: "BRIEF" | "BALANCED" | "DEEP";
+            /**
+             * @description 소비 방식
+             * @enum {string}
+             */
+            consumeMode?: "READ" | "LISTEN" | "BOTH";
+            /** @description 선호 음성 ID. 미설정 시 null. */
+            voiceId?: string;
+        };
+        /** @description 프로필 수정 요청 */
+        UserProfileRequest: {
+            /**
+             * @description 닉네임 (최대 50자)
+             * @example 홍길동
+             */
+            nickname?: string;
+            /**
+             * @description 연령대
+             * @example THIRTIES
+             * @enum {string}
+             */
+            ageGroup?: "TEENS" | "TWENTIES" | "THIRTIES" | "FORTIES" | "FIFTIES_PLUS";
+            /**
+             * @description 직업
+             * @example 개발자
+             */
+            occupation?: string;
+        };
+        /** @description 공통 API 응답 래퍼 */
+        ApiResponseUserProfileResponse: {
+            /**
+             * Format: int32
+             * @description HTTP 상태 코드
+             * @example 200
+             */
+            code?: number;
+            /**
+             * @description 응답 상태
+             * @example success
+             */
+            status?: string;
+            /**
+             * @description 응답 메시지
+             * @example OK
+             */
+            message?: string;
+            /** @description 응답 데이터 */
+            data?: components["schemas"]["UserProfileResponse"];
+        };
+        /** @description 프로필 응답 */
+        UserProfileResponse: {
+            /** @description 닉네임 */
+            nickname?: string;
+            /**
+             * @description 연령대
+             * @enum {string}
+             */
+            ageGroup?: "TEENS" | "TWENTIES" | "THIRTIES" | "FORTIES" | "FIFTIES_PLUS";
+            /** @description 직업 */
+            occupation?: string;
+        };
+        /** @description 팔로우 키워드 수정 요청 */
+        FollowKeywordsRequest: {
+            /** @description 팔로우 키워드 목록 */
+            keywords?: components["schemas"]["KeywordEntry"][];
+        };
+        /** @description 키워드 항목 */
+        KeywordEntry: {
+            /**
+             * @description 키워드
+             * @example 삼성전자
+             */
+            keyword: string;
+            /**
+             * @description 키워드 유형
+             * @example COMPANY
+             * @enum {string}
+             */
+            type: "COMPANY" | "THEME" | "PERSON";
+        };
+        /** @description 공통 API 응답 래퍼 */
+        ApiResponseFollowKeywordsResponse: {
+            /**
+             * Format: int32
+             * @description HTTP 상태 코드
+             * @example 200
+             */
+            code?: number;
+            /**
+             * @description 응답 상태
+             * @example success
+             */
+            status?: string;
+            /**
+             * @description 응답 메시지
+             * @example OK
+             */
+            message?: string;
+            /** @description 응답 데이터 */
+            data?: components["schemas"]["FollowKeywordsResponse"];
+        };
+        /** @description 팔로우 키워드 응답 */
+        FollowKeywordsResponse: {
+            /** @description 팔로우 키워드 목록 */
+            keywords?: components["schemas"]["KeywordEntry"][];
+        };
+        /** @description 관심사 수정 요청 (최소 3개) */
+        UserInterestsRequest: {
+            /**
+             * @description 관심 카테고리 목록 (최소 3개). 허용값: ECONOMY_FINANCE, SCIENCE, POLITICS, SPORTS, WORLD, ENTERTAINMENT_CULTURE, HEALTH_MEDICINE, AUTOMOTIVE, IT, OTHER
+             * @example [
+             *       "IT",
+             *       "ECONOMY_FINANCE",
+             *       "SCIENCE"
+             *     ]
+             */
+            categories: string[];
+        };
+        /** @description 공통 API 응답 래퍼 */
+        ApiResponseUserInterestsResponse: {
+            /**
+             * Format: int32
+             * @description HTTP 상태 코드
+             * @example 200
+             */
+            code?: number;
+            /**
+             * @description 응답 상태
+             * @example success
+             */
+            status?: string;
+            /**
+             * @description 응답 메시지
+             * @example OK
+             */
+            message?: string;
+            /** @description 응답 데이터 */
+            data?: components["schemas"]["UserInterestsResponse"];
+        };
+        /** @description 관심사 응답 */
+        UserInterestsResponse: {
+            /** @description 관심 카테고리 목록 */
+            categories?: string[];
+        };
+        /** @description 브리핑 설정 수정 요청 */
+        BriefingSettingsRequest: {
+            /**
+             * @description 브리핑 시각 (HH:mm)
+             * @example 08:00
+             */
+            briefingTime?: string;
+            /**
+             * Format: int32
+             * @description 타임존 오프셋(분)
+             * @example 540
+             */
+            timezoneOffset?: number;
+            /**
+             * @description 음성 브리핑 활성화
+             * @example false
+             */
+            voiceEnabled?: boolean;
+            /**
+             * @description 푸시 알림 동의
+             * @example false
+             */
+            pushAgreed?: boolean;
+        };
+        /** @description 공통 API 응답 래퍼 */
+        ApiResponseBriefingSettingsResponse: {
+            /**
+             * Format: int32
+             * @description HTTP 상태 코드
+             * @example 200
+             */
+            code?: number;
+            /**
+             * @description 응답 상태
+             * @example success
+             */
+            status?: string;
+            /**
+             * @description 응답 메시지
+             * @example OK
+             */
+            message?: string;
+            /** @description 응답 데이터 */
+            data?: components["schemas"]["BriefingSettingsResponse"];
+        };
+        /** @description 브리핑 설정 응답 */
+        BriefingSettingsResponse: {
+            /** @description 브리핑 시각 */
+            briefingTime?: string;
+            /**
+             * Format: int32
+             * @description 타임존 오프셋(분)
+             */
+            timezoneOffset?: number;
+            /** @description 음성 브리핑 활성화 */
+            voiceEnabled?: boolean;
+            /** @description 푸시 알림 동의 */
+            pushAgreed?: boolean;
             /**
              * Format: date-time
-             * @example 2026-06-14T10:00:00Z
+             * @description 푸시 알림 동의 시각
              */
-            timestamp: string;
-            /** @description Bean Validation 실패 등 상세 오류 목록 */
-            details?: {
-                field?: string;
-                reason?: string;
-            }[] | null;
+            pushAgreedAt?: string;
         };
-        /** @description 인증 세션 토큰 쌍. 리프레시 토큰은 Rotation 적용 — 사용 시 교체됨. */
-        TokenPair: {
+        /** @description 온보딩 일괄 저장 요청 */
+        OnboardingRequest: {
             /**
-             * @description JWT 액세스 토큰 (TTL 1h). claim: sub=accountId, role, emailVerified
-             * @example eyJhbGciOiJIUzI1NiJ9...
+             * @description 닉네임 (최대 50자)
+             * @example 홍길동
              */
-            accessToken: string;
+            nickname?: string;
             /**
-             * @description 리프레시 토큰 (TTL 30d, 64자 hex)
-             * @example a1b2c3d4...
+             * @description 연령대
+             * @example THIRTIES
+             * @enum {string}
              */
-            refreshToken: string;
+            ageGroup?: "TEENS" | "TWENTIES" | "THIRTIES" | "FORTIES" | "FIFTIES_PLUS";
             /**
-             * @description 액세스 토큰 만료까지 남은 초
-             * @example 3600
+             * @description 직업
+             * @example 개발자
              */
-            expiresIn: number;
+            occupation?: string;
+            /**
+             * @description 관심 카테고리 목록 (최소 3개 필수). 허용값: ECONOMY_FINANCE, SCIENCE, POLITICS, SPORTS, WORLD, ENTERTAINMENT_CULTURE, HEALTH_MEDICINE, AUTOMOTIVE, IT, OTHER
+             * @example [
+             *       "IT",
+             *       "ECONOMY_FINANCE",
+             *       "SCIENCE"
+             *     ]
+             */
+            categories: string[];
+            /** @description 팔로우 키워드 목록 */
+            keywords?: components["schemas"]["KeywordEntry"][];
+            /**
+             * @description 요약 깊이
+             * @example BALANCED
+             * @enum {string}
+             */
+            summaryDepth?: "BRIEF" | "BALANCED" | "DEEP";
+            /**
+             * @description 소비 방식
+             * @example READ
+             * @enum {string}
+             */
+            consumeMode?: "READ" | "LISTEN" | "BOTH";
+            /**
+             * @description 브리핑 시각 (HH:mm)
+             * @example 08:00
+             */
+            briefingTime?: string;
+            /**
+             * Format: int32
+             * @description 타임존 오프셋(분)
+             * @example 540
+             */
+            timezoneOffset?: number;
+            /**
+             * @description 음성 브리핑 활성화
+             * @example false
+             */
+            voiceEnabled?: boolean;
+            /**
+             * @description 푸시 알림 동의
+             * @example false
+             */
+            pushAgreed?: boolean;
         };
-        /** @description 현재 인증된 계정 요약 정보. /me 및 로그인 응답에서 공통 사용. */
-        AccountSummary: {
-            /** Format: uuid */
-            id: string;
+        /** @description 공통 API 응답 래퍼 */
+        ApiResponseVoid: {
             /**
-             * Format: email
-             * @description 소셜 전용 계정은 null 가능
+             * Format: int32
+             * @description HTTP 상태 코드
+             * @example 200
              */
-            email?: string | null;
-            /** @enum {string} */
-            role: "USER" | "ADMIN";
-            emailVerified: boolean;
-            onboardingCompleted: boolean;
-            /** @enum {string} */
-            signupType: "EMAIL" | "SOCIAL";
-            /** Format: date-time */
-            createdAt: string;
-            /** @description 현재 활성 필수 약관 중 미동의 버전 존재 여부. true이면 클라이언트가 재동의 UI를 표시해야 함. */
-            requiresReConsent: boolean;
-        };
-        SignupRequest: {
+            code?: number;
             /**
-             * Format: email
-             * @example user@example.com
+             * @description 응답 상태
+             * @example success
              */
-            email: string;
+            status?: string;
             /**
-             * @description 영문·숫자 각 1자 이상, 8자 이상
-             * @example Password1
+             * @description 응답 메시지
+             * @example OK
              */
-            password: string;
-            /** @description 약관 동의 목록 (필수 약관 미동의 시 422) */
-            consents: components["schemas"]["ConsentInput"][];
-            /**
-             * @description 만 14세 이상 동의. false이면 422.
-             * @example true
-             */
-            ageConfirmed: boolean;
+            message?: string;
+            /** @description 응답 데이터 */
+            data?: unknown;
         };
         ConsentInput: {
             /** Format: uuid */
             termsVersionId: string;
             agreed: boolean;
         };
+        /** @description 소셜 OAuth 콜백 요청 */
+        SocialCallbackRequest: {
+            /** @description OAuth 인가 코드 (provider redirect에서 추출) */
+            code: string;
+            /** @description HMAC 서명 state JWT (CSRF 방지 — /authorize 응답의 authorizeUrl에 포함된 값) */
+            state: string;
+            /** @description 프론트엔드 콜백 URI — /authorize 요청 시 전달한 값과 동일해야 함 (provider 토큰 교환에 사용) */
+            redirectUri: string;
+            /** @description Apple 최초 로그인 시 provider가 form_post로 전달하는 userInfo JSON (선택) */
+            userJson?: string;
+        };
+        /** @description 공통 API 응답 래퍼 */
+        ApiResponseMapStringObject: {
+            /**
+             * Format: int32
+             * @description HTTP 상태 코드
+             * @example 200
+             */
+            code?: number;
+            /**
+             * @description 응답 상태
+             * @example success
+             */
+            status?: string;
+            /**
+             * @description 응답 메시지
+             * @example OK
+             */
+            message?: string;
+            /** @description 응답 데이터 */
+            data?: {
+                [key: string]: unknown;
+            };
+        };
+        /** @description 소셜 신규 가입 완료 요청 (약관 동의 + 계정 생성) */
+        SocialCompleteRequest: {
+            /** @description 콜백에서 받은 pending-signup 토큰 (TTL 10분) */
+            pendingToken: string;
+            /** @description 약관 동의 목록 (필수 약관 SERVICE·PRIVACY 포함 필수) */
+            consents: components["schemas"]["ConsentInput"][];
+            /** @description 만 14세 이상 동의 여부 */
+            ageConfirmed: boolean;
+            /** @description 소셜 제공자 추가 사용자 정보 (Apple 최초 로그인 시 name 등). JWT PII 제거로 인해 클라이언트가 재전송. 선택사항. */
+            userInfo?: string;
+        };
+        SignupRequest: {
+            /** Format: email */
+            email: string;
+            password: string;
+            consents: components["schemas"]["ConsentInput"][];
+            ageConfirmed?: boolean;
+        };
+        RefreshRequest: {
+            refreshToken: string;
+        };
+        /** @description 공통 API 응답 래퍼 */
+        ApiResponseTokenPairResponse: {
+            /**
+             * Format: int32
+             * @description HTTP 상태 코드
+             * @example 200
+             */
+            code?: number;
+            /**
+             * @description 응답 상태
+             * @example success
+             */
+            status?: string;
+            /**
+             * @description 응답 메시지
+             * @example OK
+             */
+            message?: string;
+            /** @description 응답 데이터 */
+            data?: components["schemas"]["TokenPairResponse"];
+        };
+        TokenPairResponse: {
+            accessToken?: string;
+            refreshToken?: string;
+            /** Format: int64 */
+            expiresIn?: number;
+        };
+        /** @description 비밀번호 재설정 코드 검증 요청 */
+        PasswordResetVerifyRequest: {
+            /**
+             * Format: email
+             * @description 계정 이메일
+             * @example user@example.com
+             */
+            email: string;
+            /**
+             * @description 이메일로 받은 6자리 숫자 코드
+             * @example 123456
+             */
+            code: string;
+        };
+        /** @description 공통 API 응답 래퍼 */
+        ApiResponsePasswordResetVerifyResponse: {
+            /**
+             * Format: int32
+             * @description HTTP 상태 코드
+             * @example 200
+             */
+            code?: number;
+            /**
+             * @description 응답 상태
+             * @example success
+             */
+            status?: string;
+            /**
+             * @description 응답 메시지
+             * @example OK
+             */
+            message?: string;
+            /** @description 응답 데이터 */
+            data?: components["schemas"]["PasswordResetVerifyResponse"];
+        };
+        /** @description 비밀번호 재설정 코드 검증 응답 */
+        PasswordResetVerifyResponse: {
+            /** @description 단일 사용 비밀번호 재설정 토큰 (10분 TTL, 재사용 불가) */
+            resetToken?: string;
+        };
+        /** @description 비밀번호 재설정 요청 (이메일 발송) */
+        PasswordResetRequestDto: {
+            /**
+             * Format: email
+             * @description 계정 이메일
+             * @example user@example.com
+             */
+            email: string;
+        };
+        /** @description 비밀번호 재설정 확인 요청 */
+        PasswordResetConfirmRequest: {
+            /** @description verify 단계에서 발급된 단일 사용 resetToken JWT */
+            resetToken: string;
+            /**
+             * @description 새 비밀번호 (영문+숫자 포함 8자 이상)
+             * @example NewPass123
+             */
+            newPassword: string;
+        };
+        LogoutRequest: {
+            refreshToken: string;
+        };
         LoginRequest: {
             /** Format: email */
             email: string;
             password: string;
         };
-        RefreshRequest: {
-            /** @description 현재 유효한 리프레시 토큰 */
-            refreshToken: string;
-        };
-        LogoutRequest: {
-            /** @description 로그아웃할 세션의 리프레시 토큰 (해당 기기 세션만 무효화) */
-            refreshToken: string;
-        };
-        SocialAuthorizeResponse: {
-            /** @description provider 인증 페이지 URL (state JWT 포함). 프론트엔드가 이 URL로 리다이렉트. state는 URL 쿼리에 포함되어 있어 별도 반환하지 않음. */
-            authorizeUrl: string;
-        };
-        SocialCallbackRequest: {
-            /** @description provider로부터 받은 authorization code */
-            code: string;
-            /** @description CSRF 방지용 state (백엔드 발급값) */
-            state: string;
-            /** @description 인증 요청 시 사용한 redirect URI (서버 화이트리스트에 등록된 값) */
-            redirectUri: string;
-            /** @description Apple 최초 로그인 시 provider가 form_post로 전달하는 userInfo JSON. 이후 로그인에서는 생략. */
-            userJson?: string | null;
-        };
-        /** @description 신규 소셜 유저 — 약관 동의 전 pending 상태. POST /auth/social/complete로 가입 완료 필요. */
-        SocialPendingSignupResponse: {
-            /** @example true */
-            isNew: boolean;
-            /** @description 소셜 신원(provider·식별자·이메일)을 담은 단기 JWT (TTL 10분). 서명 검증 후 /complete에서 소비. */
-            pendingToken: string;
-            /** @description 유저에게 동의받아야 할 활성 약관 목록 (required·optional 모두 포함) */
-            requiredTerms: components["schemas"]["TermsVersion"][];
-        };
-        /** @description 소셜 신규 가입 완료 요청 */
-        SocialCompleteRequest: {
-            /** @description 콜백 202 응답에서 받은 pending-signup 토큰 (TTL 10분) */
-            pendingToken: string;
-            /** @description 약관 동의 목록 (필수 약관 SERVICE·PRIVACY agreed=true 포함 필수) */
-            consents: components["schemas"]["ConsentInput"][];
-            /** @description 만 14세 이상 동의 여부 (true 필수) */
-            ageConfirmed: boolean;
-        };
-        PasswordResetRequestBody: {
-            /** Format: email */
-            email: string;
-        };
-        PasswordResetVerifyRequest: {
-            /** Format: email */
-            email: string;
-            /** @example 123456 */
-            code: string;
-        };
-        PasswordResetVerifyResponse: {
-            /** @description 비밀번호 변경 허가 토큰 (단일 사용, TTL 10분) */
-            resetToken: string;
-        };
-        PasswordResetConfirmRequest: {
-            resetToken: string;
-            /** @description 새 비밀번호 (영문·숫자 각 1자 이상, 8자 이상) */
-            newPassword: string;
-        };
-        EmailVerificationRequestBody: {
-            /** Format: email */
-            email: string;
-        };
         EmailVerificationVerifyRequest: {
-            /** @example 654321 */
             code: string;
         };
-        UserProfile: {
-            nickname?: string | null;
-            /** @enum {string|null} */
-            ageGroup?: "TEENS" | "TWENTIES" | "THIRTIES" | "FORTIES" | "FIFTIES_PLUS" | null;
-            occupation?: string | null;
+        EmailVerificationRequestDto: {
+            /** Format: email */
+            email: string;
         };
-        UserInterests: {
-            /** @description 관심 카테고리 목록. 최소 3개 유지 필수. */
-            categories: components["schemas"]["Category"][];
-        };
-        FollowKeywordsRequest: {
-            keywords: components["schemas"]["FollowKeywordItem"][];
-        };
-        FollowKeywordItem: {
-            keyword: string;
-            /** @enum {string} */
-            type: "COMPANY" | "THEME" | "PERSON";
-        };
-        ReadingPreference: {
+        /** @description TTS 생성 요청 */
+        TtsRequest: {
             /**
-             * @description 요약 깊이 (기본값: BALANCED)
+             * @description AWS Polly VoiceId
+             * @example Seoyeon
+             */
+            voiceId: string;
+        };
+        /** @description 공통 API 응답 래퍼 */
+        ApiResponseTtsStatusResponse: {
+            /**
+             * Format: int32
+             * @description HTTP 상태 코드
+             * @example 200
+             */
+            code?: number;
+            /**
+             * @description 응답 상태
+             * @example success
+             */
+            status?: string;
+            /**
+             * @description 응답 메시지
+             * @example OK
+             */
+            message?: string;
+            /** @description 응답 데이터 */
+            data?: components["schemas"]["TtsStatusResponse"];
+        };
+        /** @description TTS 오디오 상태 응답 */
+        TtsStatusResponse: {
+            /**
+             * Format: uuid
+             * @description TTS 오디오 UUID
+             */
+            id?: string;
+            /**
+             * @description 오너 타입 (ARTICLE)
              * @enum {string}
              */
-            summaryDepth: "BRIEF" | "BALANCED" | "DEEP";
+            ownerType?: "ARTICLE";
+            /** @description 기사 ID (문자열) */
+            refId?: string;
             /**
-             * @description 소비 방식 (기본값: READ)
+             * @description 음성 ID
+             * @example Seoyeon
+             */
+            voiceId?: string;
+            /**
+             * @description 처리 상태 (PENDING/PROCESSING/READY/FAILED)
              * @enum {string}
              */
-            consumeMode: "READ" | "LISTEN" | "BOTH";
-        };
-        BriefingSettings: {
+            status?: "PENDING" | "PROCESSING" | "READY" | "FAILED";
+            /** @description CloudFront 오디오 URL. READY 상태일 때만 non-null. */
+            audioUrl?: string;
             /**
-             * @description 브리핑 시간 HH:MM (로컬 기준)
-             * @example 08:00
+             * Format: int32
+             * @description 오디오 재생 시간 (초). Naver API 미제공 시 null.
              */
-            briefingTime: string;
+            durationSec?: number;
+            /** @description 오류 메시지. FAILED 상태일 때만 non-null. */
+            errorMsg?: string;
+        };
+        /** @description 약관 버전 생성 요청 */
+        CreateTermsVersionRequest: {
             /**
-             * @description UTC 오프셋(분). KST=540, UTC=0
-             * @example 540
+             * @description 약관 유형
+             * @example SERVICE
+             * @enum {string}
              */
-            timezoneOffset: number;
-            voiceEnabled: boolean;
-            /** @description 푸시 알림 동의. true 설정 시 동의 시각이 기록됨. */
-            pushAgreed: boolean;
-        };
-        /** @description 온보딩 전체 데이터 일괄 저장 요청 */
-        OnboardingRequest: {
-            profile?: components["schemas"]["UserProfile"];
-            interests: components["schemas"]["UserInterests"];
-            keywords?: components["schemas"]["FollowKeywordsRequest"];
-            readingPreference?: components["schemas"]["ReadingPreference"];
-            briefingSettings?: components["schemas"]["BriefingSettings"];
-        };
-        OnboardingStatus: {
-            completed: boolean;
-            /** @description 현재 선택된 관심 카테고리 수 */
-            interestCount: number;
-            /** @description 관심 카테고리 3개 이상 선택 시 true */
-            personalizationActive: boolean;
-        };
-        TermsVersion: {
-            /** Format: uuid */
-            id: string;
-            /** @enum {string} */
             type: "SERVICE" | "PRIVACY" | "MARKETING";
-            /** @example 1.0 */
+            /**
+             * @description 버전 문자열
+             * @example v2.0
+             */
             version: string;
             /**
              * Format: date
+             * @description 시행일
+             * @example 2026-07-01
+             */
+            effectiveDate: string;
+            /**
+             * @description 필수 동의 여부
+             * @example true
+             */
+            required?: boolean;
+        };
+        /** @description 공통 API 응답 래퍼 */
+        ApiResponseTermsVersionResponse: {
+            /**
+             * Format: int32
+             * @description HTTP 상태 코드
+             * @example 200
+             */
+            code?: number;
+            /**
+             * @description 응답 상태
+             * @example success
+             */
+            status?: string;
+            /**
+             * @description 응답 메시지
+             * @example OK
+             */
+            message?: string;
+            /** @description 응답 데이터 */
+            data?: components["schemas"]["TermsVersionResponse"];
+        };
+        /** @description 약관 버전 응답 */
+        TermsVersionResponse: {
+            /**
+             * Format: uuid
+             * @description 약관 버전 ID
+             */
+            id?: string;
+            /**
+             * @description 약관 유형
+             * @enum {string}
+             */
+            type?: "SERVICE" | "PRIVACY" | "MARKETING";
+            /** @description 버전 */
+            version?: string;
+            /**
+             * Format: date
+             * @description 시행일
+             */
+            effectiveDate?: string;
+            /** @description 필수 여부 */
+            required?: boolean;
+            /** @description 활성 여부 */
+            active?: boolean;
+        };
+        /** @description 공통 API 응답 래퍼 */
+        ApiResponseListVoiceResponse: {
+            /**
+             * Format: int32
+             * @description HTTP 상태 코드
+             * @example 200
+             */
+            code?: number;
+            /**
+             * @description 응답 상태
+             * @example success
+             */
+            status?: string;
+            /**
+             * @description 응답 메시지
+             * @example OK
+             */
+            message?: string;
+            /** @description 응답 데이터 */
+            data?: components["schemas"]["VoiceResponse"][];
+        };
+        /** @description 음성 캐릭터 정보 */
+        VoiceResponse: {
+            /**
+             * @description AWS Polly VoiceId
+             * @example Seoyeon
+             */
+            id?: string;
+            /**
+             * @description 표시명
+             * @example 하린
+             */
+            name?: string;
+            /**
+             * @description 성별 (FEMALE | MALE)
+             * @example FEMALE
+             */
+            gender?: string;
+            /** @description 미리듣기 정적 샘플 URL (CDN). 미설정 시 null. */
+            previewUrl?: string;
+        };
+        /** @description 공통 API 응답 래퍼 */
+        ApiResponseTermsContentResponse: {
+            /**
+             * Format: int32
+             * @description HTTP 상태 코드
+             * @example 200
+             */
+            code?: number;
+            /**
+             * @description 응답 상태
+             * @example success
+             */
+            status?: string;
+            /**
+             * @description 응답 메시지
+             * @example OK
+             */
+            message?: string;
+            /** @description 응답 데이터 */
+            data?: components["schemas"]["TermsContentResponse"];
+        };
+        /** @description 약관 본문 응답 */
+        TermsContentResponse: {
+            /**
+             * Format: uuid
+             * @description 약관 버전 ID
+             */
+            id?: string;
+            /**
+             * @description 약관 유형
+             * @example SERVICE
+             * @enum {string}
+             */
+            type?: "SERVICE" | "PRIVACY" | "MARKETING";
+            /**
+             * @description 버전
+             * @example 1
+             */
+            version?: string;
+            /**
+             * Format: date
+             * @description 시행일
              * @example 2026-06-01
              */
-            effectiveDate: string;
-            isRequired: boolean;
-            isActive: boolean;
+            effectiveDate?: string;
+            /** @description 필수 동의 여부 */
+            isRequired?: boolean;
+            /** @description 활성 여부 */
+            isActive?: boolean;
+            /** @description 약관 제목. MARKETING 등 본문 없는 유형은 null */
+            title?: string;
+            /** @description 약관 소개 문구. 본문 없는 유형은 null */
+            intro?: string;
+            /** @description 약관 섹션 목록. 본문 없는 유형은 null */
+            sections?: components["schemas"]["TermsSection"][];
         };
-        ConsentRecord: {
+        /** @description 약관 섹션 */
+        TermsSection: {
+            /**
+             * @description 섹션 제목
+             * @example 제1조 (목적)
+             */
+            heading?: string;
+            /** @description 섹션 내용 단락 목록 */
+            paragraphs?: string[];
+        };
+        AccountSummaryResponse: {
             /** Format: uuid */
-            termsVersionId: string;
-            /** @enum {string} */
-            type: "SERVICE" | "PRIVACY" | "MARKETING";
-            version: string;
-            agreed: boolean;
+            id?: string;
+            email?: string;
+            role?: string;
+            emailVerified?: boolean;
+            onboardingCompleted?: boolean;
+            signupType?: string;
             /** Format: date-time */
-            agreedAt: string;
+            createdAt?: string;
+            requiresReConsent?: boolean;
         };
-        CreateTermsVersionRequest: {
-            /** @enum {string} */
-            type: "SERVICE" | "PRIVACY" | "MARKETING";
-            /** @example 2.0 */
-            version: string;
-            /** Format: date */
-            effectiveDate: string;
-            isRequired: boolean;
+        /** @description 공통 API 응답 래퍼 */
+        ApiResponseAccountSummaryResponse: {
+            /**
+             * Format: int32
+             * @description HTTP 상태 코드
+             * @example 200
+             */
+            code?: number;
+            /**
+             * @description 응답 상태
+             * @example success
+             */
+            status?: string;
+            /**
+             * @description 응답 메시지
+             * @example OK
+             */
+            message?: string;
+            /** @description 응답 데이터 */
+            data?: components["schemas"]["AccountSummaryResponse"];
         };
-        /**
-         * @description 기사 카테고리. 표시명:
-         *     ECONOMY_FINANCE=경제·금융, SCIENCE=과학, POLITICS=정치, SPORTS=스포츠,
-         *     WORLD=세계, ENTERTAINMENT_CULTURE=연예·문화, HEALTH_MEDICINE=건강·의학,
-         *     AUTOMOTIVE=자동차, IT=IT, OTHER=기타.
-         * @enum {string}
-         */
-        Category: "ECONOMY_FINANCE" | "SCIENCE" | "POLITICS" | "SPORTS" | "WORLD" | "ENTERTAINMENT_CULTURE" | "HEALTH_MEDICINE" | "AUTOMOTIVE" | "IT" | "OTHER";
-        /** @enum {string} */
-        ProcessingStatus: "PENDING" | "COMPLETED" | "FAILED";
-        /** @enum {string} */
-        SummarySlotStatus: "NOT_GENERATED" | "PENDING" | "COMPLETED" | "FAILED";
+        /** @description 공통 API 응답 래퍼 */
+        ApiResponseSavedArticleListResponse: {
+            /**
+             * Format: int32
+             * @description HTTP 상태 코드
+             * @example 200
+             */
+            code?: number;
+            /**
+             * @description 응답 상태
+             * @example success
+             */
+            status?: string;
+            /**
+             * @description 응답 메시지
+             * @example OK
+             */
+            message?: string;
+            /** @description 응답 데이터 */
+            data?: components["schemas"]["SavedArticleListResponse"];
+        };
+        /** @description 피드/검색 공통 기사 응답 */
+        ArticleItem: {
+            /**
+             * Format: int64
+             * @description 기사 ID
+             * @example 1
+             */
+            id?: number;
+            /**
+             * @description 기사 제목
+             * @example 연준, 금리 동결 결정
+             */
+            title?: string;
+            /**
+             * @description 카테고리
+             * @example ECONOMY_FINANCE
+             * @enum {string}
+             */
+            category?: "POLITICS" | "ECONOMY_FINANCE" | "ENTERTAINMENT_CULTURE" | "SPORTS" | "WORLD" | "SCIENCE" | "HEALTH_MEDICINE" | "AUTOMOTIVE" | "IT" | "OTHER";
+            /**
+             * Format: date-time
+             * @description 발행 시각 (UTC)
+             * @example 2026-06-12T03:00:00Z
+             */
+            publishedAt?: string;
+            /**
+             * @description 출처명 (article_sources → sources.name 조인, 복수 출처 시 첫 번째 수집 출처 반환)
+             * @example 조선일보
+             */
+            sourceName?: string;
+            /** @description 요약 슬롯 (선호 depth fallback 포함) */
+            summary?: components["schemas"]["FeedSummarySlot"];
+            /**
+             * Format: double
+             * @description 개인화 랭킹 점수 (피드 응답에만 포함, null이면 미포함)
+             * @example 80.5
+             */
+            rankScore?: number;
+            /**
+             * @description 현재 사용자가 저장한 기사 여부
+             * @example false
+             */
+            saved?: boolean;
+        };
+        /** @description 기사 요약 슬롯 (선호 depth 우선, 없으면 fallback) */
+        FeedSummarySlot: {
+            /**
+             * @description 요약 본문. null이면 요약 미생성 상태
+             * @example 미국 연준이 금리를 동결하면서 시장에 안도감이 퍼졌다.
+             */
+            text?: string;
+            /**
+             * @description 실제 반환된 슬롯 depth
+             * @example balanced
+             * @enum {string}
+             */
+            depth?: "brief" | "balanced" | "deep";
+            /**
+             * @description 선호 depth와 실제 반환 depth가 다른 경우 true
+             * @example true
+             */
+            isFallback?: boolean;
+        };
+        /** @description 저장된 기사 항목 */
+        SavedArticleItem: {
+            /**
+             * Format: date-time
+             * @description 저장 시각 (UTC)
+             * @example 2026-06-13T00:00:00Z
+             */
+            savedAt?: string;
+            /** @description 기사 정보 */
+            article?: components["schemas"]["ArticleItem"];
+        };
+        /** @description 저장 기사 목록 응답 */
+        SavedArticleListResponse: {
+            /** @description 저장 기사 목록 (savedAt 역순) */
+            articles?: components["schemas"]["SavedArticleItem"][];
+            /** @description 다음 페이지 커서. null이면 마지막 페이지 */
+            nextCursor?: string;
+            /**
+             * @description 다음 페이지 존재 여부
+             * @example false
+             */
+            hasNext?: boolean;
+        };
+        /** @description 공통 API 응답 래퍼 */
+        ApiResponseOnboardingStatusResponse: {
+            /**
+             * Format: int32
+             * @description HTTP 상태 코드
+             * @example 200
+             */
+            code?: number;
+            /**
+             * @description 응답 상태
+             * @example success
+             */
+            status?: string;
+            /**
+             * @description 응답 메시지
+             * @example OK
+             */
+            message?: string;
+            /** @description 응답 데이터 */
+            data?: components["schemas"]["OnboardingStatusResponse"];
+        };
+        /** @description 온보딩 상태 응답 */
+        OnboardingStatusResponse: {
+            /** @description 온보딩 완료 여부 */
+            onboardingCompleted?: boolean;
+            /** @description 개인화 활성화 여부 */
+            personalizationActive?: boolean;
+        };
+        /** @description 공통 API 응답 래퍼 */
+        ApiResponseListConsentRecordResponse: {
+            /**
+             * Format: int32
+             * @description HTTP 상태 코드
+             * @example 200
+             */
+            code?: number;
+            /**
+             * @description 응답 상태
+             * @example success
+             */
+            status?: string;
+            /**
+             * @description 응답 메시지
+             * @example OK
+             */
+            message?: string;
+            /** @description 응답 데이터 */
+            data?: components["schemas"]["ConsentRecordResponse"][];
+        };
+        /** @description 동의 기록 응답 */
+        ConsentRecordResponse: {
+            /**
+             * Format: uuid
+             * @description 동의 기록 ID
+             */
+            id?: string;
+            /**
+             * Format: uuid
+             * @description 약관 버전 ID
+             */
+            termsVersionId?: string;
+            /**
+             * @description 약관 유형
+             * @enum {string}
+             */
+            termsType?: "SERVICE" | "PRIVACY" | "MARKETING";
+            /** @description 버전 */
+            version?: string;
+            /** @description 동의 여부 */
+            agreed?: boolean;
+            /**
+             * Format: date-time
+             * @description 동의 시각
+             */
+            agreedAt?: string;
+        };
+        /** @description 공통 API 응답 래퍼 */
+        ApiResponseFeedResponse: {
+            /**
+             * Format: int32
+             * @description HTTP 상태 코드
+             * @example 200
+             */
+            code?: number;
+            /**
+             * @description 응답 상태
+             * @example success
+             */
+            status?: string;
+            /**
+             * @description 응답 메시지
+             * @example OK
+             */
+            message?: string;
+            /** @description 응답 데이터 */
+            data?: components["schemas"]["FeedResponse"];
+        };
+        /** @description 개인화 피드 응답 */
+        FeedResponse: {
+            /** @description 기사 목록 */
+            articles?: components["schemas"]["ArticleItem"][];
+            /**
+             * @description 다음 페이지 커서. 마지막 페이지면 null
+             * @example eyJzY29yZSI6ODAuNX0=
+             */
+            nextCursor?: string;
+            /**
+             * @description 다음 페이지 존재 여부
+             * @example true
+             */
+            hasNext?: boolean;
+            /**
+             * Format: int32
+             * @description 현재 페이지 기사 수
+             * @example 20
+             */
+            size?: number;
+            /**
+             * @description false이면 관심사 기반 랭킹 미적용(최신순 fallback)
+             * @example true
+             */
+            personalized?: boolean;
+        };
+        /** @description 공통 API 응답 래퍼 */
+        ApiResponseBriefingResponse: {
+            /**
+             * Format: int32
+             * @description HTTP 상태 코드
+             * @example 200
+             */
+            code?: number;
+            /**
+             * @description 응답 상태
+             * @example success
+             */
+            status?: string;
+            /**
+             * @description 응답 메시지
+             * @example OK
+             */
+            message?: string;
+            /** @description 응답 데이터 */
+            data?: components["schemas"]["BriefingResponse"];
+        };
+        /** @description 데일리 브리핑 TTS 응답 */
+        BriefingResponse: {
+            /**
+             * Format: date
+             * @description 브리핑 날짜
+             * @example 2026-06-13
+             */
+            briefDate?: string;
+            /** @description 재생 큐 기사 ID 순서 (summaryStatus=COMPLETED 기사만 포함) */
+            articleIds?: number[];
+            /**
+             * @description 사용 음성 ID
+             * @example Seoyeon
+             */
+            voiceId?: string;
+            /** @description 각 기사 TTS 상태 목록. 전체 READY이면 HTTP 200, 아니면 202 반환. */
+            ttsItems?: components["schemas"]["TtsStatusResponse"][];
+        };
+        /** @description 공통 API 응답 래퍼 */
+        ApiResponseSocialAuthorizeResponse: {
+            /**
+             * Format: int32
+             * @description HTTP 상태 코드
+             * @example 200
+             */
+            code?: number;
+            /**
+             * @description 응답 상태
+             * @example success
+             */
+            status?: string;
+            /**
+             * @description 응답 메시지
+             * @example OK
+             */
+            message?: string;
+            /** @description 응답 데이터 */
+            data?: components["schemas"]["SocialAuthorizeResponse"];
+        };
+        /** @description 소셜 OAuth 인가 URL 응답 */
+        SocialAuthorizeResponse: {
+            /** @description provider의 인가 페이지 URL (state JWT 포함) */
+            authorizeUrl?: string;
+        };
+        /** @description 공통 API 응답 래퍼 */
+        ApiResponseArticleFeedResponse: {
+            /**
+             * Format: int32
+             * @description HTTP 상태 코드
+             * @example 200
+             */
+            code?: number;
+            /**
+             * @description 응답 상태
+             * @example success
+             */
+            status?: string;
+            /**
+             * @description 응답 메시지
+             * @example OK
+             */
+            message?: string;
+            /** @description 응답 데이터 */
+            data?: components["schemas"]["ArticleFeedResponse"];
+        };
+        /** @description 피드 목록 기사 항목 */
         ArticleFeedItem: {
-            /** Format: int64 */
-            id: number;
-            title: string;
-            /** @description category_status=FAILED인 경우 OTHER로 반환 */
-            category: components["schemas"]["Category"];
-            categoryStatus: components["schemas"]["ProcessingStatus"];
-            /** @description 첫 번째 수집 출처명 */
-            primarySource: string;
+            /**
+             * Format: int64
+             * @description 기사 ID
+             */
+            id?: number;
+            /** @description 기사 제목 */
+            title?: string;
+            /** @description 작성자. 없으면 null */
+            author?: string;
+            /**
+             * @description 카테고리. 분류 실패 시 OTHER
+             * @example TECH
+             */
+            category?: string;
             /**
              * Format: date-time
-             * @description 원 출처 발행 시각 (UTC)
+             * @description 기사 발행 시각 (UTC)
              */
-            publishedAt: string;
-            /** @description balanced 요약 미리보기 (목록용). PENDING/FAILED 시 null. */
-            preview?: string | null;
-            summaryStatus: components["schemas"]["ProcessingStatus"];
+            publishedAt?: string;
+            /**
+             * Format: date-time
+             * @description 최초 수집 시각 (UTC)
+             */
+            firstCollectedAt?: string;
+            /** @description 간략 요약 (피드 목록에서는 항상 null, 상세 조회에서 로드) */
+            briefSummary?: string;
         };
+        /** @description 뉴스 피드 목록 응답 */
         ArticleFeedResponse: {
-            data: components["schemas"]["ArticleFeedItem"][];
-            /** @description 다음 페이지 커서 토큰. 마지막 페이지면 null. */
-            nextCursor?: string | null;
-            hasMore: boolean;
-            /** @description 실제 반환된 기사 수 */
-            size: number;
-        };
-        SummarySlot: {
-            status: components["schemas"]["SummarySlotStatus"];
-            /** @description status=COMPLETED 시에만 존재 */
-            content?: string | null;
+            /** @description 기사 목록 */
+            data?: components["schemas"]["ArticleFeedItem"][];
+            /** @description 다음 페이지 커서 토큰. 마지막 페이지면 null */
+            nextCursor?: string;
+            /** @description 다음 페이지 존재 여부 */
+            hasMore?: boolean;
             /**
-             * Format: date-time
-             * @description status=COMPLETED 시에만 존재 (UTC)
+             * Format: int32
+             * @description 현재 페이지 기사 수
              */
-            generatedAt?: string | null;
+            size?: number;
         };
-        ArticleSourceRef: {
-            /** @description 출처명 */
-            name: string;
+        /** @description 공통 API 응답 래퍼 */
+        ApiResponseArticleDetailResponse: {
             /**
-             * Format: date-time
-             * @description 해당 출처에서 수집한 시각 (UTC)
+             * Format: int32
+             * @description HTTP 상태 코드
+             * @example 200
              */
-            collectedAt: string;
+            code?: number;
+            /**
+             * @description 응답 상태
+             * @example success
+             */
+            status?: string;
+            /**
+             * @description 응답 메시지
+             * @example OK
+             */
+            message?: string;
+            /** @description 응답 데이터 */
+            data?: components["schemas"]["ArticleDetailResponse"];
         };
+        /** @description 기사 상세 응답 */
         ArticleDetailResponse: {
-            /** Format: int64 */
-            id: number;
-            title: string;
-            author?: string | null;
-            /** @description category_status=FAILED인 경우 OTHER로 반환 */
-            category: components["schemas"]["Category"];
-            categoryStatus: components["schemas"]["ProcessingStatus"];
-            /** Format: date-time */
-            publishedAt: string;
-            /** Format: date-time */
-            collectedAt: string;
-            /** Format: uri */
-            originalUrl: string;
-            sources: components["schemas"]["ArticleSourceRef"][];
-            summaries: {
-                brief: components["schemas"]["SummarySlot"];
-                balanced: components["schemas"]["SummarySlot"];
-                deep: components["schemas"]["SummarySlot"];
-            };
-            /** @description AI 생성 요약 면책 안내 문구 */
-            aiDisclaimer: string;
-            /** Format: date-time */
-            expiresAt?: string | null;
+            /**
+             * Format: int64
+             * @description 기사 ID
+             */
+            id?: number;
+            /** @description 기사 제목 */
+            title?: string;
+            /** @description 작성자. 없으면 null */
+            author?: string;
+            /** @description 원문 URL */
+            originalUrl?: string;
+            /**
+             * @description 카테고리. 분류 실패 시 OTHER
+             * @example TECH
+             */
+            category?: string;
+            /**
+             * Format: date-time
+             * @description 기사 발행 시각 (UTC)
+             */
+            publishedAt?: string;
+            /**
+             * Format: date-time
+             * @description 최초 수집 시각 (UTC)
+             */
+            firstCollectedAt?: string;
+            /** @description 간략 요약 슬롯 (balanced 트런케이션 ≤200자) */
+            brief?: components["schemas"]["SummarySlot"];
+            /** @description 균형 요약 슬롯 (수집 시 eager 생성) */
+            balanced?: components["schemas"]["SummarySlot"];
+            /** @description 심층 요약 슬롯 (최초 상세 조회 시 lazy 생성, 첫 요청은 PENDING일 수 있음) */
+            deep?: components["schemas"]["SummarySlot"];
         };
+        /** @description 요약 슬롯 */
+        SummarySlot: {
+            /**
+             * @description 요약 상태
+             * @enum {string}
+             */
+            status?: "NOT_GENERATED" | "PENDING" | "COMPLETED" | "FAILED";
+            /** @description 요약 내용. COMPLETED 상태일 때만 존재하며 FAILED 시 null */
+            content?: string;
+            /**
+             * Format: date-time
+             * @description 요약 생성 완료 시각 (UTC). COMPLETED 상태일 때만 존재
+             */
+            generatedAt?: string;
+        };
+        /** @description 공통 API 응답 래퍼 */
+        ApiResponseArticleSearchResponse: {
+            /**
+             * Format: int32
+             * @description HTTP 상태 코드
+             * @example 200
+             */
+            code?: number;
+            /**
+             * @description 응답 상태
+             * @example success
+             */
+            status?: string;
+            /**
+             * @description 응답 메시지
+             * @example OK
+             */
+            message?: string;
+            /** @description 응답 데이터 */
+            data?: components["schemas"]["ArticleSearchResponse"];
+        };
+        /** @description 기사 검색 응답 */
+        ArticleSearchResponse: {
+            /** @description 검색 결과 기사 목록 (relevance 내림차순) */
+            articles?: components["schemas"]["ArticleItem"][];
+            /** @description 다음 페이지 커서. null이면 마지막 페이지 */
+            nextCursor?: string;
+            /**
+             * @description 다음 페이지 존재 여부
+             * @example false
+             */
+            hasNext?: boolean;
+        };
+        /** @description 공통 API 응답 래퍼 */
+        ApiResponsePipelineStatsResponse: {
+            /**
+             * Format: int32
+             * @description HTTP 상태 코드
+             * @example 200
+             */
+            code?: number;
+            /**
+             * @description 응답 상태
+             * @example success
+             */
+            status?: string;
+            /**
+             * @description 응답 메시지
+             * @example OK
+             */
+            message?: string;
+            /** @description 응답 데이터 */
+            data?: components["schemas"]["PipelineStatsResponse"];
+        };
+        /** @description 파이프라인 통계 응답 */
         PipelineStatsResponse: {
             /**
              * Format: date
-             * @description 통계 기준일 (오늘, UTC)
+             * @description 통계 기준 날짜 (오늘, UTC)
              */
-            date: string;
-            articlesCollectedToday: number;
+            date?: string;
             /**
-             * Format: float
-             * @description 오늘 수집 기사 중 summary_status=COMPLETED 비율 (%)
+             * Format: int64
+             * @description 오늘 수집된 기사 수
              */
-            summaryCompletionRate: number;
-            /** @description 오늘 병합 처리된 건수 */
-            mergeCount: number;
-            /** @description 노출 기사 기준 카테고리별 건수. FAILED 기사는 OTHER로 계산. */
-            categoryBreakdown: {
+            articlesCollectedToday?: number;
+            /**
+             * Format: double
+             * @description 요약 완료율 (0.0 ~ 1.0). 전체 기사 중 summary_status=COMPLETED 비율
+             */
+            summaryCompletionRate?: number;
+            /**
+             * Format: int64
+             * @description 중복 병합 건수 (동일 URL 기사가 다른 출처에서 중복 수집된 횟수)
+             */
+            mergeCount?: number;
+            /** @description 카테고리별 기사 수. 키: 카테고리명, 값: 기사 수 */
+            categoryBreakdown?: {
                 [key: string]: number;
             };
-            pipelineStatus: {
-                categoryPending: number;
-                categoryFailed: number;
-                summaryPending: number;
-                summaryFailed: number;
-            };
+            /** @description 파이프라인 처리 현황 */
+            pipelineStatus?: components["schemas"]["PipelineStatus"];
+        };
+        /** @description 파이프라인 처리 대기/실패 현황 */
+        PipelineStatus: {
+            /**
+             * Format: int64
+             * @description 카테고리 분류 대기 중인 기사 수
+             */
+            categoryPending?: number;
+            /**
+             * Format: int64
+             * @description 카테고리 분류 영구 실패한 기사 수
+             */
+            categoryFailed?: number;
+            /**
+             * Format: int64
+             * @description 요약 생성 대기 중인 기사 수
+             */
+            summaryPending?: number;
+            /**
+             * Format: int64
+             * @description 요약 생성 영구 실패한 기사 수
+             */
+            summaryFailed?: number;
         };
     };
-    responses: {
-        /** @description 잘못된 요청 (파라미터 오류) */
-        BadRequest: {
-            headers: {
-                [name: string]: unknown;
-            };
-            content: {
-                /**
-                 * @example {
-                 *       "code": "VALIDATION_ERROR",
-                 *       "message": "Invalid request parameters",
-                 *       "timestamp": "2026-06-14T10:00:00Z"
-                 *     }
-                 */
-                "application/json": components["schemas"]["ErrorResponse"];
-            };
-        };
-        /** @description 인증 토큰 없음 또는 만료 */
-        Unauthorized: {
-            headers: {
-                [name: string]: unknown;
-            };
-            content: {
-                /**
-                 * @example {
-                 *       "code": "UNAUTHORIZED",
-                 *       "message": "Authentication required",
-                 *       "timestamp": "2026-06-14T10:00:00Z"
-                 *     }
-                 */
-                "application/json": components["schemas"]["ErrorResponse"];
-            };
-        };
-        /** @description 권한 없음 */
-        Forbidden: {
-            headers: {
-                [name: string]: unknown;
-            };
-            content: {
-                /**
-                 * @example {
-                 *       "code": "FORBIDDEN",
-                 *       "message": "Admin role required",
-                 *       "timestamp": "2026-06-14T10:00:00Z"
-                 *     }
-                 */
-                "application/json": components["schemas"]["ErrorResponse"];
-            };
-        };
-        /** @description 리소스 없음 */
-        NotFound: {
-            headers: {
-                [name: string]: unknown;
-            };
-            content: {
-                /**
-                 * @example {
-                 *       "code": "ARTICLE_NOT_FOUND",
-                 *       "message": "Article with id 999 not found",
-                 *       "timestamp": "2026-06-14T10:00:00Z"
-                 *     }
-                 */
-                "application/json": components["schemas"]["ErrorResponse"];
-            };
-        };
-        /** @description 유효성 검사 실패 */
-        UnprocessableEntity: {
-            headers: {
-                [name: string]: unknown;
-            };
-            content: {
-                "application/json": components["schemas"]["ErrorResponse"];
-            };
-        };
-    };
+    responses: never;
     parameters: never;
     requestBodies: never;
     headers: never;
@@ -993,527 +1987,7 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    signup: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["SignupRequest"];
-            };
-        };
-        responses: {
-            /** @description 계정 생성 완료 */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        account: components["schemas"]["AccountSummary"];
-                        tokens: components["schemas"]["TokenPair"];
-                        /** @description 이메일 인증 코드 발송 성공 여부. false여도 계정은 생성됨. 재발송은 /auth/email-verification/request 이용. */
-                        verificationEmailSent: boolean;
-                    };
-                };
-            };
-            /** @description 이메일 중복 */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description 유효성 검사 실패 (비밀번호 정책·약관 미동의·연령 미달) */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-        };
-    };
-    login: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["LoginRequest"];
-            };
-        };
-        responses: {
-            /** @description 로그인 성공 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        account: components["schemas"]["AccountSummary"];
-                        tokens: components["schemas"]["TokenPair"];
-                    };
-                };
-            };
-            /** @description 인증 실패 (잘못된 자격증명·미존재·잠금 — 계정 열거 방지로 동일 포맷) */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description 계정 정지 (SUSPENDED 상태) */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description 소셜 전용 계정 (code=SOCIAL_ONLY_ACCOUNT) */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-        };
-    };
-    refreshToken: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["RefreshRequest"];
-            };
-        };
-        responses: {
-            /** @description 토큰 갱신 성공 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["TokenPair"];
-                };
-            };
-            /** @description 리프레시 토큰 만료 또는 무효화됨 (재로그인 필요) */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-        };
-    };
-    logout: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["LogoutRequest"];
-            };
-        };
-        responses: {
-            /** @description 로그아웃 성공 (본문 없음) */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            401: components["responses"]["Unauthorized"];
-        };
-    };
-    socialAuthorize: {
-        parameters: {
-            query: {
-                /** @description OAuth 콜백 후 돌아올 클라이언트 URI */
-                redirectUri: string;
-            };
-            header?: never;
-            path: {
-                /** @description 소셜 provider 식별자 */
-                provider: "kakao" | "google" | "apple";
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 인증 URL 발급 성공 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SocialAuthorizeResponse"];
-                };
-            };
-            /** @description 지원하지 않는 provider */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-        };
-    };
-    socialCallback: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                provider: "kakao" | "google" | "apple";
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["SocialCallbackRequest"];
-            };
-        };
-        responses: {
-            /** @description 기존 소셜 계정 로그인 성공 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @example false */
-                        isNew: boolean;
-                        account: components["schemas"]["AccountSummary"];
-                        tokens: components["schemas"]["TokenPair"];
-                    };
-                };
-            };
-            /** @description 신규 유저 — pending-signup 토큰 발급. POST /complete로 가입 완료 필요. */
-            202: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SocialPendingSignupResponse"];
-                };
-            };
-            /** @description state 검증 실패 (CSRF 의심) 또는 허용되지 않은 redirectUri */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description 동일 이메일로 이메일 계정 이미 존재 */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-        };
-    };
-    socialComplete: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["SocialCompleteRequest"];
-            };
-        };
-        responses: {
-            /** @description 계정 생성 + 로그인 성공 */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        account: components["schemas"]["AccountSummary"];
-                        tokens: components["schemas"]["TokenPair"];
-                    };
-                };
-            };
-            /** @description pendingToken 만료 또는 서명 오류 */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description 이메일 충돌 (동시 가입 경합) */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description 필수 약관 미동의 또는 연령 미확인 */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-        };
-    };
-    passwordResetRequest: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PasswordResetRequestBody"];
-            };
-        };
-        responses: {
-            /** @description 처리 완료 (등록·미등록·소셜 전용 모두 동일 202) */
-            202: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description 재전송 횟수 초과 (시간당 5회) */
-            429: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description 이메일 서비스 장애 */
-            503: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-        };
-    };
-    passwordResetVerify: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PasswordResetVerifyRequest"];
-            };
-        };
-        responses: {
-            /** @description 코드 검증 성공 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PasswordResetVerifyResponse"];
-                };
-            };
-            /** @description 잘못된 코드 */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description 코드 만료 */
-            410: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-        };
-    };
-    passwordResetConfirm: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PasswordResetConfirmRequest"];
-            };
-        };
-        responses: {
-            /** @description 비밀번호 변경 완료 (본문 없음) */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description 변경 허가 토큰 무효·만료·재사용 시도 */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description 비밀번호 정책 미충족 */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-        };
-    };
-    emailVerificationRequest: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["EmailVerificationRequestBody"];
-            };
-        };
-        responses: {
-            /** @description 코드 발송 처리 완료 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description 이미 인증 완료된 계정 */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description 재전송 횟수 초과 (시간당 5회) */
-            429: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description 이메일 서비스 장애 */
-            503: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-        };
-    };
-    emailVerificationVerify: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["EmailVerificationVerifyRequest"];
-            };
-        };
-        responses: {
-            /** @description 이메일 인증 완료 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @example true */
-                        emailVerified?: boolean;
-                    };
-                };
-            };
-            /** @description 잘못된 코드 */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description 코드 만료 */
-            410: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-        };
-    };
-    getMe: {
+    getReadingPreference: {
         parameters: {
             query?: never;
             header?: never;
@@ -1528,17 +2002,49 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["AccountSummary"];
+                    "*/*": components["schemas"]["ApiResponseReadingPreferenceResponse"];
                 };
             };
-            401: components["responses"]["Unauthorized"];
-            /** @description 이메일 미인증 (code=EMAIL_NOT_VERIFIED) */
-            403: {
+            /** @description 미인증 */
+            401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
+                    "*/*": components["schemas"]["ApiResponseReadingPreferenceResponse"];
+                };
+            };
+        };
+    };
+    updateReadingPreference: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReadingPreferenceRequest"];
+            };
+        };
+        responses: {
+            /** @description 수정 성공 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseReadingPreferenceResponse"];
+                };
+            };
+            /** @description 미인증 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseReadingPreferenceResponse"];
                 };
             };
         };
@@ -1558,10 +2064,18 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UserProfile"];
+                    "*/*": components["schemas"]["ApiResponseUserProfileResponse"];
                 };
             };
-            401: components["responses"]["Unauthorized"];
+            /** @description 미인증 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseUserProfileResponse"];
+                };
+            };
         };
     };
     updateProfile: {
@@ -1573,7 +2087,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["UserProfile"];
+                "application/json": components["schemas"]["UserProfileRequest"];
             };
         };
         responses: {
@@ -1583,64 +2097,16 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UserProfile"];
+                    "*/*": components["schemas"]["ApiResponseUserProfileResponse"];
                 };
             };
-            401: components["responses"]["Unauthorized"];
-            422: components["responses"]["UnprocessableEntity"];
-        };
-    };
-    getInterests: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 조회 성공 */
-            200: {
+            /** @description 미인증 */
+            401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UserInterests"];
-                };
-            };
-            401: components["responses"]["Unauthorized"];
-        };
-    };
-    updateInterests: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UserInterests"];
-            };
-        };
-        responses: {
-            /** @description 수정 성공 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UserInterests"];
-                };
-            };
-            401: components["responses"]["Unauthorized"];
-            /** @description 카테고리 3개 미만 */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
+                    "*/*": components["schemas"]["ApiResponseUserProfileResponse"];
                 };
             };
         };
@@ -1660,10 +2126,18 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["FollowKeywordsRequest"];
+                    "*/*": components["schemas"]["ApiResponseFollowKeywordsResponse"];
                 };
             };
-            401: components["responses"]["Unauthorized"];
+            /** @description 미인증 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseFollowKeywordsResponse"];
+                };
+            };
         };
     };
     updateKeywords: {
@@ -1685,13 +2159,21 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["FollowKeywordsRequest"];
+                    "*/*": components["schemas"]["ApiResponseFollowKeywordsResponse"];
                 };
             };
-            401: components["responses"]["Unauthorized"];
+            /** @description 미인증 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseFollowKeywordsResponse"];
+                };
+            };
         };
     };
-    getReadingPreference: {
+    getInterests: {
         parameters: {
             query?: never;
             header?: never;
@@ -1706,13 +2188,21 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ReadingPreference"];
+                    "*/*": components["schemas"]["ApiResponseUserInterestsResponse"];
                 };
             };
-            401: components["responses"]["Unauthorized"];
+            /** @description 미인증 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseUserInterestsResponse"];
+                };
+            };
         };
     };
-    updateReadingPreference: {
+    updateInterests: {
         parameters: {
             query?: never;
             header?: never;
@@ -1721,7 +2211,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["ReadingPreference"];
+                "application/json": components["schemas"]["UserInterestsRequest"];
             };
         };
         responses: {
@@ -1731,10 +2221,27 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ReadingPreference"];
+                    "*/*": components["schemas"]["ApiResponseUserInterestsResponse"];
                 };
             };
-            401: components["responses"]["Unauthorized"];
+            /** @description 미인증 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseUserInterestsResponse"];
+                };
+            };
+            /** @description 카테고리 3개 미만 */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseUserInterestsResponse"];
+                };
+            };
         };
     };
     getBriefingSettings: {
@@ -1752,10 +2259,18 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["BriefingSettings"];
+                    "*/*": components["schemas"]["ApiResponseBriefingSettingsResponse"];
                 };
             };
-            401: components["responses"]["Unauthorized"];
+            /** @description 미인증 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseBriefingSettingsResponse"];
+                };
+            };
         };
     };
     updateBriefingSettings: {
@@ -1767,7 +2282,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["BriefingSettings"];
+                "application/json": components["schemas"]["BriefingSettingsRequest"];
             };
         };
         responses: {
@@ -1777,10 +2292,18 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["BriefingSettings"];
+                    "*/*": components["schemas"]["ApiResponseBriefingSettingsResponse"];
                 };
             };
-            401: components["responses"]["Unauthorized"];
+            /** @description 미인증 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseBriefingSettingsResponse"];
+                };
+            };
         };
     };
     submitOnboarding: {
@@ -1802,22 +2325,30 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["OnboardingStatus"];
+                    "*/*": components["schemas"]["ApiResponseVoid"];
                 };
             };
-            401: components["responses"]["Unauthorized"];
+            /** @description 미인증 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseVoid"];
+                };
+            };
             /** @description 관심 카테고리 3개 미만 */
             422: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
+                    "*/*": components["schemas"]["ApiResponseVoid"];
                 };
             };
         };
     };
-    getOnboardingStatus: {
+    getConsentHistory: {
         parameters: {
             query?: never;
             header?: never;
@@ -1832,10 +2363,735 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["OnboardingStatus"];
+                    "*/*": components["schemas"]["ApiResponseListConsentRecordResponse"];
                 };
             };
-            401: components["responses"]["Unauthorized"];
+            /** @description 미인증 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseListConsentRecordResponse"];
+                };
+            };
+        };
+    };
+    submitConsents: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConsentInput"][];
+            };
+        };
+        responses: {
+            /** @description 동의 처리 완료 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseVoid"];
+                };
+            };
+            /** @description 미인증 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseVoid"];
+                };
+            };
+        };
+    };
+    callback: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description OAuth provider (kakao / google / apple) */
+                provider: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SocialCallbackRequest"];
+            };
+        };
+        responses: {
+            /** @description 기존 소셜 계정 로그인 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseMapStringObject"];
+                };
+            };
+            /** @description 신규 유저 — pendingToken 발급. POST /complete로 가입 완료 필요 */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseMapStringObject"];
+                };
+            };
+            /** @description state 유효하지 않음 (위조/만료/provider 불일치) */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseMapStringObject"];
+                };
+            };
+            /** @description 동일 이메일 계정 이미 존재 */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseMapStringObject"];
+                };
+            };
+        };
+    };
+    complete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SocialCompleteRequest"];
+            };
+        };
+        responses: {
+            /** @description 계정 생성 + 로그인 성공 */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseMapStringObject"];
+                };
+            };
+            /** @description pendingToken 만료 또는 서명 오류 */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseMapStringObject"];
+                };
+            };
+            /** @description 이메일 충돌 (동시 가입 경합) */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseMapStringObject"];
+                };
+            };
+            /** @description 필수 약관 미동의 또는 연령 미확인 */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseMapStringObject"];
+                };
+            };
+        };
+    };
+    signup: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SignupRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseMapStringObject"];
+                };
+            };
+        };
+    };
+    refresh: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RefreshRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTokenPairResponse"];
+                };
+            };
+        };
+    };
+    verifyCode: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PasswordResetVerifyRequest"];
+            };
+        };
+        responses: {
+            /** @description 검증 성공, resetToken 반환 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponsePasswordResetVerifyResponse"];
+                };
+            };
+            /** @description 코드 불일치 또는 계정 없음 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponsePasswordResetVerifyResponse"];
+                };
+            };
+            /** @description 코드 만료 */
+            410: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponsePasswordResetVerifyResponse"];
+                };
+            };
+        };
+    };
+    requestCode: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PasswordResetRequestDto"];
+            };
+        };
+        responses: {
+            /** @description 요청 처리됨 (이메일 발송 여부 미공개) */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseVoid"];
+                };
+            };
+            /** @description 시간당 발송 한도 초과 (등록 계정만) */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseVoid"];
+                };
+            };
+            /** @description 이메일 발송 실패 */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseVoid"];
+                };
+            };
+        };
+    };
+    confirmReset: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PasswordResetConfirmRequest"];
+            };
+        };
+        responses: {
+            /** @description 비밀번호 변경 성공 */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description resetToken 유효하지 않거나 이미 사용됨 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description 비밀번호 정책 위반 */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    logout: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LogoutRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    login: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LoginRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseMapStringObject"];
+                };
+            };
+        };
+    };
+    verify: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EmailVerificationVerifyRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseVoid"];
+                };
+            };
+        };
+    };
+    requestVerification: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EmailVerificationRequestDto"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseVoid"];
+                };
+            };
+        };
+    };
+    getTtsStatus: {
+        parameters: {
+            query: {
+                /** @description Naver Clova Voice speaker ID */
+                voiceId: string;
+            };
+            header?: never;
+            path: {
+                /** @description 기사 ID */
+                articleId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 상태 조회 성공 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTtsStatusResponse"];
+                };
+            };
+            /** @description 미인증 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTtsStatusResponse"];
+                };
+            };
+            /** @description TTS 없음 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTtsStatusResponse"];
+                };
+            };
+        };
+    };
+    requestTts: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description 기사 ID */
+                articleId: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TtsRequest"];
+            };
+        };
+        responses: {
+            /** @description 이미 READY 상태 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTtsStatusResponse"];
+                };
+            };
+            /** @description PENDING/PROCESSING 처리 대기 중 */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTtsStatusResponse"];
+                };
+            };
+            /** @description 미인증 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTtsStatusResponse"];
+                };
+            };
+            /** @description 권한 없음 */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTtsStatusResponse"];
+                };
+            };
+            /** @description 기사 없음 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTtsStatusResponse"];
+                };
+            };
+            /** @description 기사 요약 미완료 (SUMMARY_NOT_READY) */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTtsStatusResponse"];
+                };
+            };
+            /** @description 유효하지 않은 voiceId */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTtsStatusResponse"];
+                };
+            };
+        };
+    };
+    save: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description 저장할 기사 ID */
+                articleId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 이미 저장됨 (멱등) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseVoid"];
+                };
+            };
+            /** @description 신규 저장 완료 */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseVoid"];
+                };
+            };
+            /** @description 미인증 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseVoid"];
+                };
+            };
+            /** @description 이메일 인증 미완료 */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseVoid"];
+                };
+            };
+            /** @description 기사 없음 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseVoid"];
+                };
+            };
+            /** @description 저장 상한(1,000건) 초과 */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseVoid"];
+                };
+            };
+        };
+    };
+    unsave: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description 해제할 기사 ID */
+                articleId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 해제 완료 (또는 원래 미저장) */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description 미인증 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description 이메일 인증 미완료 */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    createTermsVersion: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateTermsVersionRequest"];
+            };
+        };
+        responses: {
+            /** @description 등록 성공 */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTermsVersionResponse"];
+                };
+            };
+            /** @description 미인증 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTermsVersionResponse"];
+                };
+            };
+            /** @description ADMIN 권한 필요 */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTermsVersionResponse"];
+                };
+            };
+            /** @description 이미 존재하는 버전 */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTermsVersionResponse"];
+                };
+            };
+        };
+    };
+    getVoices: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 목록 조회 성공 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseListVoiceResponse"];
+                };
+            };
+            /** @description 미인증 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseListVoiceResponse"];
+                };
+            };
+            /** @description 권한 없음 */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseListVoiceResponse"];
+                };
+            };
         };
     };
     getActiveTerms: {
@@ -1853,12 +3109,47 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["TermsVersion"][];
+                    "*/*": components["schemas"]["ApiResponseMapStringObject"];
                 };
             };
         };
     };
-    getConsents: {
+    getTermsContent: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /**
+                 * @description 약관 유형 (SERVICE | PRIVACY)
+                 * @example SERVICE
+                 */
+                type: "SERVICE" | "PRIVACY" | "MARKETING";
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 조회 성공 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTermsContentResponse"];
+                };
+            };
+            /** @description 활성 약관 없음 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTermsContentResponse"];
+                };
+            };
+        };
+    };
+    getMe: {
         parameters: {
             query?: never;
             header?: never;
@@ -1873,51 +3164,31 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ConsentRecord"][];
+                    "*/*": components["schemas"]["ApiResponseAccountSummaryResponse"];
                 };
             };
-            401: components["responses"]["Unauthorized"];
-        };
-    };
-    submitConsents: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    consents: components["schemas"]["ConsentInput"][];
-                };
-            };
-        };
-        responses: {
-            /** @description 동의 제출 완료 */
-            200: {
+            /** @description 미인증 */
+            401: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ConsentRecord"][];
+                    "*/*": components["schemas"]["ApiResponseAccountSummaryResponse"];
                 };
             };
-            401: components["responses"]["Unauthorized"];
         };
     };
-    getFeed: {
+    list: {
         parameters: {
             query?: {
-                /**
-                 * @description 이전 응답의 nextCursor 토큰. 첫 페이지 요청 시 생략.
-                 * @example eyJwdWJsaXNoZWRBdCI6IjIwMjYtMDYtMDlUMTI6MDA6MDBaIiwiaWQiOjEyM30
-                 */
+                /** @description 이전 응답의 nextCursor 값 */
                 cursor?: string;
-                /** @description 페이지당 기사 수. 100 초과 요청은 100으로 clamp. */
+                /** @description 페이지 크기 (1~50, 기본값 20) */
                 size?: number;
-                /** @description 카테고리 필터. 생략 시 전체 카테고리. */
-                category?: components["schemas"]["Category"];
+                /** @description READY TTS가 존재하는 기사만 반환 (들을 수 있음 필터, 기본값 false) */
+                listenable?: boolean;
+                /** @description 특정 음성 ID의 READY TTS만 포함 (listenable=true 시 유효, 미지정 시 모든 음성) */
+                voiceId?: string;
             };
             header?: never;
             path?: never;
@@ -1925,20 +3196,237 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description 피드 목록 반환 성공 */
+            /** @description 목록 조회 성공 (0건 포함) */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ArticleFeedResponse"];
+                    "*/*": components["schemas"]["ApiResponseSavedArticleListResponse"];
                 };
             };
-            400: components["responses"]["BadRequest"];
-            401: components["responses"]["Unauthorized"];
+            /** @description 미인증 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseSavedArticleListResponse"];
+                };
+            };
+            /** @description 이메일 인증 미완료 */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseSavedArticleListResponse"];
+                };
+            };
         };
     };
-    getArticle: {
+    getOnboardingStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 상태 조회 성공 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseOnboardingStatusResponse"];
+                };
+            };
+            /** @description 미인증 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseOnboardingStatusResponse"];
+                };
+            };
+        };
+    };
+    getFeed: {
+        parameters: {
+            query?: {
+                /** @description 카테고리 필터. 미지정 시 전체 관심사 기반 추천 */
+                category?: string;
+                /** @description 이전 응답의 nextCursor 값 */
+                cursor?: string;
+                /** @description 페이지 크기 (1-50, 기본값 20) */
+                size?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 피드 목록 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseFeedResponse"];
+                };
+            };
+            /** @description 미인증 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseFeedResponse"];
+                };
+            };
+            /** @description 이메일 인증 미완료 */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseFeedResponse"];
+                };
+            };
+        };
+    };
+    getTodayBrief: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 전체 READY — 즉시 재생 가능 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseBriefingResponse"];
+                };
+            };
+            /** @description 일부 TTS 처리 중 — 폴링 필요 */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseBriefingResponse"];
+                };
+            };
+            /** @description 미인증 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseBriefingResponse"];
+                };
+            };
+            /** @description 이메일 미인증 */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseBriefingResponse"];
+                };
+            };
+            /** @description 오늘 브리핑 가능한 완료 기사 없음 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseBriefingResponse"];
+                };
+            };
+        };
+    };
+    authorize: {
+        parameters: {
+            query: {
+                /** @description 프론트엔드 콜백 URI (서버 화이트리스트에 등록된 값만 허용) */
+                redirectUri: string;
+            };
+            header?: never;
+            path: {
+                /** @description OAuth provider (kakao / google / apple) */
+                provider: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 인가 URL 반환 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseSocialAuthorizeResponse"];
+                };
+            };
+            /** @description 알 수 없는 provider 또는 허용되지 않은 redirectUri */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseSocialAuthorizeResponse"];
+                };
+            };
+        };
+    };
+    getFeed_1: {
+        parameters: {
+            query?: {
+                /** @description 페이지네이션 커서 토큰. 첫 페이지 요청 시 생략 */
+                cursor?: string;
+                /** @description 페이지 크기. 기본값 20, 최대 100 (초과 시 100으로 clamp) */
+                size?: number;
+                /** @description 카테고리 필터. 생략 시 전체 조회. 가능한 값: ECONOMY_FINANCE, SCIENCE, POLITICS, SPORTS, WORLD, ENTERTAINMENT_CULTURE, HEALTH_MEDICINE, AUTOMOTIVE, IT, OTHER */
+                category?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 성공 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseArticleFeedResponse"];
+                };
+            };
+            /** @description 잘못된 파라미터 (size 음수, 유효하지 않은 category 등) */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseArticleFeedResponse"];
+                };
+            };
+        };
+    };
+    getDetail: {
         parameters: {
             query?: never;
             header?: never;
@@ -1950,20 +3438,81 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description 기사 상세 반환 성공 */
+            /** @description 성공 */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ArticleDetailResponse"];
+                    "*/*": components["schemas"]["ApiResponseArticleDetailResponse"];
                 };
             };
-            401: components["responses"]["Unauthorized"];
-            404: components["responses"]["NotFound"];
+            /** @description 해당 ID의 기사가 존재하지 않음 */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseArticleDetailResponse"];
+                };
+            };
         };
     };
-    getPipelineStats: {
+    search: {
+        parameters: {
+            query: {
+                /** @description 검색어 (2~100자) */
+                q: string;
+                /** @description 이전 응답의 nextCursor 값 (커서 기반 페이지네이션) */
+                cursor?: string;
+                /** @description 페이지 크기 (1~50, 기본값 20) */
+                size?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 검색 결과 (0건 포함) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseArticleSearchResponse"];
+                };
+            };
+            /** @description 미인증 */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseArticleSearchResponse"];
+                };
+            };
+            /** @description 이메일 인증 미완료 */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseArticleSearchResponse"];
+                };
+            };
+            /** @description 입력 검증 실패 (빈 쿼리, 1자, 101자 이상) */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseArticleSearchResponse"];
+                };
+            };
+        };
+    };
+    getStats: {
         parameters: {
             query?: never;
             header?: never;
@@ -1972,50 +3521,13 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description 파이프라인 통계 반환 성공 */
+            /** @description 성공 */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["PipelineStatsResponse"];
-                };
-            };
-            401: components["responses"]["Unauthorized"];
-            403: components["responses"]["Forbidden"];
-        };
-    };
-    createTermsVersion: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateTermsVersionRequest"];
-            };
-        };
-        responses: {
-            /** @description 약관 버전 등록 완료 */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["TermsVersion"];
-                };
-            };
-            401: components["responses"]["Unauthorized"];
-            403: components["responses"]["Forbidden"];
-            /** @description 동일 type+version 이미 존재 */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
+                    "*/*": components["schemas"]["ApiResponsePipelineStatsResponse"];
                 };
             };
         };

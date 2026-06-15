@@ -15,7 +15,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       try {
-        const { tokens } = await refreshTokenApi(rt);
+        const tokens = await refreshTokenApi(rt);
         setRefreshToken(tokens.refreshToken);
         // accessToken을 스토어에 먼저 설정해야 getMe() 요청에 헤더가 붙음
         useAuthStore.getState().setAccessToken(tokens.accessToken);

@@ -23,9 +23,11 @@ const mockUserReConsent = {
   createdAt: '2026-01-01T00:00:00Z',
 };
 
-const mockTermsV2 = [
-  { id: 'svc-2', type: 'SERVICE', version: '2.0', effectiveDate: '2026-05-01', isRequired: true, isActive: true },
-];
+const mockTermsV2 = {
+  terms: [
+    { id: 'svc-2', type: 'SERVICE', version: '2.0', effectiveDate: '2026-05-01', isRequired: true, isActive: true },
+  ],
+};
 
 const mockMyConsents = [
   { termsVersionId: 'svc-1', agreed: true },

@@ -1,5 +1,12 @@
 import { lazy, Suspense, type ComponentType } from 'react';
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
+import { useAuthStore } from '@/stores/authStore';
+
+function RootRedirect() {
+  const user = useAuthStore((s) => s.user);
+  if (!user) return <Navigate to="/login" replace />;
+  return <Navigate to={user.role === 'ADMIN' ? '/admin' : '/home'} replace />;
+}
 import AuthShell from '@/components/layout/AuthShell';
 import UserGnbLayout from '@/components/layout/UserGnbLayout';
 import AdminSidebarLayout from '@/components/layout/AdminSidebarLayout';
@@ -65,14 +72,18 @@ export const router = createBrowserRouter([
     ],
   },
 
+  // ── 법률 문서 (독립 레이아웃, 인증 무관) ──
+  { path: '/terms', element: termsPage },
+  { path: '/privacy', element: privacyPage },
+
   // ── 공개 (AuthShell만, 인증 무관) ──
   {
     element: <AuthShell />,
     children: [
-      { path: '/terms', element: termsPage },
-      { path: '/privacy', element: privacyPage },
       { path: '/oauth/callback', element: socialCallbackPage },
       { path: '/social-consent', element: socialConsentPage },
+      // signup → pendingToken만 있는 상태에서 접근하므로 ProtectedRoute 밖에 위치
+      { path: '/verify-email', element: verifyEmailPage },
     ],
   },
 
@@ -80,9 +91,13 @@ export const router = createBrowserRouter([
   {
     element: <ProtectedRoute />,
     children: [
-      // GateRoute 밖: 게이트 목적지 (무한 리다이렉트 방지)
-      { path: '/verify-email', element: verifyEmailPage },
-      { path: '/re-consent', element: reConsentPage },
+      // GateRoute 밖: 게이트 목적지 (AuthShell 레이아웃 유지)
+      {
+        element: <AuthShell />,
+        children: [
+          { path: '/re-consent', element: reConsentPage },
+        ],
+      },
       { path: '/onboarding', element: onboardingPage },
 
       // GateRoute 안: 역할별 레이아웃
@@ -123,6 +138,9 @@ export const router = createBrowserRouter([
       },
     ],
   },
+
+  // ── 루트 리다이렉트 ──
+  { path: '/', element: <RootRedirect /> },
 
   // ── 404 ──
   { path: '*', element: notFoundPage },

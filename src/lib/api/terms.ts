@@ -1,9 +1,9 @@
 import { apiClient } from './client';
 import type { components } from '../../../generated/api-types';
 
-type TermsVersion = components['schemas']['TermsVersion'];
+export type TermsVersion = components['schemas']['TermsContentResponse'];
 type ConsentInput = components['schemas']['ConsentInput'];
-type ConsentRecord = components['schemas']['ConsentRecord'];
+type ConsentRecord = components['schemas']['ConsentRecordResponse'];
 
 export const TERMS_QUERY_KEYS = {
   activeTerms: ['terms', 'active'] as const,
@@ -11,8 +11,11 @@ export const TERMS_QUERY_KEYS = {
 };
 
 export async function getActiveTerms(): Promise<TermsVersion[]> {
-  const res = await apiClient.get<TermsVersion[]>('/api/v1/terms');
-  return res.data;
+  const res = await apiClient.get('/api/v1/terms');
+  const data = res.data as { terms?: TermsVersion[] } | TermsVersion[] | null;
+  if (Array.isArray(data)) return data;
+  if (data !== null && typeof data === 'object' && Array.isArray(data.terms)) return data.terms;
+  return [];
 }
 
 export async function getConsents(): Promise<ConsentRecord[]> {

@@ -6,9 +6,9 @@ import { completeSocialSignup } from '@/lib/api/auth';
 import { resolvePostLoginDest } from '@/lib/resolvePostLoginDest';
 import { setRefreshToken } from '@/lib/tokenStorage';
 import ConsentList from '@/components/features/auth/ConsentList';
+import type { TermsVersion } from '@/lib/api/terms';
 import type { components } from '../../../generated/api-types';
 
-type TermsVersion = components['schemas']['TermsVersion'];
 type ConsentInput = components['schemas']['ConsentInput'];
 
 interface LocationState {
@@ -68,8 +68,8 @@ export default function SocialConsentPage() {
         consents,
         ageConfirmed,
       });
-      setRefreshToken(tokens.refreshToken);
-      setAuth(account, tokens.accessToken);
+      setRefreshToken(tokens.refreshToken!);
+      setAuth(account, tokens.accessToken!);
       navigate(resolvePostLoginDest(account, null), { replace: true });
     } catch (err) {
       if (isAxiosError(err) && err.response?.status === 400) {

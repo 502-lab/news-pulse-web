@@ -47,6 +47,13 @@ function renderVerifyFlow() {
   return render(<RouterProvider router={router} />);
 }
 
+async function typeOtp(user: ReturnType<typeof userEvent.setup>, digits: string) {
+  const boxes = screen.getAllByLabelText(/인증 코드 \d번째 자리/);
+  for (let i = 0; i < Math.min(digits.length, 6); i++) {
+    await user.type(boxes[i], digits[i]);
+  }
+}
+
 describe('VerifyEmailPage', () => {
   beforeEach(() => {
     useAuthStore.setState({
@@ -56,10 +63,10 @@ describe('VerifyEmailPage', () => {
     });
   });
 
-  it('이메일 주소와 인증 코드 입력 필드가 렌더된다', () => {
+  it('이메일 주소와 OTP 입력 박스가 렌더된다', () => {
     renderVerifyFlow();
     expect(screen.getByText('new@example.com')).toBeInTheDocument();
-    expect(screen.getByLabelText('인증 코드')).toBeInTheDocument();
+    expect(screen.getByLabelText('인증 코드 1번째 자리')).toBeInTheDocument();
   });
 
   it('잘못된 코드(400) → 코드 오류 메시지', async () => {
@@ -71,8 +78,8 @@ describe('VerifyEmailPage', () => {
     const user = userEvent.setup();
     renderVerifyFlow();
 
-    await user.type(screen.getByLabelText('인증 코드'), '000000');
-    await user.click(screen.getByRole('button', { name: '인증 확인' }));
+    await typeOtp(user, '000000');
+    await user.click(screen.getByRole('button', { name: '인증하고 가입 완료' }));
     await waitFor(() => {
       expect(screen.getByText('인증 코드가 올바르지 않습니다.')).toBeInTheDocument();
     });
@@ -87,8 +94,8 @@ describe('VerifyEmailPage', () => {
     const user = userEvent.setup();
     renderVerifyFlow();
 
-    await user.type(screen.getByLabelText('인증 코드'), '111111');
-    await user.click(screen.getByRole('button', { name: '인증 확인' }));
+    await typeOtp(user, '111111');
+    await user.click(screen.getByRole('button', { name: '인증하고 가입 완료' }));
     await waitFor(() => {
       expect(screen.getByText(/만료됐습니다/)).toBeInTheDocument();
     });
@@ -103,7 +110,7 @@ describe('VerifyEmailPage', () => {
     const user = userEvent.setup();
     renderVerifyFlow();
 
-    await user.click(screen.getByRole('button', { name: '인증 메일 재발송' }));
+    await user.click(screen.getByRole('button', { name: '코드 재전송' }));
     await waitFor(() => {
       expect(screen.getByText('인증 메일이 재발송됐습니다.')).toBeInTheDocument();
     });
@@ -118,8 +125,8 @@ describe('VerifyEmailPage', () => {
     const user = userEvent.setup();
     renderVerifyFlow();
 
-    await user.type(screen.getByLabelText('인증 코드'), '123456');
-    await user.click(screen.getByRole('button', { name: '인증 확인' }));
+    await typeOtp(user, '123456');
+    await user.click(screen.getByRole('button', { name: '인증하고 가입 완료' }));
 
     await waitFor(() => {
       expect(screen.getByTestId('onboarding')).toBeInTheDocument();

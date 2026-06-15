@@ -11,11 +11,13 @@ import RegisterPage from '@/pages/auth/RegisterPage';
 
 const BASE = 'http://localhost:8080';
 
-const mockTerms = [
-  { id: 'svc-1', type: 'SERVICE', version: '1.0', effectiveDate: '2026-01-01', isRequired: true, isActive: true },
-  { id: 'prv-1', type: 'PRIVACY', version: '1.0', effectiveDate: '2026-01-01', isRequired: true, isActive: true },
-  { id: 'mkt-1', type: 'MARKETING', version: '1.0', effectiveDate: '2026-01-01', isRequired: false, isActive: true },
-];
+const mockTerms = {
+  terms: [
+    { id: 'svc-1', type: 'SERVICE', version: '1.0', effectiveDate: '2026-01-01', isRequired: true, isActive: true },
+    { id: 'prv-1', type: 'PRIVACY', version: '1.0', effectiveDate: '2026-01-01', isRequired: true, isActive: true },
+    { id: 'mkt-1', type: 'MARKETING', version: '1.0', effectiveDate: '2026-01-01', isRequired: false, isActive: true },
+  ],
+};
 
 const newUser = {
   id: 'u2',
@@ -83,7 +85,7 @@ describe('RegisterPage', () => {
     // 만14세 해제
     await user.click(screen.getByLabelText(/만 14세/));
 
-    await user.click(screen.getByRole('button', { name: '가입하기' }));
+    await user.click(screen.getByRole('button', { name: '이메일 인증하고 가입' }));
     await waitFor(() => {
       expect(screen.getByText('필수 약관에 모두 동의해주세요.')).toBeInTheDocument();
     });
@@ -102,7 +104,7 @@ describe('RegisterPage', () => {
     await user.type(screen.getByLabelText('비밀번호 확인'), 'Password1');
     await user.click(screen.getByLabelText('전체 동의'));
 
-    await user.click(screen.getByRole('button', { name: '가입하기' }));
+    await user.click(screen.getByRole('button', { name: '이메일 인증하고 가입' }));
     await waitFor(() => {
       expect(screen.getByText('이미 사용 중인 이메일입니다.')).toBeInTheDocument();
     });
@@ -126,7 +128,7 @@ describe('RegisterPage', () => {
     await user.type(screen.getByLabelText('비밀번호 확인'), 'Password1');
     await user.click(screen.getByLabelText('전체 동의'));
 
-    await user.click(screen.getByRole('button', { name: '가입하기' }));
+    await user.click(screen.getByRole('button', { name: '이메일 인증하고 가입' }));
     await waitFor(() => {
       expect(screen.getByTestId('verify-email')).toBeInTheDocument();
     });

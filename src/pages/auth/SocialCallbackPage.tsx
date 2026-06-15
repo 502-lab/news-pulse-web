@@ -50,8 +50,8 @@ export default function SocialCallbackPage() {
             replace: true,
           });
         } else {
-          setRefreshToken(data.tokens.refreshToken);
-          setAuth(data.account, data.tokens.accessToken);
+          setRefreshToken(data.tokens.refreshToken!);
+          setAuth(data.account, data.tokens.accessToken!);
           navigate(resolvePostLoginDest(data.account, null), { replace: true });
         }
       })
