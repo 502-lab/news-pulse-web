@@ -41,6 +41,9 @@ const ingestionPage = lazyPage(() => import('@/pages/admin/IngestionPage'));
 const contentPage = lazyPage(() => import('@/pages/admin/ContentPage'));
 const usersAdminPage = lazyPage(() => import('@/pages/admin/UsersAdminPage'));
 const noticePage = lazyPage(() => import('@/pages/admin/NoticePage'));
+// Social OAuth
+const socialCallbackPage = lazyPage(() => import('@/pages/auth/SocialCallbackPage'));
+const socialConsentPage = lazyPage(() => import('@/pages/auth/SocialConsentPage'));
 // Error + Legal
 const notFoundPage = lazyPage(() => import('@/pages/error/NotFoundPage'));
 const termsPage = lazyPage(() => import('@/pages/legal/TermsPage'));
@@ -68,6 +71,8 @@ export const router = createBrowserRouter([
     children: [
       { path: '/terms', element: termsPage },
       { path: '/privacy', element: privacyPage },
+      { path: '/oauth/callback', element: socialCallbackPage },
+      { path: '/social-consent', element: socialConsentPage },
     ],
   },
 
