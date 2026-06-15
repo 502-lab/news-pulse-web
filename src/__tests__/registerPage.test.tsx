@@ -62,8 +62,9 @@ describe('RegisterPage', () => {
   it('약관 체크박스가 로드된다', async () => {
     renderRegister();
     await waitFor(() => {
-      expect(screen.getByText(/서비스 이용약관/)).toBeInTheDocument();
-      expect(screen.getByText(/개인정보처리방침/)).toBeInTheDocument();
+      // 체크박스 레이블로 확인 (링크와 구분)
+      expect(screen.getByLabelText(/서비스 이용약관/)).toBeInTheDocument();
+      expect(screen.getByLabelText(/개인정보처리방침/)).toBeInTheDocument();
       expect(screen.getByText(/마케팅/)).toBeInTheDocument();
       expect(screen.getByText(/만 14세/)).toBeInTheDocument();
     });

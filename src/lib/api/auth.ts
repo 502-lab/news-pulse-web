@@ -22,6 +22,8 @@ type SocialCallbackSuccessResponse = {
 
 export type SocialCallbackResponse = SocialCallbackSuccessResponse | (SocialPendingSignupResponse & { isNew: true });
 
+type PasswordResetVerifyResponse = components['schemas']['PasswordResetVerifyResponse'];
+
 interface AuthResponse {
   account: AccountSummary;
   tokens: TokenPair;
@@ -71,6 +73,30 @@ export async function verifyEmail(
     body,
   );
   return res.data;
+}
+
+// T013: 비밀번호 재설정 API (경로·타입 모두 generated/api-types.ts 기준)
+
+export async function requestPasswordReset(email: string): Promise<void> {
+  await apiClient.post('/api/v1/auth/password-reset/request', { email });
+}
+
+export async function verifyPasswordResetCode(
+  email: string,
+  code: string,
+): Promise<PasswordResetVerifyResponse> {
+  const res = await apiClient.post<PasswordResetVerifyResponse>(
+    '/api/v1/auth/password-reset/verify',
+    { email, code },
+  );
+  return res.data;
+}
+
+export async function confirmPasswordReset(
+  resetToken: string,
+  newPassword: string,
+): Promise<void> {
+  await apiClient.post('/api/v1/auth/password-reset/confirm', { resetToken, newPassword });
 }
 
 // T017: 소셜 로그인 API (경로·타입 모두 generated/api-types.ts 기준)

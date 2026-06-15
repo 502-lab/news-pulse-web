@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useAuthStore } from '@/stores/authStore';
 import { signup } from '@/lib/api/auth';
@@ -187,7 +187,14 @@ function RegisterFormInner() {
       </div>
 
       <div className="space-y-2">
-        <p className="text-sm font-medium text-ink-700">약관 동의</p>
+        <p className="text-sm font-medium text-ink-700">
+          약관 동의{' '}
+          <span className="text-xs font-normal text-ink-400">
+            (<Link to="/terms" className="underline hover:text-brand">이용약관</Link>
+            {' '}·{' '}
+            <Link to="/privacy" className="underline hover:text-brand">개인정보처리방침</Link>)
+          </span>
+        </p>
         {termsLoading ? (
           <SkeletonConsentList />
         ) : (

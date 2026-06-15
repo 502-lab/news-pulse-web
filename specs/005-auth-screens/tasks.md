@@ -85,9 +85,9 @@
 
 **Independent Test**: MSW로 각 단계 성공·만료 응답 모킹, step 전환·완료 후 `/login` 이동 확인.
 
-- [ ] T013 [US5] Add `requestPasswordReset(email: string)`, `verifyPasswordResetCode(email: string, code: string)`, `confirmPasswordReset(resetToken: string, newPassword: string)` to `src/lib/api/auth.ts` — `POST /api/v1/auth/password-reset/request` (202, no body), `POST /api/v1/auth/password-reset/verify` (200 `{ resetToken: string }`), `POST /api/v1/auth/password-reset/confirm` (204, no body). 400·422·429·503 에러 처리.
-- [ ] T014 [US5] Implement `PasswordResetForm` in `src/components/features/auth/PasswordResetForm.tsx` — `step: 1 | 2 | 3` `useState` 관리. Step 1: 이메일 입력 → `requestPasswordReset()` → 202 → step 2 전환 + "재설정 메일 발송됨" 안내. Step 2: 6자리 코드 입력 → `verifyPasswordResetCode()` → `resetToken` 메모리 보관 → step 3 전환. Step 3: 새 비밀번호·확인 입력(8자+영문+숫자 검증) → `confirmPasswordReset(resetToken, newPassword)` → 204 → `navigate('/login')` + "비밀번호가 변경됐습니다." 안내. 만료·불일치 오류 메시지 처리. 모든 입력 필드에 `<label htmlFor>` 또는 `aria-label`, `aria-invalid`, `aria-describedby` 포함.
-- [ ] T015 [US5] Implement `ForgotPasswordPage` in `src/pages/auth/ForgotPasswordPage.tsx` — `PasswordResetForm` 렌더. "로그인으로" 링크(`/login`). 로딩·에러 상태 처리. Empty state 해당 없음 — PasswordResetForm 항상 표시.
+- [X] T013 [US5] Add `requestPasswordReset(email: string)`, `verifyPasswordResetCode(email: string, code: string)`, `confirmPasswordReset(resetToken: string, newPassword: string)` to `src/lib/api/auth.ts` — `POST /api/v1/auth/password-reset/request` (202, no body), `POST /api/v1/auth/password-reset/verify` (200 `{ resetToken: string }`), `POST /api/v1/auth/password-reset/confirm` (204, no body). 400·422·429·503 에러 처리.
+- [X] T014 [US5] Implement `PasswordResetForm` in `src/components/features/auth/PasswordResetForm.tsx` — `step: 1 | 2 | 3` `useState` 관리. Step 1: 이메일 입력 → `requestPasswordReset()` → 202 → step 2 전환 + "재설정 메일 발송됨" 안내. Step 2: 6자리 코드 입력 → `verifyPasswordResetCode()` → `resetToken` 메모리 보관 → step 3 전환. Step 3: 새 비밀번호·확인 입력(8자+영문+숫자 검증) → `confirmPasswordReset(resetToken, newPassword)` → 204 → `navigate('/login')` + "비밀번호가 변경됐습니다." 안내. 만료·불일치 오류 메시지 처리. 모든 입력 필드에 `<label htmlFor>` 또는 `aria-label`, `aria-invalid`, `aria-describedby` 포함.
+- [X] T015 [US5] Implement `ForgotPasswordPage` in `src/pages/auth/ForgotPasswordPage.tsx` — `PasswordResetForm` 렌더. "로그인으로" 링크(`/login`). 로딩·에러 상태 처리. Empty state 해당 없음 — PasswordResetForm 항상 표시.
 
 **Checkpoint**: 비밀번호 재설정 3단계 흐름 완료 → `/login` 이동 확인
 
@@ -116,7 +116,7 @@
 
 **Independent Test**: MSW로 `requiresReConsent=true` 상태 설정 후 재동의 제출 → `requiresReConsent=false` 갱신·GateRoute 통과 확인. 거부 클릭 → logout → `/login` 이동 확인.
 
-- [ ] T022 [US6] Implement `ReConsentPage` in `src/pages/auth/ReConsentPage.tsx` — `useQuery(['terms','active'], getActiveTerms)` + `useQuery(['me','consents'], getConsents)` 조회 (로딩·에러·빈 상태 처리). 미동의 필수 약관만 표시(기동의 항목 제외). `useMutation(submitConsents)` onSuccess: `queryClient.invalidateQueries(['me','consents'])` + `authStore.setAuth({ ...user, requiresReConsent: false }, accessToken)` → GateRoute 자동 재진입. submitConsents 성공 후 requiresReConsent 로컬 갱신이 게이트와 어긋나면 getMe() 재조회로 서버 상태 확인하는 fallback(기본은 로컬 갱신 유지). "거부" 버튼 → `logout()` → `navigate('/login')`. "동의" 버튼 필수 항목 미동의 시 비활성.
+- [X] T022 [US6] Implement `ReConsentPage` in `src/pages/auth/ReConsentPage.tsx` — `useQuery(['terms','active'], getActiveTerms)` + `useQuery(['me','consents'], getConsents)` 조회 (로딩·에러·빈 상태 처리). 미동의 필수 약관만 표시(기동의 항목 제외). `useMutation(submitConsents)` onSuccess: `queryClient.invalidateQueries(['me','consents'])` + `authStore.setAuth({ ...user, requiresReConsent: false }, accessToken)` → GateRoute 자동 재진입. submitConsents 성공 후 requiresReConsent 로컬 갱신이 게이트와 어긋나면 getMe() 재조회로 서버 상태 확인하는 fallback(기본은 로컬 갱신 유지). "거부" 버튼 → `logout()` → `navigate('/login')`. "동의" 버튼 필수 항목 미동의 시 비활성.
 
 **Checkpoint**: `requiresReConsent=true` 로그인 → `/re-consent` → 동의 → GateRoute 통과 확인
 
@@ -128,11 +128,11 @@
 
 **Independent Test**: 미인증 브라우저에서 `/terms`, `/privacy` 직접 접근 → 로그인 리다이렉트 없이 내용 표시. `/register` 내 "약관 보기" 링크 → `/terms` 이동 확인.
 
-- [ ] T023 [P] [US7] Register GitHub issue B-3-002 via `gh issue create --repo 502-lab/news-pulse-back --title "[FE][005] 약관 전문 백엔드 API 이관" --label "backend,enhancement" --body "## 발견 위치\n- spec / 화면: 005 약관 열람 / TermsPage·PrivacyPage\n- 관련 파일: src/constants/legalText.ts\n\n## 배경\nGET /api/v1/terms는 메타데이터만. 전문 콘텐츠 없음.\n\n## 백엔드 요청\n버전 관리되는 약관 전문 API(또는 정적 리소스).\n\n## FE 현재\nsrc/constants/legalText.ts 정적 텍스트 사용 중.\n\n## 연관\nspecs/005-auth-screens"` (비블로커 추적용, 이슈 번호 기록해 T024 TODO에 사용)
-- [ ] T024 [P] [US7] Extract LEGAL text from `~/Downloads/Newsift_screens/screens3.jsx` LEGAL 객체 and create `src/constants/legalText.ts` — `export const legalText = { SERVICE: '...', PRIVACY: '...' }` 문자열 상수 (텍스트 콘텐츠 이관, A-5 코드복사 위반 아님). `// TODO(#<B-3-002-이슈번호>): 버전 관리되는 백엔드 API로 이관` 주석.
-- [ ] T025 [P] [US7] Create `TermsPage` in `src/pages/legal/TermsPage.tsx` — AuthShell 내, 인증 불필요 공개 경로. `legalText.SERVICE` 스크롤 가능 영역(`overflow-y-auto max-h-[600px]`) 렌더. "뒤로 가기" 링크. `aria-label="서비스 이용약관"`.
-- [ ] T026 [P] [US7] Create `PrivacyPage` in `src/pages/legal/PrivacyPage.tsx` — `legalText.PRIVACY` 동일 패턴. `aria-label="개인정보처리방침"`.
-- [ ] T027 [US7] Add routes to `src/app/router.tsx` — `const termsPage = lazyPage(() => import('@/pages/legal/TermsPage'))` + `const privacyPage = lazyPage(() => import('@/pages/legal/PrivacyPage'))`. `{ path: '/terms', element: termsPage }`, `{ path: '/privacy', element: privacyPage }` — AuthShell 내 공개 그룹(GuestOnly 밖)에 추가.
+- [X] T023 [P] [US7] Register GitHub issue B-3-002 via `gh issue create --repo 502-lab/news-pulse-back --title "[FE][005] 약관 전문 백엔드 API 이관" --label "backend,enhancement" --body "## 발견 위치\n- spec / 화면: 005 약관 열람 / TermsPage·PrivacyPage\n- 관련 파일: src/constants/legalText.ts\n\n## 배경\nGET /api/v1/terms는 메타데이터만. 전문 콘텐츠 없음.\n\n## 백엔드 요청\n버전 관리되는 약관 전문 API(또는 정적 리소스).\n\n## FE 현재\nsrc/constants/legalText.ts 정적 텍스트 사용 중.\n\n## 연관\nspecs/005-auth-screens"` (비블로커 추적용, 이슈 번호 기록해 T024 TODO에 사용)
+- [X] T024 [P] [US7] Extract LEGAL text from `~/Downloads/Newsift_screens/screens3.jsx` LEGAL 객체 and create `src/constants/legalText.ts` — `export const legalText = { SERVICE: '...', PRIVACY: '...' }` 문자열 상수 (텍스트 콘텐츠 이관, A-5 코드복사 위반 아님). `// TODO(#<B-3-002-이슈번호>): 버전 관리되는 백엔드 API로 이관` 주석.
+- [X] T025 [P] [US7] Create `TermsPage` in `src/pages/legal/TermsPage.tsx` — AuthShell 내, 인증 불필요 공개 경로. `legalText.SERVICE` 스크롤 가능 영역(`overflow-y-auto max-h-[600px]`) 렌더. "뒤로 가기" 링크. `aria-label="서비스 이용약관"`.
+- [X] T026 [P] [US7] Create `PrivacyPage` in `src/pages/legal/PrivacyPage.tsx` — `legalText.PRIVACY` 동일 패턴. `aria-label="개인정보처리방침"`.
+- [X] T027 [US7] Add routes to `src/app/router.tsx` — `const termsPage = lazyPage(() => import('@/pages/legal/TermsPage'))` + `const privacyPage = lazyPage(() => import('@/pages/legal/PrivacyPage'))`. `{ path: '/terms', element: termsPage }`, `{ path: '/privacy', element: privacyPage }` — AuthShell 내 공개 그룹(GuestOnly 밖)에 추가.
 
 **Checkpoint**: 미인증 상태 `/terms`, `/privacy` 접근 → 내용 표시, 리다이렉트 없음
 
@@ -142,12 +142,12 @@
 
 **Purpose**: 접근성 보완, 약관 링크 연결, 빌드·타입 검증.
 
-- [ ] T028 [P] Wire "약관 보기" links in `src/components/features/auth/RegisterForm.tsx` — "서비스 이용약관"·"개인정보처리방침" 텍스트를 `<Link to="/terms">`, `<Link to="/privacy">` 연결 (US7 T025~T027 완료 후)
-- [ ] T029 [P] Wire "약관 보기" links in `src/pages/auth/ReConsentPage.tsx` → `<Link to="/terms">`, `<Link to="/privacy">` 연결 (US7 완료 후)
-- [ ] T030 [P] Audit and complete aria attributes across all auth form components — `src/components/features/auth/LoginForm.tsx`, `RegisterForm.tsx`, `EmailVerifyForm.tsx`, `PasswordResetForm.tsx` 전체 필드에 `<label htmlFor>` 또는 `aria-label`, `aria-invalid={!!errors.field}`, `aria-describedby="field-error"` 완비 (SC-009)
-- [ ] T031 Run `pnpm tsc --noEmit` and fix all TypeScript errors (any 타입 금지, generated/api-types.ts 타입만 사용 확인)
-- [ ] T032 Run `pnpm build` and verify build succeeds with no warnings/errors
-- [ ] T033 Run quickstart.md S-1~S-7 validation scenarios — MSW handlers 작성: `src/__tests__/loginPage.test.tsx`, `registerPage.test.tsx`, `verifyEmailPage.test.tsx`, `forgotPasswordPage.test.tsx`, `socialCallback.test.tsx`, `socialConsent.test.tsx`, `legalPages.test.tsx` (pnpm test 전체 통과 확인). SC-001 검증: `userEvent` + `vi.useFakeTimers()`로 login submit 후 500ms 이내 navigate 확인 포함.
+- [X] T028 [P] Wire "약관 보기" links in `src/components/features/auth/RegisterForm.tsx` — "서비스 이용약관"·"개인정보처리방침" 텍스트를 `<Link to="/terms">`, `<Link to="/privacy">` 연결 (US7 T025~T027 완료 후)
+- [X] T029 [P] Wire "약관 보기" links in `src/pages/auth/ReConsentPage.tsx` → `<Link to="/terms">`, `<Link to="/privacy">` 연결 (US7 완료 후)
+- [X] T030 [P] Audit and complete aria attributes across all auth form components — `src/components/features/auth/LoginForm.tsx`, `RegisterForm.tsx`, `EmailVerifyForm.tsx`, `PasswordResetForm.tsx` 전체 필드에 `<label htmlFor>` 또는 `aria-label`, `aria-invalid={!!errors.field}`, `aria-describedby="field-error"` 완비 (SC-009)
+- [X] T031 Run `pnpm tsc --noEmit` and fix all TypeScript errors (any 타입 금지, generated/api-types.ts 타입만 사용 확인)
+- [X] T032 Run `pnpm build` and verify build succeeds with no warnings/errors
+- [X] T033 Run quickstart.md S-1~S-7 validation scenarios — MSW handlers 작성: `src/__tests__/loginPage.test.tsx`, `registerPage.test.tsx`, `verifyEmailPage.test.tsx`, `forgotPasswordPage.test.tsx`, `socialCallback.test.tsx`, `socialConsent.test.tsx`, `legalPages.test.tsx` (pnpm test 전체 통과 확인). SC-001 검증: `userEvent` + `vi.useFakeTimers()`로 login submit 후 500ms 이내 navigate 확인 포함.
 
 ---
 

@@ -4,15 +4,24 @@ import SocialButtons from '@/components/features/auth/SocialButtons';
 
 interface LocationState {
   returnTo?: string;
+  message?: string;
 }
 
 export default function LoginPage() {
   const location = useLocation();
   const state = location.state as LocationState | null;
   const returnTo = state?.returnTo;
+  const message = state?.message;
 
   return (
     <div>
+      {message && (
+        <div className="px-6 pt-6">
+          <p role="status" className="text-sm text-ok bg-ok/5 rounded-input px-3 py-2">
+            {message}
+          </p>
+        </div>
+      )}
       <LoginForm returnTo={returnTo} />
 
       <div className="px-6 pb-4 space-y-4">
