@@ -26,7 +26,8 @@ describe('401 갱신 큐 인터셉터', () => {
       http.post(`${BASE}/api/v1/auth/refresh`, () => {
         refreshCallCount++;
         return HttpResponse.json({
-          tokens: { accessToken: 'new-access', refreshToken: 'new-refresh', expiresIn: 3600 },
+          code: 200, status: 'success', message: 'OK',
+          data: { accessToken: 'new-access', refreshToken: 'new-refresh', expiresIn: 3600 },
         });
       }),
     );
@@ -51,7 +52,8 @@ describe('401 갱신 큐 인터셉터', () => {
         refreshCallCount++;
         await new Promise((r) => setTimeout(r, 20));
         return HttpResponse.json({
-          tokens: { accessToken: 'new-access-concurrent', refreshToken: 'new-refresh-2', expiresIn: 3600 },
+          code: 200, status: 'success', message: 'OK',
+          data: { accessToken: 'new-access-concurrent', refreshToken: 'new-refresh-2', expiresIn: 3600 },
         });
       }),
     );

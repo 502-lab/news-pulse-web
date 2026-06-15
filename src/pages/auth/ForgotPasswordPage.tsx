@@ -1,3 +1,5 @@
+import PasswordResetForm from '@/components/features/auth/PasswordResetForm';
+
 export default function ForgotPasswordPage() {
-  return <div>ForgotPasswordPage — placeholder</div>;
+  return <PasswordResetForm />;
 }

@@ -3,7 +3,8 @@ import { useAuthStore } from '@/stores/authStore';
 import FullPageSpinner from '@/components/common/FullPageSpinner';
 
 export default function GateRoute() {
-  const { user, isLoading } = useAuthStore();
+  const user = useAuthStore((s) => s.user);
+  const isLoading = useAuthStore((s) => s.isLoading);
   const location = useLocation();
 
   if (isLoading) return <FullPageSpinner />;
