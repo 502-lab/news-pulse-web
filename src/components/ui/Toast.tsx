@@ -1,22 +1,12 @@
 import { useState, useEffect } from 'react';
 import Icon from './Icon';
-
-interface ToastOptions {
-  icon?: string;
-  tone?: 'ok' | 'brand';
-}
+import { listeners, type ToastOptions } from './toastBus';
 
 interface ToastItem {
   id: number;
   msg: string;
   icon: string;
   tone: 'ok' | 'brand';
-}
-
-const listeners = new Set<(msg: string, opts: ToastOptions) => void>();
-
-export function showToast(msg: string, opts: ToastOptions = {}) {
-  listeners.forEach((fn) => fn(msg, opts));
 }
 
 export function ToastHost() {
