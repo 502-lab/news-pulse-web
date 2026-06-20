@@ -545,6 +545,26 @@
 <script>
 const COMMITS = [
   {
+    hash: "3ca42178ee17aecab453ffdd920a40d4226733fe",
+    short: "3ca4217",
+    author: "이재인",
+    date: "2026-06-21 00:20",
+    subject: "refactor: showToast를 toastBus.ts로 분리",
+    body: "Toast.tsx가 컴포넌트와 함수를 같은 파일에서 export해 react-refresh/only-export-components 에러 발생. showToast/listeners를 별도 파일로 분리해 해결.",
+    stats: "3 files changed, 13 insertions(+), 12 deletions(-)",
+    reasoning: [
+      {
+        title: "변경 요약",
+        text: "refactor: showToast를 toastBus.ts로 분리 — 상세 reasoning은 추후 추가 예정."
+      }
+    ],
+    files: [
+      { s: "M", p: "src/components/ui/Toast.tsx" },
+      { s: "M", p: "src/components/ui/index.ts" },
+      { s: "A", p: "src/components/ui/toastBus.ts" }
+    ]
+  },
+  {
     hash: "c651bbaa0b102ef8dc0468867f8a5cd0334f875e",
     short: "c651bba",
     author: "이재인",
