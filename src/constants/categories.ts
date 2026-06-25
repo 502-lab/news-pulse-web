@@ -1,3 +1,6 @@
+export const HOME_CATEGORY_FILTERS = ['전체', '기술', '경제', '정치', '스포츠', '문화'] as const;
+export type HomeCategoryFilter = (typeof HOME_CATEGORY_FILTERS)[number];
+
 export const CAT_COLOR: Record<string, { fg: string; bg: string; dot: string }> = {
   기술: { fg: '#4548C9', bg: '#EEF0FF', dot: '#6366F1' },
   경제: { fg: '#0E7490', bg: '#ECFEFF', dot: '#06B6D4' },

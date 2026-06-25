@@ -53,6 +53,7 @@ export default function ConsentList({ terms, onChange, disabled = false }: Props
   useEffect(() => {
     const init: Record<string, boolean> = {};
     terms.forEach((t) => { if (t.id) init[t.id] = false; });
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setChecked(init);
   }, [terms]);
 

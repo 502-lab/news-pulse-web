@@ -33,7 +33,6 @@ export default function VerifyEmailPage() {
         setSendError(getAuthErrorMessage(status));
       }
     });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [email]);
 
   if (isLoading) return <FullPageSpinner />;

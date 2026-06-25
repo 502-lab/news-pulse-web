@@ -31,6 +31,7 @@ export default function SocialCallbackPage() {
     const state = searchParams.get('state');
     if (!code || !state) {
       sessionStorage.removeItem('oauth_provider');
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setError('csrf');
       return;
     }

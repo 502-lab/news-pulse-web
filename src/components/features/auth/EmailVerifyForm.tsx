@@ -108,6 +108,7 @@ export default function EmailVerifyForm({ email, initialError = '' }: Props) {
   const [secs, setSecs] = useState(180);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (initialError) setServerError(initialError);
   }, [initialError]);
 
