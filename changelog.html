@@ -545,6 +545,49 @@
 <script>
 const COMMITS = [
   {
+    hash: "db46d1fdfce66e254dd52f20ca8ee2ede12ee9e2",
+    short: "db46d1f",
+    author: "이재인",
+    date: "2026-06-26 02:13",
+    subject: "feat(006): 뉴스 홈 화면(WU01) 구현",
+    body: "- 속보 배너·카테고리 필터·뉴스 카드 그리드·북마크 토글(in-memory)+토스트 - 우측 위젯 3종: 트렌딩 키워드(Top5), 속보 타임라인, AI 브리핑 - /search 빈 스텁 라우트 등록 - 15개 Vitest 테스트 추가  Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>",
+    stats: "26 files changed, 1686 insertions(+), 2 deletions(-)",
+    reasoning: [
+      {
+        title: "변경 요약",
+        text: "feat(006): 뉴스 홈 화면(WU01) 구현 — 상세 reasoning은 추후 추가 예정."
+      }
+    ],
+    files: [
+      { s: "A", p: "specs/006-news-home/checklists/requirements.md" },
+      { s: "A", p: "specs/006-news-home/contracts/component-contracts.md" },
+      { s: "A", p: "specs/006-news-home/data-model.md" },
+      { s: "A", p: "specs/006-news-home/plan.md" },
+      { s: "A", p: "specs/006-news-home/quickstart.md" },
+      { s: "A", p: "specs/006-news-home/research.md" },
+      { s: "A", p: "specs/006-news-home/spec.md" },
+      { s: "A", p: "specs/006-news-home/tasks.md" },
+      { s: "A", p: "src/__tests__/homePage.test.tsx" },
+      { s: "M", p: "src/app/router.tsx" },
+      { s: "M", p: "src/components/features/auth/ConsentList.tsx" },
+      { s: "M", p: "src/components/features/auth/EmailVerifyForm.tsx" },
+      { s: "A", p: "src/components/features/news/AIBriefingWidget.tsx" },
+      { s: "A", p: "src/components/features/news/BreakingBanner.tsx" },
+      { s: "A", p: "src/components/features/news/BreakingTimelineWidget.tsx" },
+      { s: "A", p: "src/components/features/news/CategoryFilter.tsx" },
+      { s: "A", p: "src/components/features/news/NewsHomeCard.tsx" },
+      { s: "A", p: "src/components/features/news/NewsHomeGrid.tsx" },
+      { s: "A", p: "src/components/features/news/TrendingKeywordsWidget.tsx" },
+      { s: "M", p: "src/constants/categories.ts" },
+      { s: "A", p: "src/mocks/newsHome.mock.ts" },
+      { s: "M", p: "src/pages/auth/SocialCallbackPage.tsx" },
+      { s: "M", p: "src/pages/auth/VerifyEmailPage.tsx" },
+      { s: "M", p: "src/pages/user/HomePage.tsx" },
+      { s: "A", p: "src/pages/user/SearchResultsPage.tsx" },
+      { s: "M", p: "src/types/news.ts" }
+    ]
+  },
+  {
     hash: "3ca42178ee17aecab453ffdd920a40d4226733fe",
     short: "3ca4217",
     author: "이재인",
