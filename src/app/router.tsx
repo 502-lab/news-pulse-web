@@ -1,12 +1,6 @@
 import { lazy, Suspense, type ComponentType } from 'react';
-import { createBrowserRouter, Navigate } from 'react-router-dom';
-import { useAuthStore } from '@/stores/authStore';
-
-function RootRedirect() {
-  const user = useAuthStore((s) => s.user);
-  if (!user) return <Navigate to="/login" replace />;
-  return <Navigate to={user.role === 'ADMIN' ? '/admin' : '/home'} replace />;
-}
+import { createBrowserRouter } from 'react-router-dom';
+import RootRedirect from './RootRedirect';
 import AuthShell from '@/components/layout/AuthShell';
 import UserGnbLayout from '@/components/layout/UserGnbLayout';
 import AdminSidebarLayout from '@/components/layout/AdminSidebarLayout';
