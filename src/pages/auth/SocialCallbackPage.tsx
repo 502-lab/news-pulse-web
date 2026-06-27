@@ -14,7 +14,13 @@ export default function SocialCallbackPage() {
   const [searchParams] = useSearchParams();
   const setAuth = useAuthStore((s) => s.setAuth);
 
-  const [error, setError] = useState<ErrorKind | null>(null);
+  const [error, setError] = useState<ErrorKind | null>(() => {
+    const provider = sessionStorage.getItem('oauth_provider');
+    if (provider && (!searchParams.get('code') || !searchParams.get('state'))) {
+      return 'csrf';
+    }
+    return null;
+  });
   const calledRef = useRef(false);
 
   useEffect(() => {
@@ -31,8 +37,6 @@ export default function SocialCallbackPage() {
     const state = searchParams.get('state');
     if (!code || !state) {
       sessionStorage.removeItem('oauth_provider');
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setError('csrf');
       return;
     }
 

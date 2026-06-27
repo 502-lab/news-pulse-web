@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import type { TermsVersion } from '@/lib/api/terms';
 import type { components } from '../../../../generated/api-types';
@@ -46,16 +46,21 @@ function CheckMark({ checked }: { checked: boolean }) {
   );
 }
 
+function buildInit(terms: TermsVersion[]): Record<string, boolean> {
+  const init: Record<string, boolean> = {};
+  terms.forEach((t) => { if (t.id) init[t.id] = false; });
+  return init;
+}
+
 export default function ConsentList({ terms, onChange, disabled = false }: Props) {
-  const [checked, setChecked] = useState<Record<string, boolean>>({});
+  const [prevTerms, setPrevTerms] = useState(terms);
+  const [checked, setChecked] = useState<Record<string, boolean>>(() => buildInit(terms));
   const [ageConfirmed, setAgeConfirmed] = useState(false);
 
-  useEffect(() => {
-    const init: Record<string, boolean> = {};
-    terms.forEach((t) => { if (t.id) init[t.id] = false; });
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setChecked(init);
-  }, [terms]);
+  if (prevTerms !== terms) {
+    setPrevTerms(terms);
+    setChecked(buildInit(terms));
+  }
 
   const allChecked = terms.every((t) => t.id && checked[t.id]) && ageConfirmed;
 
