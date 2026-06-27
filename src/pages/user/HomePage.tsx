@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { NEWS_HOME, TRENDING_KEYWORDS, AI_BRIEFING } from '@/mocks/newsHome.mock';
 import { HOME_CATEGORY_FILTERS } from '@/constants/categories';
 import { showToast } from '@/components/ui';
+import { useBookmarks } from '@/hooks/useBookmarks';
 import BreakingBanner from '@/components/features/news/BreakingBanner';
 import CategoryFilter from '@/components/features/news/CategoryFilter';
 import NewsHomeGrid from '@/components/features/news/NewsHomeGrid';
@@ -13,7 +14,7 @@ import AIBriefingWidget from '@/components/features/news/AIBriefingWidget';
 export default function HomePage() {
   const navigate = useNavigate();
   const [activeCategory, setActiveCategory] = useState<string>('전체');
-  const [bookmarkedIds, setBookmarkedIds] = useState<Set<string>>(new Set());
+  const { bookmarks: bookmarkedIds, toggle } = useBookmarks();
 
   const breakingArticle = NEWS_HOME.find((a) => a.isBreaking) ?? NEWS_HOME[0];
 
@@ -26,11 +27,8 @@ export default function HomePage() {
   );
 
   function toggleBookmark(id: string): void {
-    const next = new Set(bookmarkedIds);
     const nowBookmarked = !bookmarkedIds.has(id);
-    if (nowBookmarked) next.add(id);
-    else next.delete(id);
-    setBookmarkedIds(next);
+    toggle(id);
     showToast(nowBookmarked ? '북마크에 저장했어요' : '북마크를 해제했어요', {
       icon: '🔖',
       tone: 'ok',
