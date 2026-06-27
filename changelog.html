@@ -545,6 +545,80 @@
 <script>
 const COMMITS = [
   {
+    hash: "2e6567baf4914b8fd293253ed7610a0220b9a4aa",
+    short: "2e6567b",
+    author: "이재인",
+    date: "2026-06-28 00:49",
+    subject: "Merge remote-tracking branch 'origin/dev' into 006-news-home",
+    body: "# Conflicts: #	changelog.html #	src/components/features/auth/ConsentList.tsx #	src/components/features/auth/EmailVerifyForm.tsx #	src/pages/auth/SocialCallbackPage.tsx",
+    stats: "",
+    reasoning: [
+      {
+        title: "변경 요약",
+        text: "Merge remote-tracking branch 'origin/dev' into 006-news-home — 상세 reasoning은 추후 추가 예정."
+      }
+    ],
+    files: [
+
+    ]
+  },
+  {
+    hash: "d463b8607e3dcadce93e65d9f2f7d2e2d3e6bda7",
+    short: "d463b86",
+    author: "이재인",
+    date: "2026-06-28 00:25",
+    subject: "fix(bookmark): wire useBookmarks hook into HomePage",
+    body: "useBookmarks was created but HomePage still used inline useState, so localStorage persistence had no effect. Now connected.  Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>",
+    stats: "1 file changed, 3 insertions(+), 5 deletions(-)",
+    reasoning: [
+      {
+        title: "변경 요약",
+        text: "fix(bookmark): wire useBookmarks hook into HomePage — 상세 reasoning은 추후 추가 예정."
+      }
+    ],
+    files: [
+      { s: "M", p: "src/pages/user/HomePage.tsx" }
+    ]
+  },
+  {
+    hash: "479d12422c521cf12384aeb2985c7fe43d77473e",
+    short: "479d124",
+    author: "이재인",
+    date: "2026-06-28 00:11",
+    subject: "chore(006): add speckit feature meta and workspace config",
+    body: "",
+    stats: "3 files changed, 4 insertions(+), 2 deletions(-)",
+    reasoning: [
+      {
+        title: "변경 요약",
+        text: "chore(006): add speckit feature meta and workspace config — 상세 reasoning은 추후 추가 예정."
+      }
+    ],
+    files: [
+      { s: "M", p: ".specify/feature.json" },
+      { s: "M", p: "CLAUDE.md" },
+      { s: "A", p: "pnpm-workspace.yaml" }
+    ]
+  },
+  {
+    hash: "2b969222fb25b781c45f6bc98e16a278169cc8b9",
+    short: "2b96922",
+    author: "이재인",
+    date: "2026-06-28 00:09",
+    subject: "chore(006): align spec submodule pointer to dev (e9c9d41)",
+    body: "",
+    stats: "1 file changed, 1 insertion(+), 1 deletion(-)",
+    reasoning: [
+      {
+        title: "변경 요약",
+        text: "chore(006): align spec submodule pointer to dev (e9c9d41) — 상세 reasoning은 추후 추가 예정."
+      }
+    ],
+    files: [
+      { s: "M", p: "spec" }
+    ]
+  },
+  {
     hash: "1689c85eaf7e195faf36c21ac431cdcf41d905b3",
     short: "1689c85",
     author: "이재인",
@@ -583,6 +657,67 @@ const COMMITS = [
     ],
     files: [
       { s: "M", p: "spec" }
+    ]
+  },
+  {
+    hash: "88e86870963cb39d8958a7aa54c91e02763c1b62",
+    short: "88e8687",
+    author: "이재인",
+    date: "2026-06-27 15:42",
+    subject: "feat(bookmark): persist bookmarks to localStorage",
+    body: "Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>",
+    stats: "1 file changed, 43 insertions(+)",
+    reasoning: [
+      {
+        title: "변경 요약",
+        text: "feat(bookmark): persist bookmarks to localStorage — 상세 reasoning은 추후 추가 예정."
+      }
+    ],
+    files: [
+      { s: "A", p: "src/hooks/useBookmarks.ts" }
+    ]
+  },
+  {
+    hash: "db46d1fdfce66e254dd52f20ca8ee2ede12ee9e2",
+    short: "db46d1f",
+    author: "이재인",
+    date: "2026-06-26 02:13",
+    subject: "feat(006): 뉴스 홈 화면(WU01) 구현",
+    body: "- 속보 배너·카테고리 필터·뉴스 카드 그리드·북마크 토글(in-memory)+토스트 - 우측 위젯 3종: 트렌딩 키워드(Top5), 속보 타임라인, AI 브리핑 - /search 빈 스텁 라우트 등록 - 15개 Vitest 테스트 추가  Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>",
+    stats: "26 files changed, 1686 insertions(+), 2 deletions(-)",
+    reasoning: [
+      {
+        title: "변경 요약",
+        text: "feat(006): 뉴스 홈 화면(WU01) 구현 — 상세 reasoning은 추후 추가 예정."
+      }
+    ],
+    files: [
+      { s: "A", p: "specs/006-news-home/checklists/requirements.md" },
+      { s: "A", p: "specs/006-news-home/contracts/component-contracts.md" },
+      { s: "A", p: "specs/006-news-home/data-model.md" },
+      { s: "A", p: "specs/006-news-home/plan.md" },
+      { s: "A", p: "specs/006-news-home/quickstart.md" },
+      { s: "A", p: "specs/006-news-home/research.md" },
+      { s: "A", p: "specs/006-news-home/spec.md" },
+      { s: "A", p: "specs/006-news-home/tasks.md" },
+      { s: "A", p: "src/__tests__/homePage.test.tsx" },
+      { s: "M", p: "src/app/router.tsx" },
+      { s: "M", p: "src/components/features/auth/ConsentList.tsx" },
+      { s: "M", p: "src/components/features/auth/EmailVerifyForm.tsx" },
+      { s: "A", p: "src/components/features/news/AIBriefingWidget.tsx" },
+      { s: "A", p: "src/components/features/news/BreakingBanner.tsx" },
+      { s: "A", p: "src/components/features/news/BreakingTimelineWidget.tsx" },
+      { s: "A", p: "src/components/features/news/CategoryFilter.tsx" },
+      { s: "A", p: "src/components/features/news/NewsHomeCard.tsx" },
+      { s: "A", p: "src/components/features/news/NewsHomeGrid.tsx" },
+      { s: "A", p: "src/components/features/news/TrendingKeywordsWidget.tsx" },
+      { s: "M", p: "src/constants/categories.ts" },
+      { s: "A", p: "src/mocks/newsHome.mock.ts" },
+      { s: "M", p: "src/pages/auth/SocialCallbackPage.tsx" },
+      { s: "M", p: "src/pages/auth/VerifyEmailPage.tsx" },
+      { s: "M", p: "src/pages/user/HomePage.tsx" },
+      { s: "A", p: "src/pages/user/SearchResultsPage.tsx" },
+      { s: "M", p: "src/types/news.ts" }
     ]
   },
   {

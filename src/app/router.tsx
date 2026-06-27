@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { lazy, Suspense, type ComponentType } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 import RootRedirect from './RootRedirect';
@@ -36,6 +37,7 @@ const comparePage = lazyPage(() => import('@/pages/user/ComparePage'));
 const insightsPage = lazyPage(() => import('@/pages/user/InsightsPage'));
 const weeklyPage = lazyPage(() => import('@/pages/user/WeeklyPage'));
 const settingsPage = lazyPage(() => import('@/pages/user/SettingsPage'));
+const searchPage = lazyPage(() => import('@/pages/user/SearchResultsPage'));
 // Admin
 const adminHomePage = lazyPage(() => import('@/pages/admin/AdminHomePage'));
 const ingestionPage = lazyPage(() => import('@/pages/admin/IngestionPage'));
@@ -103,6 +105,7 @@ export const router = createBrowserRouter([
             element: <UserGnbLayout />,
             children: [
               { path: '/home', element: homePage },
+              { path: '/search', element: searchPage },
               { path: '/trends', element: trendsPage },
               { path: '/bias', element: biasPage },
               { path: '/articles/:id', element: articleDetailPage },

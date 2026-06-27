@@ -8,6 +8,7 @@ export interface NewsItem {
   reads: number;
   summary?: string;
   content?: string;
+  isBreaking?: boolean;
 }
 
 export interface StatCardData {
