@@ -545,6 +545,37 @@
 <script>
 const COMMITS = [
   {
+    hash: "1ff17def61e36ac0a4ad84eae57ed729f898353b",
+    short: "1ff17de",
+    author: "이재인",
+    date: "2026-06-30 02:11",
+    subject: "feat(007): implement onboarding flow (W-12)",
+    body: "- 5단계 멀티스텝 온보딩 UI (프로필/관심사/키워드/읽기방식/브리핑) - useReducer 기반 useOnboarding 컨트롤러 훅 — 단계 이동·검증·제출 분리 - OnbRail 단계 레일 + OnbStep1~5 뷰 컴포넌트 - 재진입 가드: onboardingCompleted 완료 사용자 → /home 리다이렉트 - submitOnboarding 반환 타입 수정 (Promise<void>) - vite.config strictPort: true (CORS 포트 고정)  Co-Authored-By: Claude Sonnet",
+    stats: "14 files changed, 995 insertions(+), 520 deletions(-)",
+    reasoning: [
+      {
+        title: "변경 요약",
+        text: "feat(007): implement onboarding flow (W-12) — 상세 reasoning은 추후 추가 예정."
+      }
+    ],
+    files: [
+      { s: "M", p: ".specify/feature.json" },
+      { s: "M", p: "CLAUDE.md" },
+      { s: "M", p: "specs/007-onboarding/tasks.md" },
+      { s: "A", p: "src/components/features/onboarding/OnbRail.tsx" },
+      { s: "A", p: "src/components/features/onboarding/OnbStep1Profile.tsx" },
+      { s: "A", p: "src/components/features/onboarding/OnbStep2Topics.tsx" },
+      { s: "A", p: "src/components/features/onboarding/OnbStep3Keywords.tsx" },
+      { s: "A", p: "src/components/features/onboarding/OnbStep4Reading.tsx" },
+      { s: "A", p: "src/components/features/onboarding/OnbStep5Briefing.tsx" },
+      { s: "A", p: "src/constants/onboarding.ts" },
+      { s: "A", p: "src/hooks/useOnboarding.ts" },
+      { s: "M", p: "src/lib/api/auth.ts" },
+      { s: "M", p: "src/pages/onboarding/OnboardingPage.tsx" },
+      { s: "M", p: "vite.config.ts" }
+    ]
+  },
+  {
     hash: "4ef366a07766afbf9c3ccb28a462591f57de9c7b",
     short: "4ef366a",
     author: "이재인",
