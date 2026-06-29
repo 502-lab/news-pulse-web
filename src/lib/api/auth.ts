@@ -150,9 +150,7 @@ export async function completeSocialSignup(
 }
 
 type OnboardingRequest = components['schemas']['OnboardingRequest'];
-type OnboardingStatusResponse = components['schemas']['OnboardingStatusResponse'];
 
-export async function submitOnboarding(body: OnboardingRequest): Promise<OnboardingStatusResponse> {
-  const res = await apiClient.post<OnboardingStatusResponse>('/api/v1/me/onboarding', body);
-  return res.data;
+export async function submitOnboarding(body: OnboardingRequest): Promise<void> {
+  await apiClient.post('/api/v1/me/onboarding', body);
 }

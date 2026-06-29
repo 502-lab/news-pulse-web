@@ -17,7 +17,7 @@
 
 **Purpose**: 신규 디렉토리 생성 — 브랜치·프로젝트 설정은 이미 완료
 
-- [ ] T001 Create `src/components/features/onboarding/` directory for step components
+- [x] T001 Create `src/components/features/onboarding/` directory for step components
 
 ---
 
@@ -27,13 +27,13 @@
 
 **⚠️ CRITICAL**: 이 단계 완료 전 US 구현 시작 금지
 
-- [ ] T002 Fix `submitOnboarding()` return type from `Promise<OnboardingStatusResponse>` to `Promise<void>` in `src/lib/api/auth.ts` (research.md R-06 — `POST /api/v1/me/onboarding`은 `ApiResponseVoid` 반환)
+- [x] T002 Fix `submitOnboarding()` return type from `Promise<OnboardingStatusResponse>` to `Promise<void>` in `src/lib/api/auth.ts` (research.md R-06 — `POST /api/v1/me/onboarding`은 `ApiResponseVoid` 반환)
 
-- [ ] T003 [P] Create `src/constants/onboarding.ts` with all `ONB_*` constants and enum mappings: `ONB_AGES` (4종 · TEENS 제외), `ONB_JOBS` (7종 디자인 기준), `ONB_TOPICS` (8종 · cat/label/icon/color), `ONB_KW_GROUPS` (3그룹 · type: COMPANY/THEME/PERSON), `ONB_DEPTHS` (3종 · BRIEF/BALANCED/DEEP), `ONB_MODES` (3종 · READ/LISTEN/BOTH), `ONB_TIMES` (3종 · HH:mm), `ONB_VOICES` (2종 · harin/junseo), `ONB_STEPS` (5종), `ONB_HEADS` (단계별 제목/설명 tuple), `AGE_TO_ENUM` mapping (data-model.md §4)
+- [x] T003 [P] Create `src/constants/onboarding.ts` with all `ONB_*` constants and enum mappings: `ONB_AGES` (4종 · TEENS 제외), `ONB_JOBS` (7종 디자인 기준), `ONB_TOPICS` (8종 · cat/label/icon/color), `ONB_KW_GROUPS` (3그룹 · type: COMPANY/THEME/PERSON), `ONB_DEPTHS` (3종 · BRIEF/BALANCED/DEEP), `ONB_MODES` (3종 · READ/LISTEN/BOTH), `ONB_TIMES` (3종 · HH:mm), `ONB_VOICES` (2종 · harin/junseo), `ONB_STEPS` (5종), `ONB_HEADS` (단계별 제목/설명 tuple), `AGE_TO_ENUM` mapping (data-model.md §4)
 
-- [ ] T004 Create `src/hooks/useOnboarding.ts` — `OnboardingFormState` interface, `OnboardingAction` union (14 actions), `INITIAL_STATE` (depth: 'BALANCED', consumeMode: 'READ', briefingTime: '07:30', pushAgreed: true), `onboardingReducer`, `getCanProceed` (step 1: `nick.trim().length > 0`; step 2: `topics.length >= 3`; others: true), `buildPayload` (voiceId 제외, `voiceEnabled: voice !== null`, `timezoneOffset: new Date().getTimezoneOffset() * -1`), `useOnboarding` hook export with `{ state, dispatch, canProceed, next, back, skip, submit }` (data-model.md §1~3, contracts/component-contracts.md §useOnboarding)
+- [x] T004 Create `src/hooks/useOnboarding.ts` — `OnboardingFormState` interface, `OnboardingAction` union (14 actions), `INITIAL_STATE` (depth: 'BALANCED', consumeMode: 'READ', briefingTime: '07:30', pushAgreed: true), `onboardingReducer`, `getCanProceed` (step 1: `nick.trim().length > 0`; step 2: `topics.length >= 3`; others: true), `buildPayload` (voiceId 제외, `voiceEnabled: voice !== null`, `timezoneOffset: new Date().getTimezoneOffset() * -1`), `useOnboarding` hook export with `{ state, dispatch, canProceed, next, back, skip, submit }` (data-model.md §1~3, contracts/component-contracts.md §useOnboarding)
 
-- [ ] T005 [P] Verify `src/components/guards/GateRoute.tsx` has `!user.onboardingCompleted → <Navigate to="/onboarding" replace />` guard — read-only check; document pass/fail in inline comment (research.md R-01, FR-016)
+- [x] T005 [P] Verify `src/components/guards/GateRoute.tsx` has `!user.onboardingCompleted → <Navigate to="/onboarding" replace />` guard — read-only check; document pass/fail in inline comment (research.md R-01, FR-016)
 
 **Checkpoint**: T002~T005 완료 후 US 구현 시작 가능
 
@@ -47,19 +47,19 @@
 
 ### Implementation
 
-- [ ] T006 [US1] Create `src/components/features/onboarding/OnbRail.tsx` — navy 좌측 레일 `w-[260px] bg-navy text-white flex flex-col p-7`, 5단계 세로 목록(완료: brand bg + check icon / 현재: white / 대기: white/10 반투명), 브랜드마크, 부제 "맞춤 설정 · 1분이면 끝나요", 하단 "모든 설정은 가입 후 언제든 바꿀 수 있어요." (contracts/component-contracts.md §OnbRail, FR-001, FR-002)
+- [x] T006 [US1] Create `src/components/features/onboarding/OnbRail.tsx` — navy 좌측 레일 `w-[260px] bg-navy text-white flex flex-col p-7`, 5단계 세로 목록(완료: brand bg + check icon / 현재: white / 대기: white/10 반투명), 브랜드마크, 부제 "맞춤 설정 · 1분이면 끝나요", 하단 "모든 설정은 가입 후 언제든 바꿀 수 있어요." (contracts/component-contracts.md §OnbRail, FR-001, FR-002)
 
-- [ ] T007 [P] [US1] Create `src/components/features/onboarding/OnbStep1Profile.tsx` — 닉네임 `<input id="onb-nick" maxLength={12}>` + `<label htmlFor="onb-nick">` + 글자수 카운터 `{nick.length} / 12`; 연령대 4종 `aria-pressed` 토글(재선택 시 deselect); 직업 7종 `aria-pressed` 태그 토글(재선택 deselect); `ONB_AGES` / `ONB_JOBS` 상수 사용 (contracts §OnbStep1Profile, FR-005, FR-022, FR-023)
+- [x] T007 [P] [US1] Create `src/components/features/onboarding/OnbStep1Profile.tsx` — 닉네임 `<input id="onb-nick" maxLength={12}>` + `<label htmlFor="onb-nick">` + 글자수 카운터 `{nick.length} / 12`; 연령대 4종 `aria-pressed` 토글(재선택 시 deselect); 직업 7종 `aria-pressed` 태그 토글(재선택 deselect); `ONB_AGES` / `ONB_JOBS` 상수 사용 (contracts §OnbStep1Profile, FR-005, FR-022, FR-023)
 
-- [ ] T008 [P] [US1] Create `src/components/features/onboarding/OnbStep2Topics.tsx` — 토픽 8종 `grid grid-cols-2 sm:grid-cols-4 gap-3`, 각 카드 `relative h-28 rounded-card border`; 선택 시 `bg-brand border-brand shadow-cardhover`; 미선택 아이콘 배경 `style={{ background: t.color + '1A' }}` (인라인 style 허용 — 동적 hex+투명도); 선택 시 우상단 체크 배지; `aria-pressed`; `ONB_TOPICS` 상수 사용 (contracts §OnbStep2Topics, FR-006, plan Constraints 인라인 예외)
+- [x] T008 [P] [US1] Create `src/components/features/onboarding/OnbStep2Topics.tsx` — 토픽 8종 `grid grid-cols-2 sm:grid-cols-4 gap-3`, 각 카드 `relative h-28 rounded-card border`; 선택 시 `bg-brand border-brand shadow-cardhover`; 미선택 아이콘 배경 `style={{ background: t.color + '1A' }}` (인라인 style 허용 — 동적 hex+투명도); 선택 시 우상단 체크 배지; `aria-pressed`; `ONB_TOPICS` 상수 사용 (contracts §OnbStep2Topics, FR-006, plan Constraints 인라인 예외)
 
-- [ ] T009 [P] [US1] Create `src/components/features/onboarding/OnbStep3Keywords.tsx` — `ONB_KW_GROUPS` 3그룹 헤더 + 태그 토글; 선택 `bg-brand text-white`, 미선택 `bg-white border-ink-200`; 선택 태그 check icon prefix; `aria-pressed` (contracts §OnbStep3Keywords, FR-007)
+- [x] T009 [P] [US1] Create `src/components/features/onboarding/OnbStep3Keywords.tsx` — `ONB_KW_GROUPS` 3그룹 헤더 + 태그 토글; 선택 `bg-brand text-white`, 미선택 `bg-white border-ink-200`; 선택 태그 check icon prefix; `aria-pressed` (contracts §OnbStep3Keywords, FR-007)
 
-- [ ] T010 [P] [US1] Create `src/components/features/onboarding/OnbStep4Reading.tsx` — `ONB_DEPTHS` 3종 라디오 카드 `flex items-center gap-3 px-4 py-3.5 rounded-card border`; `ONB_MODES` 3종 아이콘+텍스트 카드 `grid-cols-3 gap-3`; 각 선택 `bg-brand-50 border-brand`; `aria-pressed` (contracts §OnbStep4Reading, FR-008)
+- [x] T010 [P] [US1] Create `src/components/features/onboarding/OnbStep4Reading.tsx` — `ONB_DEPTHS` 3종 라디오 카드 `flex items-center gap-3 px-4 py-3.5 rounded-card border`; `ONB_MODES` 3종 아이콘+텍스트 카드 `grid-cols-3 gap-3`; 각 선택 `bg-brand-50 border-brand`; `aria-pressed` (contracts §OnbStep4Reading, FR-008)
 
-- [ ] T011 [P] [US1] Create `src/components/features/onboarding/OnbStep5Briefing.tsx` — 시간 3종(`ONB_TIMES`) `grid-cols-3`; 음성 2종(`ONB_VOICES`) 각 행: 아바타 원(`style={{ background: v.color }}` 인라인 허용) + 이름/설명 + `<button disabled aria-label="앱에서 미리듣기 가능">` + 라디오; 하단 "🎧 앱에서 목소리를 미리 들어보세요"; 앱 설치 `<button disabled>앱 다운로드</button>`; 푸시 토글 `role="switch" aria-checked={pushAgreed}` (contracts §OnbStep5Briefing, FR-009, FR-013, FR-014)
+- [x] T011 [P] [US1] Create `src/components/features/onboarding/OnbStep5Briefing.tsx` — 시간 3종(`ONB_TIMES`) `grid-cols-3`; 음성 2종(`ONB_VOICES`) 각 행: 아바타 원(`style={{ background: v.color }}` 인라인 허용) + 이름/설명 + `<button disabled aria-label="앱에서 미리듣기 가능">` + 라디오; 하단 "🎧 앱에서 목소리를 미리 들어보세요"; 앱 설치 `<button disabled>앱 다운로드</button>`; 푸시 토글 `role="switch" aria-checked={pushAgreed}` (contracts §OnbStep5Briefing, FR-009, FR-013, FR-014)
 
-- [ ] T012 [US1] Rewrite `src/pages/onboarding/OnboardingPage.tsx` — (a) 재진입 가드: `if (user?.onboardingCompleted) return <Navigate to="/home" replace />;`; (b) `useOnboarding()` 훅 연결; (c) OnboardingDesktop 레이아웃: `min-h-screen bg-canvas flex items-center justify-center p-6` wrapper, `w-full max-w-[940px] bg-white border border-ink-200 rounded-2xl shadow-pop overflow-hidden flex` 카드, `style={{ height: 'min(680px, 92vh)' }}` (인라인 허용); (d) `<OnbRail currentStep={state.step} />`; (e) 우측 `flex-1 flex flex-col`: 스크롤 영역 `flex-1 overflow-y-auto px-9 py-8`(STEP n/5 + 단계 헤드 `ONB_HEADS[state.step]` + 에러 표시 + OnbStep switch); (f) footer `border-t border-ink-100 px-9 py-4 flex items-center justify-between`: 이전(`disabled={state.step === 1}`) + step 2 카운터 + 다음/시작(`disabled={!canProceed || state.submitStatus === 'loading'}`); (g) 성공 핸들러: `setAuth({ ...user, onboardingCompleted: true }, accessToken)` + `navigate('/home', { replace: true })` (FR-001~004, FR-012, FR-015~021, contracts §OnboardingPage, plan layout 설계)
+- [x] T012 [US1] Rewrite `src/pages/onboarding/OnboardingPage.tsx` — (a) 재진입 가드: `if (user?.onboardingCompleted) return <Navigate to="/home" replace />;`; (b) `useOnboarding()` 훅 연결; (c) OnboardingDesktop 레이아웃: `min-h-screen bg-canvas flex items-center justify-center p-6` wrapper, `w-full max-w-[940px] bg-white border border-ink-200 rounded-2xl shadow-pop overflow-hidden flex` 카드, `style={{ height: 'min(680px, 92vh)' }}` (인라인 허용); (d) `<OnbRail currentStep={state.step} />`; (e) 우측 `flex-1 flex flex-col`: 스크롤 영역 `flex-1 overflow-y-auto px-9 py-8`(STEP n/5 + 단계 헤드 `ONB_HEADS[state.step]` + 에러 표시 + OnbStep switch); (f) footer `border-t border-ink-100 px-9 py-4 flex items-center justify-between`: 이전(`disabled={state.step === 1}`) + step 2 카운터 + 다음/시작(`disabled={!canProceed || state.submitStatus === 'loading'}`); (g) 성공 핸들러: `setAuth({ ...user, onboardingCompleted: true }, accessToken)` + `navigate('/home', { replace: true })` (FR-001~004, FR-012, FR-015~021, contracts §OnboardingPage, plan layout 설계)
 
 **Checkpoint**: 5단계 완주 + `/home` 이동 동작 확인
 
@@ -73,7 +73,7 @@
 
 ### Implementation
 
-- [ ] T013 [US2] In `src/pages/onboarding/OnboardingPage.tsx` footer: confirm step-2 selection counter `{state.topics.length}개 선택됨` renders when `state.step === 2`; confirm `disabled={!canProceed || state.submitStatus === 'loading'}` on "다음" button covers step 2 via `getCanProceed` (`topics.length >= 3`) — adjust if missing (FR-010, SC-002)
+- [x] T013 [US2] In `src/pages/onboarding/OnboardingPage.tsx` footer: confirm step-2 selection counter `{state.topics.length}개 선택됨` renders when `state.step === 2`; confirm `disabled={!canProceed || state.submitStatus === 'loading'}` on "다음" button covers step 2 via `getCanProceed` (`topics.length >= 3`) — adjust if missing (FR-010, SC-002)
 
 **Checkpoint**: 토픽 2개 → disabled, 3개 → 활성 동작 확인
 
@@ -87,9 +87,9 @@
 
 ### Implementation
 
-- [ ] T014 [US4] Verify `src/components/guards/GateRoute.tsx` redirects `onboardingCompleted: true` users from `/onboarding` to `/home` — distinct from T005 (T005: incomplete → /onboarding; T014: complete → /home); add `if (user.onboardingCompleted && location.pathname === '/onboarding') return <Navigate to="/home" replace />;` if missing (research.md R-01, FR-016, SC-004)
+- [x] T014 [US4] Verify `src/components/guards/GateRoute.tsx` redirects `onboardingCompleted: true` users from `/onboarding` to `/home` — distinct from T005 (T005: incomplete → /onboarding; T014: complete → /home); add `if (user.onboardingCompleted && location.pathname === '/onboarding') return <Navigate to="/home" replace />;` if missing (research.md R-01, FR-016, SC-004)
 
-- [ ] T015 [US4] Confirm `src/pages/onboarding/OnboardingPage.tsx` reentry guard (from T012) triggers before any render — `if (user?.onboardingCompleted) return <Navigate to="/home" replace />;` at top of component body (contracts §OnboardingPage, SC-004 flash prevention)
+- [x] T015 [US4] Confirm `src/pages/onboarding/OnboardingPage.tsx` reentry guard (from T012) triggers before any render — `if (user?.onboardingCompleted) return <Navigate to="/home" replace />;` at top of component body (contracts §OnboardingPage, SC-004 flash prevention)
 
 **Checkpoint**: 완료 계정 재진입 → 플래시 없이 /home 확인
 
