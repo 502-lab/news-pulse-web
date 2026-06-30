@@ -1,8 +1,8 @@
-import { Link } from 'react-router-dom';
-import CatBadge from '@/components/ui/CatBadge';
-import ImgPlaceholder from '@/components/ui/ImgPlaceholder';
-import Icon from '@/components/ui/Icon';
-import type { NewsItem } from '@/types/news';
+import { Link } from "react-router-dom";
+import CatBadge from "@/components/ui/CatBadge";
+import ImgPlaceholder from "@/components/ui/ImgPlaceholder";
+import Icon from "@/components/ui/Icon";
+import type { NewsItem } from "@/types/news";
 
 interface NewsHomeCardProps {
   article: NewsItem;
@@ -33,14 +33,14 @@ export default function NewsHomeCard({
           e.preventDefault();
           onToggleBookmark(article.id);
         }}
-        aria-label={bookmarked ? '북마크 해제' : '북마크 추가'}
+        aria-label={bookmarked ? "북마크 해제" : "북마크 추가"}
         aria-pressed={bookmarked}
         className="absolute top-3 right-3 z-10 p-1.5 rounded-btn text-ink-300 hover:text-brand transition-colors focus-visible:outline-2 focus-visible:outline-brand"
       >
         <Icon
           name="bookmark"
           size={16}
-          className={bookmarked ? 'fill-brand text-brand' : ''}
+          className={bookmarked ? "fill-brand text-brand" : ""}
         />
       </button>
 
@@ -54,9 +54,13 @@ export default function NewsHomeCard({
         <div className="flex items-center gap-1.5">
           <CatBadge cat={article.cat} sm />
         </div>
-        <h3 className="text-[14px] font-semibold text-ink leading-snug clamp2">{article.title}</h3>
+        <h3 className="text-[14px] font-semibold text-ink leading-snug clamp2">
+          {article.title}
+        </h3>
         {article.summary && (
-          <p className="text-[12px] text-ink-500 leading-relaxed clamp2">{article.summary}</p>
+          <p className="text-[12px] text-ink-500 leading-relaxed clamp2">
+            {article.summary}
+          </p>
         )}
         <div className="flex items-center gap-2 text-[11px] text-ink-400 mt-auto pt-1 tnum">
           <span>{article.source}</span>

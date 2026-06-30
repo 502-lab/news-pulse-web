@@ -1,7 +1,11 @@
-import { useEffect, type ReactNode } from 'react';
-import { getRefreshToken, setRefreshToken, clearRefreshToken } from '@/lib/tokenStorage';
-import { refreshTokenApi, getMe } from '@/lib/api/auth';
-import { useAuthStore } from '@/stores/authStore';
+import { useEffect, type ReactNode } from "react";
+import {
+  getRefreshToken,
+  setRefreshToken,
+  clearRefreshToken,
+} from "@/lib/tokenStorage";
+import { refreshTokenApi, getMe } from "@/lib/api/auth";
+import { useAuthStore } from "@/stores/authStore";
 
 export default function AuthProvider({ children }: { children: ReactNode }) {
   const { setAuth, setLoading } = useAuthStore();

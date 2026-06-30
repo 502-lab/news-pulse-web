@@ -1,9 +1,9 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import type { TermsVersion } from '@/lib/api/terms';
-import type { components } from '../../../../generated/api-types';
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import type { TermsVersion } from "@/lib/api/terms";
+import type { components } from "../../../../generated/api-types";
 
-type ConsentInput = components['schemas']['ConsentInput'];
+type ConsentInput = components["schemas"]["ConsentInput"];
 
 interface Props {
   terms: TermsVersion[];
@@ -12,14 +12,14 @@ interface Props {
 }
 
 const TYPE_LABEL: Record<string, string> = {
-  SERVICE: '서비스 이용약관',
-  PRIVACY: '개인정보처리방침',
-  MARKETING: '마케팅 정보 수신 동의',
+  SERVICE: "서비스 이용약관",
+  PRIVACY: "개인정보처리방침",
+  MARKETING: "마케팅 정보 수신 동의",
 };
 
 const VIEW_LINK: Partial<Record<string, string>> = {
-  SERVICE: '/terms',
-  PRIVACY: '/privacy',
+  SERVICE: "/terms",
+  PRIVACY: "/privacy",
 };
 
 function CheckMark({ checked }: { checked: boolean }) {
@@ -27,7 +27,7 @@ function CheckMark({ checked }: { checked: boolean }) {
     <span
       aria-hidden="true"
       className={`shrink-0 w-5 h-5 rounded flex items-center justify-center transition-colors ${
-        checked ? 'bg-brand' : 'border border-ink-300 bg-white'
+        checked ? "bg-brand" : "border border-ink-300 bg-white"
       }`}
     >
       <svg
@@ -35,7 +35,7 @@ function CheckMark({ checked }: { checked: boolean }) {
         height="11"
         viewBox="0 0 24 24"
         fill="none"
-        stroke={checked ? 'white' : 'transparent'}
+        stroke={checked ? "white" : "transparent"}
         strokeWidth="3"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -48,13 +48,21 @@ function CheckMark({ checked }: { checked: boolean }) {
 
 function buildInit(terms: TermsVersion[]): Record<string, boolean> {
   const init: Record<string, boolean> = {};
-  terms.forEach((t) => { if (t.id) init[t.id] = false; });
+  terms.forEach((t) => {
+    if (t.id) init[t.id] = false;
+  });
   return init;
 }
 
-export default function ConsentList({ terms, onChange, disabled = false }: Props) {
+export default function ConsentList({
+  terms,
+  onChange,
+  disabled = false,
+}: Props) {
   const [prevTerms, setPrevTerms] = useState(terms);
-  const [checked, setChecked] = useState<Record<string, boolean>>(() => buildInit(terms));
+  const [checked, setChecked] = useState<Record<string, boolean>>(() =>
+    buildInit(terms),
+  );
   const [ageConfirmed, setAgeConfirmed] = useState(false);
 
   if (prevTerms !== terms) {
@@ -73,7 +81,9 @@ export default function ConsentList({ terms, onChange, disabled = false }: Props
 
   function handleToggleAll(v: boolean) {
     const next: Record<string, boolean> = {};
-    terms.forEach((t) => { if (t.id) next[t.id] = v; });
+    terms.forEach((t) => {
+      if (t.id) next[t.id] = v;
+    });
     setChecked(next);
     setAgeConfirmed(v);
     fireChange(next, v);
@@ -103,7 +113,9 @@ export default function ConsentList({ terms, onChange, disabled = false }: Props
           className="sr-only"
         />
         <CheckMark checked={allChecked} />
-        <span className="text-[13.5px] font-bold text-ink">약관에 모두 동의</span>
+        <span className="text-[13.5px] font-bold text-ink">
+          약관에 모두 동의
+        </span>
       </label>
 
       <div className="pt-1 flex flex-col">
@@ -121,8 +133,12 @@ export default function ConsentList({ terms, onChange, disabled = false }: Props
             className="flex items-center gap-2.5 flex-1 cursor-pointer select-none"
           >
             <CheckMark checked={ageConfirmed} />
-            <span className="text-[11.5px] font-bold shrink-0 text-brand">[필수]</span>
-            <span className="text-[13px] font-medium text-ink-700">만 14세 이상입니다</span>
+            <span className="text-[11.5px] font-bold shrink-0 text-brand">
+              [필수]
+            </span>
+            <span className="text-[13px] font-medium text-ink-700">
+              만 14세 이상입니다
+            </span>
           </label>
         </div>
 
@@ -150,13 +166,13 @@ export default function ConsentList({ terms, onChange, disabled = false }: Props
                 <CheckMark checked={checked[t.id] ?? false} />
                 <span
                   className={`text-[11.5px] font-bold shrink-0 ${
-                    t.isRequired ? 'text-brand' : 'text-ink-400'
+                    t.isRequired ? "text-brand" : "text-ink-400"
                   }`}
                 >
-                  [{t.isRequired ? '필수' : '선택'}]
+                  [{t.isRequired ? "필수" : "선택"}]
                 </span>
                 <span className="text-[13px] font-medium text-ink-700">
-                  {t.type ? (TYPE_LABEL[t.type] ?? t.type) : '약관'}
+                  {t.type ? (TYPE_LABEL[t.type] ?? t.type) : "약관"}
                 </span>
               </label>
               {t.type && VIEW_LINK[t.type] && (

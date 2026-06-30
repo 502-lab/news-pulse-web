@@ -53,8 +53,8 @@ import {
   Users,
   WifiOff,
   type LucideProps,
-} from 'lucide-react';
-import type { ComponentType } from 'react';
+} from "lucide-react";
+import type { ComponentType } from "react";
 
 type LucideComponent = ComponentType<LucideProps>;
 
@@ -122,9 +122,9 @@ const LUCIDE_MAP: Record<string, LucideComponent> = {
 };
 
 const CUSTOM_ICONS: Record<string, string> = {
-  arrowleft: 'M19 12H5M12 19l-7-7 7-7',
-  chevright: 'M9 18l6-6-6-6',
-  spark2: 'M12 3l1.9 5.8L20 10l-6.1 1.2L12 17l-1.9-5.8L4 10l6.1-1.2L12 3z',
+  arrowleft: "M19 12H5M12 19l-7-7 7-7",
+  chevright: "M9 18l6-6-6-6",
+  spark2: "M12 3l1.9 5.8L20 10l-6.1 1.2L12 17l-1.9-5.8L4 10l6.1-1.2L12 3z",
 };
 
 interface IconProps {
@@ -134,10 +134,22 @@ interface IconProps {
   stroke?: number;
 }
 
-export default function Icon({ name, size = 18, className, stroke = 2 }: IconProps) {
+export default function Icon({
+  name,
+  size = 18,
+  className,
+  stroke = 2,
+}: IconProps) {
   const LucideIcon = LUCIDE_MAP[name];
   if (LucideIcon) {
-    return <LucideIcon size={size} className={className} strokeWidth={stroke} aria-hidden="true" />;
+    return (
+      <LucideIcon
+        size={size}
+        className={className}
+        strokeWidth={stroke}
+        aria-hidden="true"
+      />
+    );
   }
 
   const customPath = CUSTOM_ICONS[name];

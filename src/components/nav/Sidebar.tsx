@@ -1,11 +1,11 @@
-import { useAuthStore } from '@/store/auth';
-import { NAV_USER, NAV_ADMIN } from '@/constants/nav';
-import { Icon } from '@/components/ui';
-import NavItem from './NavItem';
+import { useAuthStore } from "@/store/auth";
+import { NAV_USER, NAV_ADMIN } from "@/constants/nav";
+import { Icon } from "@/components/ui";
+import NavItem from "./NavItem";
 
 export default function Sidebar() {
   const { user, logout } = useAuthStore();
-  const navItems = user?.role === 'ADMIN' ? NAV_ADMIN : NAV_USER;
+  const navItems = user?.role === "ADMIN" ? NAV_ADMIN : NAV_USER;
 
   return (
     <aside className="h-screen w-[240px] bg-navy flex flex-col">

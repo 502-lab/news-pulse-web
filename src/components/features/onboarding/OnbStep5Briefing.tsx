@@ -1,7 +1,7 @@
-import Icon from '@/components/ui/Icon';
-import { ONB_TIMES, ONB_VOICES, type VoiceId } from '@/constants/onboarding';
-import type { OnboardingAction } from '@/hooks/useOnboarding';
-import type { Dispatch } from 'react';
+import Icon from "@/components/ui/Icon";
+import { ONB_TIMES, ONB_VOICES, type VoiceId } from "@/constants/onboarding";
+import type { OnboardingAction } from "@/hooks/useOnboarding";
+import type { Dispatch } from "react";
 
 interface OnbStep5BriefingProps {
   briefingTime: string;
@@ -31,19 +31,21 @@ export default function OnbStep5Briefing({
                 key={t.value}
                 type="button"
                 aria-pressed={isOn}
-                onClick={() => dispatch({ type: 'SET_TIME', value: t.value })}
+                onClick={() => dispatch({ type: "SET_TIME", value: t.value })}
                 className={`flex flex-col items-center py-4 rounded-card border transition-all ${
                   isOn
-                    ? 'bg-brand-50 border-brand'
-                    : 'bg-white border-ink-200 hover:border-ink-300'
+                    ? "bg-brand-50 border-brand"
+                    : "bg-white border-ink-200 hover:border-ink-300"
                 }`}
               >
                 <span
-                  className={`text-[18px] font-extrabold tabular-nums ${isOn ? 'text-brand' : 'text-ink'}`}
+                  className={`text-[18px] font-extrabold tabular-nums ${isOn ? "text-brand" : "text-ink"}`}
                 >
                   {t.value}
                 </span>
-                <span className="text-[12px] text-ink-400 mt-0.5">{t.label}</span>
+                <span className="text-[12px] text-ink-400 mt-0.5">
+                  {t.label}
+                </span>
               </button>
             );
           })}
@@ -64,12 +66,12 @@ export default function OnbStep5Briefing({
                 type="button"
                 aria-pressed={isOn}
                 onClick={() =>
-                  dispatch({ type: 'SET_VOICE', value: isOn ? null : v.id })
+                  dispatch({ type: "SET_VOICE", value: isOn ? null : v.id })
                 }
                 className={`flex items-center gap-3 px-3.5 py-3 rounded-card border transition-all text-left ${
                   isOn
-                    ? 'bg-brand-50 border-brand'
-                    : 'bg-white border-ink-200 hover:border-ink-300'
+                    ? "bg-brand-50 border-brand"
+                    : "bg-white border-ink-200 hover:border-ink-300"
                 }`}
               >
                 <span
@@ -79,8 +81,12 @@ export default function OnbStep5Briefing({
                   {v.av}
                 </span>
                 <div className="flex-1 min-w-0">
-                  <div className="text-[13.5px] font-bold text-ink">{v.name}</div>
-                  <div className="text-[12px] text-ink-400 truncate">{v.desc}</div>
+                  <div className="text-[13.5px] font-bold text-ink">
+                    {v.name}
+                  </div>
+                  <div className="text-[12px] text-ink-400 truncate">
+                    {v.desc}
+                  </div>
                 </div>
                 <span
                   aria-label="앱에서 미리듣기 가능"
@@ -89,9 +95,11 @@ export default function OnbStep5Briefing({
                   <Icon name="play" size={14} />
                 </span>
                 <span
-                  className={`w-[20px] h-[20px] rounded-full border-2 flex items-center justify-center shrink-0 ${isOn ? 'border-brand' : 'border-ink-300'}`}
+                  className={`w-[20px] h-[20px] rounded-full border-2 flex items-center justify-center shrink-0 ${isOn ? "border-brand" : "border-ink-300"}`}
                 >
-                  {isOn && <span className="w-2.5 h-2.5 rounded-full bg-brand" />}
+                  {isOn && (
+                    <span className="w-2.5 h-2.5 rounded-full bg-brand" />
+                  )}
                 </span>
               </button>
             );
@@ -115,27 +123,32 @@ export default function OnbStep5Briefing({
       <button
         type="button"
         aria-pressed={pushAgreed}
-        onClick={() => dispatch({ type: 'SET_PUSH', value: !pushAgreed })}
+        onClick={() => dispatch({ type: "SET_PUSH", value: !pushAgreed })}
         className="flex items-center gap-3 px-4 py-3.5 rounded-card border border-ink-200 bg-white text-left"
       >
-        <span className={`w-9 h-9 rounded-btn flex items-center justify-center shrink-0 transition-colors ${pushAgreed ? 'bg-brand-50 text-brand' : 'bg-ink-100 text-ink-400'}`}>
+        <span
+          className={`w-9 h-9 rounded-btn flex items-center justify-center shrink-0 transition-colors ${pushAgreed ? "bg-brand-50 text-brand" : "bg-ink-100 text-ink-400"}`}
+        >
           <Icon name="bell" size={17} />
         </span>
-        <div className={`flex-1 transition-opacity ${pushAgreed ? 'opacity-100' : 'opacity-40'}`}>
+        <div
+          className={`flex-1 transition-opacity ${pushAgreed ? "opacity-100" : "opacity-40"}`}
+        >
           <div className="text-[13.5px] font-bold text-ink">푸시 알림 받기</div>
-          <div className="text-[12px] text-ink-400">속보와 아침 브리핑을 놓치지 마세요</div>
+          <div className="text-[12px] text-ink-400">
+            속보와 아침 브리핑을 놓치지 마세요
+          </div>
         </div>
         <span
           role="switch"
           aria-checked={pushAgreed}
-          className={`w-11 h-6 rounded-full p-0.5 transition-colors shrink-0 ${pushAgreed ? 'bg-brand' : 'bg-ink-200'}`}
+          className={`w-11 h-6 rounded-full p-0.5 transition-colors shrink-0 ${pushAgreed ? "bg-brand" : "bg-ink-200"}`}
         >
           <span
-            className={`block w-5 h-5 rounded-full bg-white shadow transition-transform ${pushAgreed ? 'translate-x-5' : ''}`}
+            className={`block w-5 h-5 rounded-full bg-white shadow transition-transform ${pushAgreed ? "translate-x-5" : ""}`}
           />
         </span>
       </button>
-
     </div>
   );
 }

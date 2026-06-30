@@ -25,11 +25,11 @@ export default function CategoryFilter({
             onClick={() => onChange(cat)}
             aria-pressed={active === cat}
             className={[
-              'shrink-0 px-3 py-1.5 rounded-btn text-[13px] font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-brand',
+              "shrink-0 px-3 py-1.5 rounded-btn text-[13px] font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-brand",
               active === cat
-                ? 'bg-brand text-white'
-                : 'bg-white border border-ink-200 text-ink-600 hover:border-brand/40 hover:text-brand',
-            ].join(' ')}
+                ? "bg-brand text-white"
+                : "bg-white border border-ink-200 text-ink-600 hover:border-brand/40 hover:text-brand",
+            ].join(" ")}
           >
             {cat}
           </button>

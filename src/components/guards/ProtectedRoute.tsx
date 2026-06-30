@@ -1,6 +1,6 @@
-import { Navigate, Outlet, useLocation } from 'react-router-dom';
-import { useAuthStore } from '@/stores/authStore';
-import FullPageSpinner from '@/components/common/FullPageSpinner';
+import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { useAuthStore } from "@/stores/authStore";
+import FullPageSpinner from "@/components/common/FullPageSpinner";
 
 export default function ProtectedRoute() {
   const user = useAuthStore((s) => s.user);

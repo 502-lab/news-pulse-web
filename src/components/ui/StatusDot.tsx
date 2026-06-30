@@ -1,14 +1,17 @@
-type StatusType = 'running' | 'idle' | 'warning' | 'error';
+type StatusType = "running" | "idle" | "warning" | "error";
 
 interface StatusDotProps {
   status: StatusType;
 }
 
-const STATUS_MAP: Record<StatusType, { color: string; label: string; pulse: boolean }> = {
-  running: { color: '#10B981', label: '실행 중', pulse: true },
-  idle: { color: '#94A3B8', label: '대기', pulse: false },
-  warning: { color: '#F59E0B', label: '경고', pulse: true },
-  error: { color: '#EF4444', label: '오류', pulse: true },
+const STATUS_MAP: Record<
+  StatusType,
+  { color: string; label: string; pulse: boolean }
+> = {
+  running: { color: "#10B981", label: "실행 중", pulse: true },
+  idle: { color: "#94A3B8", label: "대기", pulse: false },
+  warning: { color: "#F59E0B", label: "경고", pulse: true },
+  error: { color: "#EF4444", label: "오류", pulse: true },
 };
 
 export default function StatusDot({ status }: StatusDotProps) {

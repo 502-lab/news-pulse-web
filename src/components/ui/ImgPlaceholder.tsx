@@ -4,7 +4,11 @@ interface ImgPlaceholderProps {
   ratio?: string;
 }
 
-export default function ImgPlaceholder({ label, className = '', ratio }: ImgPlaceholderProps) {
+export default function ImgPlaceholder({
+  label,
+  className = "",
+  ratio,
+}: ImgPlaceholderProps) {
   return (
     <div
       className={`stripes flex items-center justify-center ${className}`}

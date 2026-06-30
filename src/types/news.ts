@@ -16,7 +16,7 @@ export interface StatCardData {
   sub: string;
   value: number;
   delta: number;
-  fmt: 'int' | 'pct';
+  fmt: "int" | "pct";
   icon: string;
-  tone: 'brand' | 'cyan' | 'ok' | 'warn';
+  tone: "brand" | "cyan" | "ok" | "warn";
 }

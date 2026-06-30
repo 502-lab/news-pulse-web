@@ -1,5 +1,5 @@
-import { Card, CardHead } from '@/components/ui/Card';
-import type { TrendingKeyword } from '@/mocks/newsHome.mock';
+import { Card, CardHead } from "@/components/ui/Card";
+import type { TrendingKeyword } from "@/mocks/newsHome.mock";
 
 interface TrendingKeywordsWidgetProps {
   keywords: TrendingKeyword[];
@@ -57,9 +57,9 @@ export default function TrendingKeywordsWidget({
             >
               <span
                 className={[
-                  'w-6 text-center text-[13px] font-bold tnum shrink-0',
-                  isTop ? 'text-brand' : 'text-ink-400',
-                ].join(' ')}
+                  "w-6 text-center text-[13px] font-bold tnum shrink-0",
+                  isTop ? "text-brand" : "text-ink-400",
+                ].join(" ")}
               >
                 {kw.rank}
               </span>
@@ -75,7 +75,10 @@ export default function TrendingKeywordsWidget({
                 {/* progress bar: inline style 예외 (연속값 — research.md R-04) */}
                 <div className="h-1.5 rounded-full bg-ink-100 overflow-hidden">
                   <div
-                    className={['h-full rounded-full transition-all duration-500', isTop ? 'bg-brand' : 'bg-ink-400'].join(' ')}
+                    className={[
+                      "h-full rounded-full transition-all duration-500",
+                      isTop ? "bg-brand" : "bg-ink-400",
+                    ].join(" ")}
                     style={{ width: `${pct}%` }}
                   />
                 </div>

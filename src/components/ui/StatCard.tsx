@@ -1,16 +1,16 @@
-import Icon from './Icon';
-import type { StatCardData } from '@/types/news';
+import Icon from "./Icon";
+import type { StatCardData } from "@/types/news";
 
 interface StatCardProps {
   data: StatCardData;
   loading?: boolean;
 }
 
-const TONE_MAP: Record<StatCardData['tone'], { color: string; bg: string }> = {
-  brand: { color: '#6366F1', bg: '#EEF0FF' },
-  cyan: { color: '#06B6D4', bg: '#ECFEFF' },
-  ok: { color: '#10B981', bg: '#ECFDF5' },
-  warn: { color: '#F59E0B', bg: '#FFF7ED' },
+const TONE_MAP: Record<StatCardData["tone"], { color: string; bg: string }> = {
+  brand: { color: "#6366F1", bg: "#EEF0FF" },
+  cyan: { color: "#06B6D4", bg: "#ECFEFF" },
+  ok: { color: "#10B981", bg: "#ECFDF5" },
+  warn: { color: "#F59E0B", bg: "#FFF7ED" },
 };
 
 export default function StatCard({ data, loading = false }: StatCardProps) {
@@ -28,7 +28,7 @@ export default function StatCard({ data, loading = false }: StatCardProps) {
   const { color, bg } = TONE_MAP[tone];
   const up = delta >= 0;
   const formattedValue =
-    fmt === 'pct' ? value.toFixed(2) + '%' : value.toLocaleString('ko-KR');
+    fmt === "pct" ? value.toFixed(2) + "%" : value.toLocaleString("ko-KR");
 
   return (
     <div className="bg-white border border-ink-200 rounded-card shadow-card p-5 transition-all hover:border-brand/40 hover:shadow-cardhover group">
@@ -41,9 +41,9 @@ export default function StatCard({ data, loading = false }: StatCardProps) {
           <Icon name={icon} size={18} />
         </div>
         <span
-          className={`inline-flex items-center gap-0.5 text-[12px] font-semibold tnum ${up ? 'text-ok' : 'text-danger'}`}
+          className={`inline-flex items-center gap-0.5 text-[12px] font-semibold tnum ${up ? "text-ok" : "text-danger"}`}
         >
-          {up ? '▲' : '▼'} {Math.abs(delta)}%
+          {up ? "▲" : "▼"} {Math.abs(delta)}%
         </span>
       </div>
       <div className="text-[12.5px] text-ink-500 font-medium">{label}</div>

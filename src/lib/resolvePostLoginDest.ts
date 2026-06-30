@@ -1,19 +1,19 @@
-import type { AuthUser } from '@/stores/authStore';
+import type { AuthUser } from "@/stores/authStore";
 
 // 인증·게스트 전용 경로는 returnTo로 허용하지 않음 (리다이렉트 루프 차단)
 const BLOCKED_RETURN_PREFIXES = [
-  '/login',
-  '/register',
-  '/forgot-password',
-  '/verify-email',
-  '/re-consent',
-  '/social-consent',
-  '/onboarding',
-  '/oauth',
+  "/login",
+  "/register",
+  "/forgot-password",
+  "/verify-email",
+  "/re-consent",
+  "/social-consent",
+  "/onboarding",
+  "/oauth",
 ];
 
 function isSafeReturnTo(path: string): boolean {
-  if (!path.startsWith('/')) return false; // 외부 URL·javascript: 차단
+  if (!path.startsWith("/")) return false; // 외부 URL·javascript: 차단
   return !BLOCKED_RETURN_PREFIXES.some(
     (prefix) =>
       path === prefix ||
@@ -30,7 +30,7 @@ export function resolvePostLoginDest(
   user: AuthUser,
   locationState: unknown,
 ): string {
-  const roleHome = user.role === 'ADMIN' ? '/admin' : '/home';
+  const roleHome = user.role === "ADMIN" ? "/admin" : "/home";
   const state = locationState as { returnTo?: string } | null;
   const returnTo = state?.returnTo;
   if (returnTo && isSafeReturnTo(returnTo)) {

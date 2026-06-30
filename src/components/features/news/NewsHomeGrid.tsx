@@ -1,6 +1,6 @@
-import EmptyState from '@/components/ui/EmptyState';
-import NewsHomeCard from './NewsHomeCard';
-import type { NewsItem } from '@/types/news';
+import EmptyState from "@/components/ui/EmptyState";
+import NewsHomeCard from "./NewsHomeCard";
+import type { NewsItem } from "@/types/news";
 
 interface NewsHomeGridProps {
   articles: NewsItem[];

@@ -1,14 +1,14 @@
-import { Navigate, useNavigate } from 'react-router-dom';
-import { useAuthStore } from '@/stores/authStore';
-import { useOnboarding } from '@/hooks/useOnboarding';
-import { ONB_HEADS } from '@/constants/onboarding';
-import Icon from '@/components/ui/Icon';
-import OnbRail from '@/components/features/onboarding/OnbRail';
-import OnbStep1Profile from '@/components/features/onboarding/OnbStep1Profile';
-import OnbStep2Topics from '@/components/features/onboarding/OnbStep2Topics';
-import OnbStep3Keywords from '@/components/features/onboarding/OnbStep3Keywords';
-import OnbStep4Reading from '@/components/features/onboarding/OnbStep4Reading';
-import OnbStep5Briefing from '@/components/features/onboarding/OnbStep5Briefing';
+import { Navigate, useNavigate } from "react-router-dom";
+import { useAuthStore } from "@/stores/authStore";
+import { useOnboarding } from "@/hooks/useOnboarding";
+import { ONB_HEADS } from "@/constants/onboarding";
+import Icon from "@/components/ui/Icon";
+import OnbRail from "@/components/features/onboarding/OnbRail";
+import OnbStep1Profile from "@/components/features/onboarding/OnbStep1Profile";
+import OnbStep2Topics from "@/components/features/onboarding/OnbStep2Topics";
+import OnbStep3Keywords from "@/components/features/onboarding/OnbStep3Keywords";
+import OnbStep4Reading from "@/components/features/onboarding/OnbStep4Reading";
+import OnbStep5Briefing from "@/components/features/onboarding/OnbStep5Briefing";
 
 const TOTAL = 5;
 
@@ -28,18 +28,18 @@ export default function OnboardingPage() {
 
   const { step, topics, keywords, submitStatus, submitError } = state;
   const [title, subtitle] = ONB_HEADS[step];
-  const isLoading = submitStatus === 'loading';
+  const isLoading = submitStatus === "loading";
 
   async function handleNext() {
     if (step < TOTAL) {
-      dispatch({ type: 'NEXT' });
+      dispatch({ type: "NEXT" });
     } else {
       try {
         await submit();
         if (user && accessToken) {
           setAuth({ ...user, onboardingCompleted: true }, accessToken);
         }
-        navigate('/home', { replace: true });
+        navigate("/home", { replace: true });
       } catch {
         // submitError는 useOnboarding reducer에서 SUBMIT_ERROR로 처리됨
       }
@@ -50,7 +50,7 @@ export default function OnboardingPage() {
     <div className="min-h-screen bg-canvas flex items-center justify-center p-6">
       <div
         className="w-full max-w-[940px] bg-white border border-ink-200 rounded-2xl shadow-pop overflow-hidden flex"
-        style={{ height: 'min(680px, 92vh)' }}
+        style={{ height: "min(680px, 92vh)" }}
       >
         {/* 좌측 단계 레일 */}
         <OnbRail currentStep={step} />
@@ -81,7 +81,10 @@ export default function OnboardingPage() {
             <p className="text-[13.5px] text-ink-500 mt-1.5">{subtitle}</p>
 
             {submitError && (
-              <p role="alert" className="mt-4 text-sm text-danger bg-danger/5 rounded-btn px-4 py-2.5">
+              <p
+                role="alert"
+                className="mt-4 text-sm text-danger bg-danger/5 rounded-btn px-4 py-2.5"
+              >
                 {submitError}
               </p>
             )}
@@ -95,8 +98,12 @@ export default function OnboardingPage() {
                   dispatch={dispatch}
                 />
               )}
-              {step === 2 && <OnbStep2Topics topics={topics} dispatch={dispatch} />}
-              {step === 3 && <OnbStep3Keywords keywords={keywords} dispatch={dispatch} />}
+              {step === 2 && (
+                <OnbStep2Topics topics={topics} dispatch={dispatch} />
+              )}
+              {step === 3 && (
+                <OnbStep3Keywords keywords={keywords} dispatch={dispatch} />
+              )}
               {step === 4 && (
                 <OnbStep4Reading
                   depth={state.depth}
@@ -123,8 +130,8 @@ export default function OnboardingPage() {
               disabled={step === 1}
               className={`inline-flex items-center gap-1.5 text-[13.5px] font-bold px-4 py-2.5 rounded-btn transition-colors ${
                 step === 1
-                  ? 'text-ink-300 cursor-not-allowed'
-                  : 'text-ink-600 hover:bg-ink-100'
+                  ? "text-ink-300 cursor-not-allowed"
+                  : "text-ink-600 hover:bg-ink-100"
               }`}
             >
               <Icon name="arrowleft" size={15} />
@@ -134,12 +141,14 @@ export default function OnboardingPage() {
             <div className="flex items-center gap-4">
               {step === 2 && (
                 <span className="text-[12.5px] text-ink-400 font-semibold">
-                  <b className="text-brand tabular-nums">{topics.length}개</b> 선택됨
+                  <b className="text-brand tabular-nums">{topics.length}개</b>{" "}
+                  선택됨
                 </span>
               )}
               {step === 3 && (
                 <span className="text-[12.5px] text-ink-400 font-semibold">
-                  <b className="text-brand tabular-nums">{keywords.length}개</b> 팔로우 중
+                  <b className="text-brand tabular-nums">{keywords.length}개</b>{" "}
+                  팔로우 중
                 </span>
               )}
               <button
@@ -148,8 +157,8 @@ export default function OnboardingPage() {
                 disabled={!canProceed || isLoading}
                 className={`inline-flex items-center gap-2 text-white text-[14px] font-bold px-6 py-2.5 rounded-btn shadow-sm transition-all ${
                   !canProceed || isLoading
-                    ? 'bg-ink-300 cursor-not-allowed'
-                    : 'bg-brand hover:bg-brand-600'
+                    ? "bg-ink-300 cursor-not-allowed"
+                    : "bg-brand hover:bg-brand-600"
                 }`}
               >
                 {isLoading ? (
@@ -159,7 +168,7 @@ export default function OnboardingPage() {
                   </>
                 ) : (
                   <>
-                    {step === TOTAL ? 'Newsift 시작하기' : '다음'}
+                    {step === TOTAL ? "Newsift 시작하기" : "다음"}
                     <Icon name="arrowright" size={16} />
                   </>
                 )}

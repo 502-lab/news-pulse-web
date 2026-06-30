@@ -1,10 +1,10 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { formatDistanceToNow } from 'date-fns';
-import { ko } from 'date-fns/locale';
-import Icon from '@/components/ui/Icon';
-import { getCategoryMeta } from '@/constants/category';
-import type { NewsItem } from '@/types/dashboard';
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { formatDistanceToNow } from "date-fns";
+import { ko } from "date-fns/locale";
+import Icon from "@/components/ui/Icon";
+import { getCategoryMeta } from "@/constants/category";
+import type { NewsItem } from "@/types/dashboard";
 
 interface NewsCardProps {
   item: NewsItem;
@@ -19,7 +19,9 @@ export default function NewsCard({ item }: NewsCardProps) {
     locale: ko,
   });
 
-  const { label: categoryLabel, className: categoryClass } = getCategoryMeta(item.category);
+  const { label: categoryLabel, className: categoryClass } = getCategoryMeta(
+    item.category,
+  );
 
   return (
     <article className="flex gap-4 p-4 border-b border-white/5 hover:bg-white/3 transition-colors">

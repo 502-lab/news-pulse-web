@@ -1,7 +1,7 @@
-import { Suspense } from 'react';
-import { Outlet } from 'react-router-dom';
-import { Sidebar } from '@/components/nav';
-import FullPageSpinner from '@/components/common/FullPageSpinner';
+import { Suspense } from "react";
+import { Outlet } from "react-router-dom";
+import { Sidebar } from "@/components/nav";
+import FullPageSpinner from "@/components/common/FullPageSpinner";
 
 export default function AppShell() {
   return (

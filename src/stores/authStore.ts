@@ -1,6 +1,6 @@
-import { create } from 'zustand';
-import type { AccountSummary } from '@/lib/api/auth';
-import { clearRefreshToken } from '@/lib/tokenStorage';
+import { create } from "zustand";
+import type { AccountSummary } from "@/lib/api/auth";
+import { clearRefreshToken } from "@/lib/tokenStorage";
 
 export type AuthUser = AccountSummary;
 
@@ -23,7 +23,8 @@ export const useAuthStore = create<AuthState>()((set) => ({
   accessToken: null,
   pendingToken: null,
   isLoading: true,
-  setAuth: (user, accessToken) => set({ user, accessToken, pendingToken: null }),
+  setAuth: (user, accessToken) =>
+    set({ user, accessToken, pendingToken: null }),
   setAccessToken: (accessToken) => set({ accessToken }),
   setPendingToken: (pendingToken) => set({ pendingToken }),
   clearPendingToken: () => set({ pendingToken: null }),

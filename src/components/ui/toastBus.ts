@@ -1,6 +1,6 @@
 export interface ToastOptions {
   icon?: string;
-  tone?: 'ok' | 'brand';
+  tone?: "ok" | "brand";
 }
 
 export const listeners = new Set<(msg: string, opts: ToastOptions) => void>();
