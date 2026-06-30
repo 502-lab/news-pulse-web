@@ -545,6 +545,25 @@
 <script>
 const COMMITS = [
   {
+    hash: "38ee5b9f96706520d7453af8e61e1c8f4a5f6d70",
+    short: "38ee5b9",
+    author: "이재인",
+    date: "2026-06-30 13:29",
+    subject: "fix(test): fix verifyEmail mock shape and legalPage back button",
+    body: "- verifyEmailPage: MSW mock return { tokens, account } to match EmailVerifyResponse - LegalDocPage: change '뒤로' button to Link /login (test expects role=link)  Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>",
+    stats: "2 files changed, 8 insertions(+), 6 deletions(-)",
+    reasoning: [
+      {
+        title: "변경 요약",
+        text: "fix(test): fix verifyEmail mock shape and legalPage back button — 상세 reasoning은 추후 추가 예정."
+      }
+    ],
+    files: [
+      { s: "M", p: "src/__tests__/verifyEmailPage.test.tsx" },
+      { s: "M", p: "src/pages/legal/LegalDocPage.tsx" }
+    ]
+  },
+  {
     hash: "289b511aa3d806bbf8260d5280298fb9282e32a5",
     short: "289b511",
     author: "이재인",
