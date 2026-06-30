@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { type LegalDoc } from "@/constants/legalText";
 
 function StarIcon() {
@@ -66,16 +66,15 @@ export default function LegalDocPage({ doc }: Props) {
   return (
     <div className="min-h-screen bg-canvas">
       <header className="sticky top-0 z-20 h-14 bg-white/90 backdrop-blur border-b border-ink-200 flex items-center px-6 gap-3">
-        <button
-          type="button"
-          onClick={() => navigate(-1)}
+        <Link
+          to="/login"
           className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-ink-600 hover:text-brand group transition-colors"
         >
           <span className="transition-transform group-hover:-translate-x-0.5">
             <ArrowLeftIcon />
           </span>
           뒤로
-        </button>
+        </Link>
         <div className="flex items-center gap-2 ml-1">
           <div className="w-6 h-6 rounded-md bg-brand text-white flex items-center justify-center">
             <StarIcon />

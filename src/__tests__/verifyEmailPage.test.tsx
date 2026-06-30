@@ -138,7 +138,10 @@ describe("VerifyEmailPage", () => {
   it("E2E: 인증 성공 → authStore emailVerified=true → GateRoute → /onboarding 이동", async () => {
     server.use(
       http.post(`${BASE}/api/v1/auth/email-verification/verify`, () =>
-        HttpResponse.json({ emailVerified: true }),
+        HttpResponse.json({
+          tokens: { accessToken: "new-acc", refreshToken: "new-ref" },
+          account: { ...unverifiedUser, emailVerified: true },
+        }),
       ),
     );
     const user = userEvent.setup();
