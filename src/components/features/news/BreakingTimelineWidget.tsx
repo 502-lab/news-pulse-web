@@ -1,7 +1,7 @@
-import { Card } from '@/components/ui/Card';
-import CatBadge from '@/components/ui/CatBadge';
-import { CAT_COLOR, CAT_FALLBACK } from '@/constants/categories';
-import type { NewsItem } from '@/types/news';
+import { Card } from "@/components/ui/Card";
+import CatBadge from "@/components/ui/CatBadge";
+import { CAT_COLOR, CAT_FALLBACK } from "@/constants/categories";
+import type { NewsItem } from "@/types/news";
 
 interface BreakingTimelineWidgetProps {
   items: NewsItem[];
@@ -21,7 +21,10 @@ export default function BreakingTimelineWidget({
       <div className="px-5 py-3">
         <div className="relative flex flex-col gap-3.5">
           {/* 수직 연결선 — 절대위치로 전체 관통 */}
-          <span className="absolute left-[5px] top-1.5 bottom-1.5 w-px bg-ink-200" aria-hidden="true" />
+          <span
+            className="absolute left-[5px] top-1.5 bottom-1.5 w-px bg-ink-200"
+            aria-hidden="true"
+          />
           {items.map((item, idx) => {
             const dot = (CAT_COLOR[item.cat] ?? CAT_FALLBACK).dot;
             return (
@@ -43,7 +46,7 @@ export default function BreakingTimelineWidget({
                   <div className="flex items-center gap-1.5">
                     <span
                       className="text-[11.5px] font-bold tnum"
-                      style={{ color: idx === 0 ? dot : '#64748B' }}
+                      style={{ color: idx === 0 ? dot : "#64748B" }}
                     >
                       {item.time}
                     </span>

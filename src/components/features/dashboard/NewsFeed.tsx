@@ -1,7 +1,7 @@
-import Icon from '@/components/ui/Icon';
-import type { NewsItem } from '@/types/dashboard';
-import NewsCard from './NewsCard';
-import NewsFeedSkeleton from './NewsFeedSkeleton';
+import Icon from "@/components/ui/Icon";
+import type { NewsItem } from "@/types/dashboard";
+import NewsCard from "./NewsCard";
+import NewsFeedSkeleton from "./NewsFeedSkeleton";
 
 interface NewsFeedProps {
   items: NewsItem[];
@@ -10,7 +10,12 @@ interface NewsFeedProps {
   refetch: () => void;
 }
 
-export default function NewsFeed({ items, isLoading, isError, refetch }: NewsFeedProps) {
+export default function NewsFeed({
+  items,
+  isLoading,
+  isError,
+  refetch,
+}: NewsFeedProps) {
   if (isLoading) {
     return <NewsFeedSkeleton />;
   }
@@ -32,7 +37,10 @@ export default function NewsFeed({ items, isLoading, isError, refetch }: NewsFee
 
   if (items.length === 0) {
     return (
-      <div role="status" className="flex flex-col items-center gap-3 py-10 text-ink-400">
+      <div
+        role="status"
+        className="flex flex-col items-center gap-3 py-10 text-ink-400"
+      >
         <Icon name="inbox" size={32} className="text-ink-400" />
         <p className="text-sm">표시할 뉴스가 없습니다.</p>
       </div>

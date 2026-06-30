@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
-import type { DashboardStat, UseQueryResult } from '@/types/dashboard';
-import { fetchDashboardStats } from '@/mocks/dashboard.mock';
+import { useState, useEffect, useCallback, useRef } from "react";
+import type { DashboardStat, UseQueryResult } from "@/types/dashboard";
+import { fetchDashboardStats } from "@/mocks/dashboard.mock";
 
 export function useDashboardStats(): UseQueryResult<DashboardStat[]> {
   const [data, setData] = useState<DashboardStat[] | null>(null);
@@ -13,8 +13,18 @@ export function useDashboardStats(): UseQueryResult<DashboardStat[]> {
     setIsLoading(true);
     setIsError(false);
     fetchDashboardStats()
-      .then((result) => { if (tickRef.current === id) { setData(result); setIsLoading(false); } })
-      .catch(() => { if (tickRef.current === id) { setIsError(true); setIsLoading(false); } });
+      .then((result) => {
+        if (tickRef.current === id) {
+          setData(result);
+          setIsLoading(false);
+        }
+      })
+      .catch(() => {
+        if (tickRef.current === id) {
+          setIsError(true);
+          setIsLoading(false);
+        }
+      });
   }, []);
 
   useEffect(() => {

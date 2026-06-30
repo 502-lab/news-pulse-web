@@ -1,12 +1,12 @@
-import { useState, useEffect } from 'react';
-import Icon from './Icon';
-import { listeners, type ToastOptions } from './toastBus';
+import { useState, useEffect } from "react";
+import Icon from "./Icon";
+import { listeners, type ToastOptions } from "./toastBus";
 
 interface ToastItem {
   id: number;
   msg: string;
   icon: string;
-  tone: 'ok' | 'brand';
+  tone: "ok" | "brand";
 }
 
 export function ToastHost() {
@@ -17,7 +17,7 @@ export function ToastHost() {
       const id = Date.now() + Math.random();
       setItems((list) => [
         ...list,
-        { id, msg, icon: opts.icon ?? 'check', tone: opts.tone ?? 'ok' },
+        { id, msg, icon: opts.icon ?? "check", tone: opts.tone ?? "ok" },
       ]);
       setTimeout(
         () => setItems((list) => list.filter((t) => t.id !== id)),
@@ -25,7 +25,9 @@ export function ToastHost() {
       );
     };
     listeners.add(fn);
-    return () => { listeners.delete(fn); };
+    return () => {
+      listeners.delete(fn);
+    };
   }, []);
 
   return (
@@ -38,7 +40,7 @@ export function ToastHost() {
           <Icon
             name={t.icon}
             size={15}
-            className={t.tone === 'brand' ? 'text-brand-100' : 'text-ok'}
+            className={t.tone === "brand" ? "text-brand-100" : "text-ok"}
           />
           {t.msg}
         </div>

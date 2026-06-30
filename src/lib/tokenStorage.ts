@@ -1,4 +1,4 @@
-const REFRESH_KEY = 'rt';
+const REFRESH_KEY = "rt";
 
 export function getRefreshToken(): string | null {
   return localStorage.getItem(REFRESH_KEY);

@@ -1,5 +1,5 @@
-import { NavLink } from 'react-router-dom';
-import { Icon } from '@/components/ui';
+import { NavLink } from "react-router-dom";
+import { Icon } from "@/components/ui";
 
 interface NavItemProps {
   to: string;
@@ -11,14 +11,14 @@ export default function NavItem({ to, icon, label }: NavItemProps) {
   return (
     <NavLink
       to={to}
-      end={to === '/'}
+      end={to === "/"}
       className={({ isActive }) =>
         [
-          'flex items-center gap-3 px-3 py-2 rounded-btn text-sm transition-colors w-full',
+          "flex items-center gap-3 px-3 py-2 rounded-btn text-sm transition-colors w-full",
           isActive
-            ? 'bg-brand/20 text-brand font-medium'
-            : 'text-ink-400 hover:text-white hover:bg-white/5',
-        ].join(' ')
+            ? "bg-brand/20 text-brand font-medium"
+            : "text-ink-400 hover:text-white hover:bg-white/5",
+        ].join(" ")
       }
     >
       <Icon name={icon} size={18} />

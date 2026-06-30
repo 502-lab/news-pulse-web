@@ -1,10 +1,13 @@
-import { Component, type ReactNode } from 'react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { RouterProvider } from 'react-router-dom';
-import { router } from './router';
-import AuthProvider from '@/providers/AuthProvider';
+import { Component, type ReactNode } from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { RouterProvider } from "react-router-dom";
+import { router } from "./router";
+import AuthProvider from "@/providers/AuthProvider";
 
-class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
+class ErrorBoundary extends Component<
+  { children: ReactNode },
+  { hasError: boolean }
+> {
   state = { hasError: false };
 
   static getDerivedStateFromError() {
@@ -16,7 +19,9 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boole
       return (
         <div className="flex h-screen items-center justify-center bg-canvas">
           <div className="text-center">
-            <p className="text-ink-500 mb-4">예상치 못한 오류가 발생했습니다.</p>
+            <p className="text-ink-500 mb-4">
+              예상치 못한 오류가 발생했습니다.
+            </p>
             <button
               className="px-4 py-2 bg-brand text-white rounded-btn text-sm"
               onClick={() => {

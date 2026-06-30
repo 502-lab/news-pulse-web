@@ -6,9 +6,9 @@ import {
   YAxis,
   Tooltip,
   Cell,
-} from 'recharts';
-import { getCategoryMeta } from '@/constants/category';
-import type { CategoryData } from '@/types/dashboard';
+} from "recharts";
+import { getCategoryMeta } from "@/constants/category";
+import type { CategoryData } from "@/types/dashboard";
 
 interface CategoryChartProps {
   data: CategoryData[];
@@ -16,7 +16,11 @@ interface CategoryChartProps {
   refetch: () => void;
 }
 
-export default function CategoryChart({ data, isError, refetch }: CategoryChartProps) {
+export default function CategoryChart({
+  data,
+  isError,
+  refetch,
+}: CategoryChartProps) {
   if (isError) {
     return (
       <div className="flex flex-col items-center gap-3 py-10 text-ink-400">
@@ -43,23 +47,35 @@ export default function CategoryChart({ data, isError, refetch }: CategoryChartP
   }
 
   return (
-    <ResponsiveContainer width="100%" height={240} aria-label="카테고리별 뉴스 분포">
+    <ResponsiveContainer
+      width="100%"
+      height={240}
+      aria-label="카테고리별 뉴스 분포"
+    >
       <BarChart data={data} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
         <XAxis
           dataKey="category"
           tickFormatter={(v: string) => getCategoryMeta(v).label}
-          tick={{ fontSize: 12, fill: '#94a3b8' }}
+          tick={{ fontSize: 12, fill: "#94a3b8" }}
           axisLine={false}
           tickLine={false}
         />
         <YAxis
-          tick={{ fontSize: 12, fill: '#94a3b8' }}
+          tick={{ fontSize: 12, fill: "#94a3b8" }}
           axisLine={false}
           tickLine={false}
         />
         <Tooltip
-          formatter={(value, name) => [value, getCategoryMeta(String(name)).label]}
-          contentStyle={{ background: '#1e293b', border: 'none', borderRadius: 8, color: '#f8fafc' }}
+          formatter={(value, name) => [
+            value,
+            getCategoryMeta(String(name)).label,
+          ]}
+          contentStyle={{
+            background: "#1e293b",
+            border: "none",
+            borderRadius: 8,
+            color: "#f8fafc",
+          }}
         />
         <Bar dataKey="count" radius={[4, 4, 0, 0]}>
           {data.map((entry, i) => (

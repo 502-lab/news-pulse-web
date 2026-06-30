@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
-import type { NewsItem, UseQueryResult } from '@/types/dashboard';
-import { fetchNewsFeed } from '@/mocks/dashboard.mock';
+import { useState, useEffect, useCallback, useRef } from "react";
+import type { NewsItem, UseQueryResult } from "@/types/dashboard";
+import { fetchNewsFeed } from "@/mocks/dashboard.mock";
 
 export function useNewsFeed(): UseQueryResult<NewsItem[]> {
   const [data, setData] = useState<NewsItem[] | null>(null);
@@ -13,8 +13,18 @@ export function useNewsFeed(): UseQueryResult<NewsItem[]> {
     setIsLoading(true);
     setIsError(false);
     fetchNewsFeed()
-      .then((result) => { if (tickRef.current === id) { setData(result); setIsLoading(false); } })
-      .catch(() => { if (tickRef.current === id) { setIsError(true); setIsLoading(false); } });
+      .then((result) => {
+        if (tickRef.current === id) {
+          setData(result);
+          setIsLoading(false);
+        }
+      })
+      .catch(() => {
+        if (tickRef.current === id) {
+          setIsError(true);
+          setIsLoading(false);
+        }
+      });
   }, []);
 
   useEffect(() => {

@@ -1,26 +1,30 @@
-import { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { NEWS_HOME, TRENDING_KEYWORDS, AI_BRIEFING } from '@/mocks/newsHome.mock';
-import { HOME_CATEGORY_FILTERS } from '@/constants/categories';
-import { showToast } from '@/components/ui';
-import { useBookmarks } from '@/hooks/useBookmarks';
-import BreakingBanner from '@/components/features/news/BreakingBanner';
-import CategoryFilter from '@/components/features/news/CategoryFilter';
-import NewsHomeGrid from '@/components/features/news/NewsHomeGrid';
-import TrendingKeywordsWidget from '@/components/features/news/TrendingKeywordsWidget';
-import BreakingTimelineWidget from '@/components/features/news/BreakingTimelineWidget';
-import AIBriefingWidget from '@/components/features/news/AIBriefingWidget';
+import { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  NEWS_HOME,
+  TRENDING_KEYWORDS,
+  AI_BRIEFING,
+} from "@/mocks/newsHome.mock";
+import { HOME_CATEGORY_FILTERS } from "@/constants/categories";
+import { showToast } from "@/components/ui";
+import { useBookmarks } from "@/hooks/useBookmarks";
+import BreakingBanner from "@/components/features/news/BreakingBanner";
+import CategoryFilter from "@/components/features/news/CategoryFilter";
+import NewsHomeGrid from "@/components/features/news/NewsHomeGrid";
+import TrendingKeywordsWidget from "@/components/features/news/TrendingKeywordsWidget";
+import BreakingTimelineWidget from "@/components/features/news/BreakingTimelineWidget";
+import AIBriefingWidget from "@/components/features/news/AIBriefingWidget";
 
 export default function HomePage() {
   const navigate = useNavigate();
-  const [activeCategory, setActiveCategory] = useState<string>('전체');
+  const [activeCategory, setActiveCategory] = useState<string>("전체");
   const { bookmarks: bookmarkedIds, toggle } = useBookmarks();
 
   const breakingArticle = NEWS_HOME.find((a) => a.isBreaking) ?? NEWS_HOME[0];
 
   const filteredArticles = useMemo(
     () =>
-      activeCategory === '전체'
+      activeCategory === "전체"
         ? NEWS_HOME
         : NEWS_HOME.filter((a) => a.cat === activeCategory),
     [activeCategory],
@@ -29,9 +33,9 @@ export default function HomePage() {
   function toggleBookmark(id: string): void {
     const nowBookmarked = !bookmarkedIds.has(id);
     toggle(id);
-    showToast(nowBookmarked ? '북마크에 저장했어요' : '북마크를 해제했어요', {
-      icon: '🔖',
-      tone: 'ok',
+    showToast(nowBookmarked ? "북마크에 저장했어요" : "북마크를 해제했어요", {
+      icon: "🔖",
+      tone: "ok",
     });
   }
 
@@ -70,7 +74,9 @@ export default function HomePage() {
           <aside className="xl:col-span-4 flex flex-col gap-4">
             <TrendingKeywordsWidget
               keywords={TRENDING_KEYWORDS}
-              onPick={(kw) => navigate(`/search?keyword=${encodeURIComponent(kw)}`)}
+              onPick={(kw) =>
+                navigate(`/search?keyword=${encodeURIComponent(kw)}`)
+              }
             />
             <BreakingTimelineWidget
               items={NEWS_HOME.slice(0, 5)}

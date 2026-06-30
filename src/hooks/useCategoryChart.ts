@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
-import type { CategoryData, UseQueryResult } from '@/types/dashboard';
-import { fetchCategoryChart } from '@/mocks/dashboard.mock';
+import { useState, useEffect, useCallback, useRef } from "react";
+import type { CategoryData, UseQueryResult } from "@/types/dashboard";
+import { fetchCategoryChart } from "@/mocks/dashboard.mock";
 
 export function useCategoryChart(): UseQueryResult<CategoryData[]> {
   const [data, setData] = useState<CategoryData[] | null>(null);
@@ -13,8 +13,18 @@ export function useCategoryChart(): UseQueryResult<CategoryData[]> {
     setIsLoading(true);
     setIsError(false);
     fetchCategoryChart()
-      .then((result) => { if (tickRef.current === id) { setData(result); setIsLoading(false); } })
-      .catch(() => { if (tickRef.current === id) { setIsError(true); setIsLoading(false); } });
+      .then((result) => {
+        if (tickRef.current === id) {
+          setData(result);
+          setIsLoading(false);
+        }
+      })
+      .catch(() => {
+        if (tickRef.current === id) {
+          setIsError(true);
+          setIsLoading(false);
+        }
+      });
   }, []);
 
   useEffect(() => {

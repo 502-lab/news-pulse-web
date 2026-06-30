@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
-const STORAGE_KEY = 'newsift:bookmarks:v1';
+const STORAGE_KEY = "newsift:bookmarks:v1";
 
 function loadFromStorage(): Set<string> {
   try {

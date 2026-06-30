@@ -1,8 +1,8 @@
-import type { NewsItem } from '@/types/news';
-import CatBadge from './CatBadge';
-import BiasChip from './BiasChip';
-import ImgPlaceholder from './ImgPlaceholder';
-import Icon from './Icon';
+import type { NewsItem } from "@/types/news";
+import CatBadge from "./CatBadge";
+import BiasChip from "./BiasChip";
+import ImgPlaceholder from "./ImgPlaceholder";
+import Icon from "./Icon";
 
 interface NewsCardProps {
   a: NewsItem;
@@ -11,7 +11,7 @@ interface NewsCardProps {
 }
 
 export default function NewsCard({ a, onOpen, dense = false }: NewsCardProps) {
-  const pad = dense ? 'p-3.5' : 'p-4';
+  const pad = dense ? "p-3.5" : "p-4";
 
   return (
     <button
@@ -20,7 +20,11 @@ export default function NewsCard({ a, onOpen, dense = false }: NewsCardProps) {
       onClick={() => onOpen?.(a)}
       aria-label={a.title}
     >
-      <ImgPlaceholder label={`${a.cat} 썸네일`} ratio="16/8" className="w-full" />
+      <ImgPlaceholder
+        label={`${a.cat} 썸네일`}
+        ratio="16/8"
+        className="w-full"
+      />
       <div className={`${pad} flex flex-col gap-2 flex-1`}>
         <div className="flex items-center gap-2 flex-wrap">
           <CatBadge cat={a.cat} />
@@ -35,7 +39,7 @@ export default function NewsCard({ a, onOpen, dense = false }: NewsCardProps) {
           <span className="tnum text-ink-400">{a.time}</span>
           <div className="flex items-center gap-0.5 ml-auto text-ink-400 tnum">
             <Icon name="bookmark" size={13} stroke={1.5} />
-            <span>{a.reads.toLocaleString('ko-KR')}</span>
+            <span>{a.reads.toLocaleString("ko-KR")}</span>
           </div>
         </div>
       </div>

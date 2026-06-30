@@ -1,14 +1,14 @@
-import { useDashboardStats } from '@/hooks/useDashboardStats';
-import { useCategoryChart } from '@/hooks/useCategoryChart';
-import { useNewsFeed } from '@/hooks/useNewsFeed';
+import { useDashboardStats } from "@/hooks/useDashboardStats";
+import { useCategoryChart } from "@/hooks/useCategoryChart";
+import { useNewsFeed } from "@/hooks/useNewsFeed";
 import {
   StatCard,
   StatCardSkeleton,
   CategoryChart,
   CategoryChartSkeleton,
   NewsFeed,
-} from '@/components/features/dashboard';
-import ErrorBoundary from '@/components/common/ErrorBoundary';
+} from "@/components/features/dashboard";
+import ErrorBoundary from "@/components/common/ErrorBoundary";
 
 export default function DashboardPage() {
   const stats = useDashboardStats();
@@ -44,7 +44,9 @@ export default function DashboardPage() {
 
       {/* 카테고리 바차트 */}
       <section aria-label="카테고리별 뉴스 분포">
-        <h2 className="text-ink text-base font-semibold mb-4">카테고리별 뉴스 현황</h2>
+        <h2 className="text-ink text-base font-semibold mb-4">
+          카테고리별 뉴스 현황
+        </h2>
         <ErrorBoundary
           fallback={
             <p className="text-ink-400 text-sm">데이터를 불러올 수 없습니다.</p>
@@ -55,7 +57,11 @@ export default function DashboardPage() {
           ) : chart.isLoading || !chart.data ? (
             <CategoryChartSkeleton />
           ) : (
-            <CategoryChart data={chart.data} isError={false} refetch={chart.refetch} />
+            <CategoryChart
+              data={chart.data}
+              isError={false}
+              refetch={chart.refetch}
+            />
           )}
         </ErrorBoundary>
       </section>

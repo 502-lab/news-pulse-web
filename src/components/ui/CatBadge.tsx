@@ -1,4 +1,4 @@
-import { CAT_COLOR, CAT_FALLBACK } from '@/constants/categories';
+import { CAT_COLOR, CAT_FALLBACK } from "@/constants/categories";
 
 interface CatBadgeProps {
   cat: string;
@@ -13,9 +13,9 @@ export default function CatBadge({ cat, sm = false }: CatBadgeProps) {
   return (
     <span
       className={[
-        'inline-flex items-center font-semibold rounded-btn leading-none',
-        sm ? 'text-[10.5px] px-1.5 py-0.5' : 'text-[11.5px] px-2 py-0.5',
-      ].join(' ')}
+        "inline-flex items-center font-semibold rounded-btn leading-none",
+        sm ? "text-[10.5px] px-1.5 py-0.5" : "text-[11.5px] px-2 py-0.5",
+      ].join(" ")}
       style={{ color: c.fg, background: c.bg }}
     >
       {cat}

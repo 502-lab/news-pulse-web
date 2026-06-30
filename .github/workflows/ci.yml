@@ -40,4 +40,4 @@ jobs:
         run: pnpm build
 
       - name: 테스트
-        run: pnpm exec jest --ci
+        run: pnpm exec vitest run
